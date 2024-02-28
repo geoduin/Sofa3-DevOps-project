@@ -7,13 +7,18 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.Adapters
 {
-    public class EmailAdapter: IAdapter
+    public class EmailAdapter: INotification
     {
         private readonly EmailClient _client;
 
         public EmailAdapter(EmailClient client)
         {
             _client = client;
+        }
+
+        public void SendNotification()
+        {
+            throw new NotImplementedException();
         }
     }
 }

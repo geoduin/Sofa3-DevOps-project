@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.Observers
 {
-    public interface INotificationObserver
+    public interface INotificationObservable
     {
         void AddSubscriber(Subscriber subscriber);
         void RemoveSubscriber(Subscriber subscriber);

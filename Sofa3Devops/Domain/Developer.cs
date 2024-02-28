@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sofa3Devops.Adapters
+namespace Sofa3Devops.Domain
 {
-    public interface IAdapter
+    public class Developer : Member
     {
     }
 }

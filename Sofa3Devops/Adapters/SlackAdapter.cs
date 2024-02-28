@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.Adapters
 {
-    public class SlackAdapter: IAdapter
+    public class SlackAdapter: INotification
     {
 
         private readonly SlackClient _client;
@@ -15,6 +15,11 @@ namespace Sofa3Devops.Adapters
         public SlackAdapter(SlackClient client)
         {
             _client = client;
+        }
+
+        public void SendNotification()
+        {
+            throw new NotImplementedException();
         }
     }
 }
