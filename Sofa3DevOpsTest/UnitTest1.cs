@@ -51,5 +51,39 @@ namespace Sofa3DevOpsTest
 
             Assert.Null(backlogItem.ResponsibleMember);
         }
+
+        [Fact]
+        public void TestAddActivityToBacklogItem()
+        {
+            Developer developer = new Developer();
+            BacklogItem backlogItem = new BacklogItem("Task 1", "Test description")
+            {
+                ResponsibleMember = developer
+            };
+
+            Activity activity = new Activity("SubTask1", "Sub description", backlogItem);
+            Activity activity2 = new Activity("SubTask2", "Sub description2", backlogItem);
+
+            backlogItem.AddActivityToBacklogItem(activity);
+            backlogItem.AddActivityToBacklogItem(activity2);
+
+            Assert.Equal(2, backlogItem.Activities.Count);
+        }
+
+        [Fact]
+        public void TestAddActivityWithExistingItem()
+        {
+            BacklogItem backlogItem = new BacklogItem("Task 1", "Test description");
+            BacklogItem dummyItem = new BacklogItem("Task 1", "Test description");
+
+            Activity activity = new Activity("SubTask1", "Sub description", backlogItem);
+            Activity alreadyAssignedBacklogItem = new Activity("SubTask2", "Sub description2", dummyItem);
+
+            backlogItem.AddActivityToBacklogItem(activity);
+            var error = Assert.Throws<InvalidOperationException>(()=> backlogItem.AddActivityToBacklogItem(alreadyAssignedBacklogItem));
+
+            Assert.Single(backlogItem.Activities);
+            Assert.Equal("Cannot assign activities with existing backlog-item assigned.", error.Message);
+        }
     }
 }

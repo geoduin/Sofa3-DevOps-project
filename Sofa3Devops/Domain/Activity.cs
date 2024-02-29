@@ -2,8 +2,12 @@
 {
     public class Activity : BacklogItem
     {
-        public Activity(string name, string description) : base(name, description)
+
+        public BacklogItem AssignedBacklogItem { get; set; }
+
+        public Activity(string name, string description, BacklogItem backlogItem) : base(name, description)
         {
+            AssignedBacklogItem = backlogItem;
         }
     }
 }

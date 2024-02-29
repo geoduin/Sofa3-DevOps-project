@@ -41,6 +41,21 @@ namespace Sofa3Devops.Domain
             ResponsibleMember = null;
         }
 
+        public void AddActivityToBacklogItem(Activity activity)
+        {
+            // Assigns this backlog item to the activity.;
+            // Check if activity is the same as it is assigned
+            if (activity.AssignedBacklogItem.Equals(this))
+            {
+                Activities.Add(activity);
+            }
+            else
+            {
+                // If it is, throw error. Otherwise
+                throw new InvalidOperationException("Cannot assign activities with existing backlog-item assigned.");
+            }
+        }
+
         public void AddSubscriber(Subscriber subscriber)
         {
             throw new NotImplementedException();
