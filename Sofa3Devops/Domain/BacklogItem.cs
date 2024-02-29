@@ -14,15 +14,31 @@ namespace Sofa3Devops.Domain
         public List<Activity> Activities { get; set; }
         public List<CommentThread> Threads { get; set; }
 
-        public BacklogItem(string name, string description, IBacklogState state, Member? responsibleMember, List<Subscriber> subscribers, List<Activity> activities, List<CommentThread> threads)
+        public BacklogItem(string name, string description)
         {
             Name = name;
             Description = description;
-            State = state;
-            ResponsibleMember = responsibleMember;
-            Subscribers = subscribers;
-            Activities = activities;
-            Threads = threads;
+            State = new TodoState();
+            ResponsibleMember = null;
+            Subscribers = new List<Subscriber>();
+            Activities = new List<Activity>();
+            Threads = new List<CommentThread>();
+        }
+
+        public void AssignBacklogItem(Member member)
+        {
+            if (ResponsibleMember == null)
+            {
+                ResponsibleMember = member;
+            }
+            else
+            {
+                throw new InvalidOperationException("Backlog item has already been assigned to a member");
+            }
+        }
+
+        public void UnAssignBacklogItem() {
+            ResponsibleMember = null;
         }
 
         public void AddSubscriber(Subscriber subscriber)
