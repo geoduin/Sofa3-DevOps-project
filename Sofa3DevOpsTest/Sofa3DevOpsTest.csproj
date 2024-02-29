@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Sofa3Devops\Sofa3Devops.csproj" />
+  </ItemGroup>
+
 </Project>
