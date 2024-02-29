@@ -5,12 +5,6 @@ namespace Sofa3DevOpsTest
     public class UnitTest1
     {
         [Fact]
-        public void Test1()
-        {
-
-        }
-
-        [Fact]
         public void TestAssignmentOfBacklogItem()
         {
             BacklogItem backlogItem = new BacklogItem("Task 1", "Test description");
