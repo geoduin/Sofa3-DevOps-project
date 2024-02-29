@@ -44,7 +44,7 @@ namespace Sofa3Devops.Domain
         public void AddActivityToBacklogItem(Activity activity)
         {
             // Check if activity is the same as it is assigned
-            if (activity.AssignedBacklogItem.Equals(this))
+            if (Equals(activity.AssignedBacklogItem))
             {
                 Activities.Add(activity);
             }
