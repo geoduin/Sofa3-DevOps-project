@@ -10,10 +10,10 @@ namespace Sofa3Devops.SprintStrategies
 {
     public class AuthorizedSprintStrategy : SprintStrategy
     {
-        private readonly DomainFactory domainFactory;
+        private readonly AbstractSprintFactory abstractSprintFactory;
 
-        public AuthorizedSprintStrategy(DomainFactory domainFactory) {
-            this.domainFactory = domainFactory;
+        public AuthorizedSprintStrategy(AbstractSprintFactory factory) {
+            this.abstractSprintFactory = factory;
         }
 
         public override Sprint AddBacklogItem(Sprint sprint, BacklogItem item)
@@ -24,7 +24,7 @@ namespace Sofa3Devops.SprintStrategies
 
         public override Sprint CreateSprint(DateTime start, DateTime end, string name)
         {
-            return domainFactory.CreateSprint(start, end, name);
+            return abstractSprintFactory.CreateSprint(start, end, name);
         }
     }
 }

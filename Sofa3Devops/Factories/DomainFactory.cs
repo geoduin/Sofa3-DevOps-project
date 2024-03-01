@@ -9,9 +9,6 @@ namespace Sofa3Devops.Factories
 {
     public class DomainFactory
     {
-        public Sprint CreateSprint(DateTime start, DateTime end, string name)
-        {
-            return new Sprint(start, end, name);
-        }
+      
     }
 }

@@ -7,7 +7,7 @@ using Sofa3Devops.SprintStates;
 
 namespace Sofa3Devops.Domain
 {
-    public class Sprint
+    public abstract class Sprint
     {
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
