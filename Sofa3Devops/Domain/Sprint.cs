@@ -9,9 +9,9 @@ namespace Sofa3Devops.Domain
 {
     public class Sprint
     {
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public string Name { get; set; }
+        public DateTime StartDate { get; private set; }
+        public DateTime EndDate { get; private set; }
+        public string Name { get; private set; }
         public ISprintState? State { get; set; }
         public SprintReport? SprintReport { get; set; }
         public Pipeline? PublishingPipeline { get; set; }
@@ -33,6 +33,19 @@ namespace Sofa3Devops.Domain
         public void AddBacklogItem(BacklogItem item)
         {
             BacklogItems.Add(item);
+        }
+
+        public void ChangeSprint(DateTime newStart, DateTime newEnd, string newName)
+        {
+            if (State != null)
+            {
+                throw new InvalidOperationException("Backlog items cannot be changed on ongoing sprint");
+            }
+
+            // Apply change.
+            StartDate = newStart;
+            EndDate = newEnd;
+            Name = newName;
         }
     }
 }
