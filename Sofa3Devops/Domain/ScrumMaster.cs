@@ -8,5 +8,7 @@ namespace Sofa3Devops.Domain
 {
     public class ScrumMaster : Member
     {
+
+        public ScrumMaster(string name) : base(name) { }
     }
 }
