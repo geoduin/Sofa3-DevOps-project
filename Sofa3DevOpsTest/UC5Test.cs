@@ -18,7 +18,10 @@ namespace Sofa3DevOpsTest
             ScrumMaster master = new ScrumMaster("George");
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now, "Sprint 1");
             BacklogItem backlogItem = new BacklogItem("Task 1", "NA");
-            master.SetSprintStrategy(new AuthorizedSprintStrategy(new DevelopmentSprintFactory()));
+            SprintStrategy strategy = new AuthorizedSprintStrategy(new DevelopmentSprintFactory());
+            SprintStrategy strategy2 = new AuthorizedSprintStrategy(new ReleaseSprintFactory());
+            master.SetSprintStrategy(strategy);
+            master.SetSprintStrategy(strategy2);
             var result = master.AddBacklogItem(sprint, backlogItem);
 
             Assert.NotNull(result);
