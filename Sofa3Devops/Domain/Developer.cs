@@ -8,5 +8,9 @@ namespace Sofa3Devops.Domain
 {
     public class Developer : Member
     {
+
+        public Developer(string name): base(name) {
+            
+        }
     }
 }
