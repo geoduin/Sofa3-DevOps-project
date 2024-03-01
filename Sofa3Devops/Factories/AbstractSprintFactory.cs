@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.Factories
 {
+    // This will contain the methods of concrete classes related to the sprints:
+    // - Sprints
+    // - Pipelines related, because they are related to the sprints.
     public interface AbstractSprintFactory
     {
         public Sprint CreateSprint(DateTime start, DateTime end, string name);

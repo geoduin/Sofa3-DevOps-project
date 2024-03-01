@@ -17,7 +17,7 @@ namespace Sofa3DevOpsTest
         {
             // Arrange
             ScrumMaster scrumMaster = new ScrumMaster("Han");
-            DomainFactory factory = new DomainFactory();
+            AbstractSprintFactory factory = new DevelopmentSprintFactory();
             SprintStrategy strategy = new AuthorizedSprintStrategy(factory);
             scrumMaster.SetSprintStrategy(strategy);
 
@@ -32,7 +32,7 @@ namespace Sofa3DevOpsTest
         public void TestProductOwnerSprintCreation() {
             // Arrange
             ProductOwner productOwner = new ProductOwner("Olaf");
-            DomainFactory factory = new DomainFactory();
+            AbstractSprintFactory factory = new DevelopmentSprintFactory();
             SprintStrategy strategy = new AuthorizedSprintStrategy(factory);
             productOwner.SetSprintStrategy(strategy);
 
@@ -47,7 +47,6 @@ namespace Sofa3DevOpsTest
         public void TestUnAuthorisedSprintCreation() {
             // Arrange
             Developer developer = new Developer("Jonas");
-            DomainFactory factory = new DomainFactory();
             SprintStrategy strategy = new NonAuthorizedSprintStrategy();
             developer.SetSprintStrategy(strategy);
 

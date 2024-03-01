@@ -16,9 +16,9 @@ namespace Sofa3DevOpsTest
         public void TestAddBacklogItemByScrumMaster()
         {
             ScrumMaster master = new ScrumMaster("George");
-            Sprint sprint = new Sprint(DateTime.Now, DateTime.Now, "Sprint 1");
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now, "Sprint 1");
             BacklogItem backlogItem = new BacklogItem("Task 1", "NA");
-            master.SetSprintStrategy(new AuthorizedSprintStrategy(new DomainFactory()));
+            master.SetSprintStrategy(new AuthorizedSprintStrategy(new DevelopmentSprintFactory()));
             var result = master.AddBacklogItem(sprint, backlogItem);
 
             Assert.NotNull(result);
@@ -29,7 +29,7 @@ namespace Sofa3DevOpsTest
         public void TestAddBacklogItemByDeveloper()
         {
             ScrumMaster master = new ScrumMaster("George");
-            Sprint sprint = new Sprint(DateTime.Now, DateTime.Now, "Sprint 1");
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now, "Sprint 1");
             BacklogItem backlogItem = new BacklogItem("Task 1", "NA");
             master.SetSprintStrategy(new NonAuthorizedSprintStrategy());
             
@@ -42,7 +42,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestChangeSprintBeforeStarting()
         {
-            Sprint sprint = new Sprint(DateTime.Now, DateTime.Now, "Sprint 1");
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "Sprint 1");
             sprint.ChangeSprint(new DateTime(2023, 1, 20), new DateTime(2023, 2, 27), "Changed sprint");
 
             Assert.Equal("Changed sprint", sprint.Name);
@@ -53,7 +53,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestChangeSprintAfterStarting()
         {
-            Sprint sprint = new Sprint(DateTime.Now, DateTime.Now, "Sprint 1")
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "Sprint 1")
             {
                 State = new OngoingState()
             };
