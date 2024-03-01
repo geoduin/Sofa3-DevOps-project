@@ -14,7 +14,13 @@ namespace Sofa3Devops.SprintStrategies
 
         public AuthorizedSprintStrategy(DomainFactory domainFactory) {
             this.domainFactory = domainFactory;
-        } 
+        }
+
+        public override Sprint AddBacklogItem(Sprint sprint, BacklogItem item)
+        {
+            sprint.AddBacklogItem(item);
+            return sprint;
+        }
 
         public override Sprint CreateSprint(DateTime start, DateTime end, string name)
         {

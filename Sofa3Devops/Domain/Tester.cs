@@ -13,11 +13,5 @@ namespace Sofa3Devops.Domain
         {
 
         }
-
-        public override Sprint CreateSprint(DateTime start, DateTime end, string name)
-        {
-            SetSprintStrategy(new NonAuthorizedSprintStrategy());
-            return base.CreateSprint(start, end, name);
-        }
     }
 }

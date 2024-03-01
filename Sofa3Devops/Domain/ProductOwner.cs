@@ -11,10 +11,5 @@ namespace Sofa3Devops.Domain
     public class ProductOwner : Member
     {
         public ProductOwner(string name) :base(name) { }
-
-        public override Sprint CreateSprint(DateTime start, DateTime end, string name)
-        {
-            return base.CreateSprint(start, end, name);
-        }
     }
 }

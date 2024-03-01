@@ -29,5 +29,10 @@ namespace Sofa3Devops.Domain
             BacklogItems = new List<BacklogItem>();
             Members = new List<Member>();
         }
+
+        public void AddBacklogItem(BacklogItem item)
+        {
+            BacklogItems.Add(item);
+        }
     }
 }

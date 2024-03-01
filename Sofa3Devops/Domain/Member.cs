@@ -29,5 +29,10 @@ namespace Sofa3Devops.Domain
         {
             return SprintStrategy.CreateSprint(start, end, name);
         }
+
+        public virtual Sprint AddBacklogItem(Sprint sprint, BacklogItem backlogItem)
+        {
+            return SprintStrategy.AddBacklogItem(sprint, backlogItem);
+        }
     }
 }

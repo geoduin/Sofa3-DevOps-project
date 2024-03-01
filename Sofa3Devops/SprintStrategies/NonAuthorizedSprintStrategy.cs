@@ -10,9 +10,14 @@ namespace Sofa3Devops.SprintStrategies
 {
     public class NonAuthorizedSprintStrategy : SprintStrategy
     {
+        public override Sprint AddBacklogItem(Sprint sprint, BacklogItem item)
+        {
+            throw DefaultAuthorisationError();
+        }
+
         public override Sprint CreateSprint(DateTime start, DateTime end, string name)
         {
-            throw new UnauthorizedAccessException("Does not have the right authorization to perform this action.");
+            throw DefaultAuthorisationError();
         }
     }
 }
