@@ -12,23 +12,22 @@ namespace Sofa3Devops.Domain
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Name { get; set; }
-        public ISprintState State { get; set; }
-        public SprintReport SprintReport { get; set; }
-        public Pipeline PublishingPipeline { get; set; }
+        public ISprintState? State { get; set; }
+        public SprintReport? SprintReport { get; set; }
+        public Pipeline? PublishingPipeline { get; set; }
         public List<BacklogItem> BacklogItems { get; set; }
         public List<Member> Members { get; set; }
 
 
-        public Sprint(DateTime startDate, DateTime endDate, string name, ISprintState state, SprintReport sprintReport, Pipeline publishingPipeline, List<BacklogItem> backlogItems, List<Member> members)
+        public Sprint(DateTime startDate, DateTime endDate, string name)
         {
             StartDate = startDate;
             EndDate = endDate;
             Name = name;
-            State = state;
-            SprintReport = sprintReport;
-            PublishingPipeline = publishingPipeline;
-            BacklogItems = backlogItems;
-            Members = members;
+            State = null;
+            PublishingPipeline = null;
+            BacklogItems = new List<BacklogItem>();
+            Members = new List<Member>();
         }
     }
 }

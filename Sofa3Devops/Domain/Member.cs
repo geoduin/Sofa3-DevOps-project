@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sofa3Devops.SprintStrategies;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace Sofa3Devops.Domain
     public abstract class Member
     {
         public string Name { get; set; }
+        public SprintStrategy SprintStrategy { get; set; }
         public List<CommentThread> PostedThreads { get; set; }
         public List<Response> PostedResponses { get; set; }
 
@@ -16,6 +18,16 @@ namespace Sofa3Devops.Domain
             Name = name;
             PostedResponses = new List<Response>();
             PostedThreads = new List<CommentThread>();
+        }
+
+        public void SetSprintStrategy(SprintStrategy strategy)
+        {
+            SprintStrategy = strategy;
+        }
+
+        public virtual Sprint CreateSprint(DateTime start, DateTime end, string name)
+        {
+            return SprintStrategy.CreateSprint(start, end, name);
         }
     }
 }
