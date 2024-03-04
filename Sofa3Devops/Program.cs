@@ -1,4 +1,5 @@
-﻿using Sofa3Devops.Adapters;
+﻿using System.Runtime.CompilerServices;
+using Sofa3Devops.Adapters;
 using Sofa3Devops.Adapters.Clients;
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
@@ -18,7 +19,9 @@ namespace Sofa3Devops
             List<Member> members = new List<Member>();
             members.Add(tester);
             members.Add(productOwner);
-            Sprint sprint = new Sprint(DateTime.Now, DateTime.MaxValue, "henk", new OngoingState(), new SprintReport(), new Pipeline(), new List<BacklogItem>(), members);
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "henk");
+            sprint.Members = members;
+            sprint.Notification = new SprintCancelStrategy(new EmailAdapter(new EmailClient()));
             BacklogItem backlogItem = new BacklogItem("test", "test");
             backlogItem.State = new DoingState();
             backlogItem.Sprint = sprint;

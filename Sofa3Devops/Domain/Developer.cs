@@ -9,13 +9,14 @@ namespace Sofa3Devops.Domain
 {
     public class Developer : Member
     {
-        public Developer(string name, string emailAddress, string slackUserName) : base(name, emailAddress, slackUserName)
-        {
         public bool Seniority { get; set; } = false;
 
-        public Developer(string name): base(name) {
-            
+
+        public Developer(string name, string emailAddress, string slackUserName) : base(name, emailAddress,
+            slackUserName)
+        {
         }
+
 
         public void SetLeadDeveloper()
         {

@@ -15,7 +15,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestAddBacklogItemByScrumMaster()
         {
-            ScrumMaster master = new ScrumMaster("George");
+            ScrumMaster master = new ScrumMaster("George", "dev@dev.nl", "dev@dev.nl");
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now, "Sprint 1");
             BacklogItem backlogItem = new BacklogItem("Task 1", "NA");
             SprintStrategy strategy = new AuthorizedSprintStrategy(new DevelopmentSprintFactory());
@@ -31,7 +31,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestAddBacklogItemByDeveloper()
         {
-            ScrumMaster master = new ScrumMaster("George");
+            ScrumMaster master = new ScrumMaster("George", "dev@dev.nl", "dev@dev.nl");
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now, "Sprint 1");
             BacklogItem backlogItem = new BacklogItem("Task 1", "NA");
             master.SetSprintStrategy(new NonAuthorizedSprintStrategy());

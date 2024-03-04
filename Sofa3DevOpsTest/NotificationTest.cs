@@ -28,7 +28,8 @@ namespace Sofa3DevOpsTest
             List<Member> members = new List<Member>();
             members.Add(testMember);
             members.Add(notTestMember);
-            Sprint sprint = new Sprint(DateTime.Now, DateTime.MaxValue, "TestSprint", new OngoingState(), new SprintReport(), new Pipeline(), items, members);
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
+            sprint.Members = members;
             item.Sprint = sprint;
             notification.SendNotification(item);
             List<Member> expectedList = new List<Member>();
@@ -52,8 +53,8 @@ namespace Sofa3DevOpsTest
             members.Add(testMember);
             members.Add(notTestMember);
             members.Add(testMember2);
-            Sprint sprint = new Sprint(DateTime.Now, DateTime.MaxValue, "TestSprint", new OngoingState(), new SprintReport(), new Pipeline(), items, members);
-            item.Sprint = sprint;
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
+            sprint.Members = members; item.Sprint = sprint;
             notification.SendNotification(item);
             List<Member> expectedList = new List<Member>();
             expectedList.Add(testMember);
@@ -76,8 +77,8 @@ namespace Sofa3DevOpsTest
             members.Add(testMember);
             members.Add(notTestMember);
             members.Add(testMember2);
-            Sprint sprint = new Sprint(DateTime.Now, DateTime.MaxValue, "TestSprint", new OngoingState(), new SprintReport(), new Pipeline(), items, members);
-            item.Sprint = sprint;
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
+            sprint.Members = members; item.Sprint = sprint;
             notification.SendNotification(item);
             List<Member> expectedList = new List<Member>();
             expectedList.Add(testMember);
@@ -112,8 +113,8 @@ namespace Sofa3DevOpsTest
             List<Member> members = new List<Member>();
             members.Add(tester);
             members.Add(productOwner);
-            Sprint sprint = new Sprint(DateTime.Now, DateTime.MaxValue, "henk", new OngoingState(), new SprintReport(), new Pipeline(), new List<BacklogItem>(), members);
-            BacklogItem backlogItem = new BacklogItem("test", "test");
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
+            sprint.Members = members; BacklogItem backlogItem = new BacklogItem("test", "test");
             backlogItem.State = new DoingState();
             var sprintNotification = new Mock<ISprintNotificationStrategy>();
             sprint.Notification = sprintNotification.Object;
@@ -133,8 +134,8 @@ namespace Sofa3DevOpsTest
             List<Member> members = new List<Member>();
             members.Add(tester);
             members.Add(productOwner);
-            Sprint sprint = new Sprint(DateTime.Now, DateTime.MaxValue, "henk", new OngoingState(), new SprintReport(), new Pipeline(), new List<BacklogItem>(), members);
-            BacklogItem backlogItem = new BacklogItem("test", "test");
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
+            sprint.Members = members; BacklogItem backlogItem = new BacklogItem("test", "test");
             backlogItem.State = new DoingState();
             var sprintNotification = new Mock<ISprintNotificationStrategy>();
             sprint.Notification = sprintNotification.Object;
@@ -156,8 +157,8 @@ namespace Sofa3DevOpsTest
             members.Add(testMember);
             members.Add(notTestMember);
             members.Add(testMember2);
-            Sprint sprint = new Sprint(DateTime.Now, DateTime.MaxValue, "henk", new OngoingState(), new SprintReport(), new Pipeline(), new List<BacklogItem>(), members);
-
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
+            sprint.Members = members;
             var mockHandler = new Mock<INotification>();
             ISprintNotificationStrategy sut = new SprintCancelStrategy(mockHandler.Object);
             sut.SendNotification(sprint);
