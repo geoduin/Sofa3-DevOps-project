@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.SprintStates
 {
-    internal class OngoingState : ISprintState
+    public class OngoingState : ISprintState
     {
         public void SetToCanceled()
         {
