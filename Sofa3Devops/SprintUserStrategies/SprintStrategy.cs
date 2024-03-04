@@ -17,5 +17,6 @@ namespace Sofa3Devops.SprintStrategies
 
         public abstract Sprint CreateSprint(DateTime start, DateTime end, string name);
         public abstract Sprint AddBacklogItem(Sprint sprint, BacklogItem item);
+        public abstract Sprint StartSprint(Sprint sprint);
     }
 }

@@ -92,6 +92,35 @@ namespace Sofa3DevOpsTest
         }
 
         [Fact]
+        public void StartSprintWithoutAuthority()
+        {
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
+            Member tester = new Tester("D");
+            tester.SetSprintStrategy(new NonAuthorizedSprintStrategy());
+            
+            var result = Assert.Throws<UnauthorizedAccessException>(()=> tester.StartSprint(sprint));
+
+            Assert.Equal("Does not have the right authorization to perform this action.", result.Message);
+        }
+
+        [Fact]
+        public void StartSprintWithAuthorityScrumMaster()
+        {
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
+            Member scrumMaster = new ScrumMaster("D");
+            Developer developer = new Developer("Developer");
+            Tester tester = new Tester("Developer");
+            developer.SetLeadDeveloper();
+
+            sprint.AssignMembersToSprint(scrumMaster);
+            sprint.AssignMembersToSprint(developer);
+            sprint.AssignMembersToSprint(tester);
+
+            scrumMaster.SetSprintStrategy(new AuthorizedSprintStrategy(new ReleaseSprintFactory()));
+            scrumMaster.StartSprint(sprint);
+        }
+
+        [Fact]
         public void TestStartSprintWithoutScrumMaster()
         {
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");

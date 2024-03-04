@@ -19,5 +19,10 @@ namespace Sofa3Devops.SprintStrategies
         {
             throw DefaultAuthorisationError();
         }
+
+        public override Sprint StartSprint(Sprint sprint)
+        {
+            throw DefaultAuthorisationError();
+        }
     }
 }

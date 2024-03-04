@@ -26,5 +26,11 @@ namespace Sofa3Devops.SprintStrategies
         {
             return abstractSprintFactory.CreateSprint(start, end, name);
         }
+
+        public override Sprint StartSprint(Sprint sprint)
+        {
+            sprint.StartSprint();
+            return sprint;
+        }
     }
 }
