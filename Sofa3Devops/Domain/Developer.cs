@@ -9,9 +9,15 @@ namespace Sofa3Devops.Domain
 {
     public class Developer : Member
     {
+        public bool Seniority { get; set; } = false;
 
         public Developer(string name): base(name) {
             
+        }
+
+        public void SetLeadDeveloper()
+        {
+            Seniority = true;
         }
     }
 }
