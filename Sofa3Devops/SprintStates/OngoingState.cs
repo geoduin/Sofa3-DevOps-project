@@ -3,24 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sofa3Devops.Domain;
 
 namespace Sofa3Devops.SprintStates
 {
     internal class OngoingState : ISprintState
     {
-        public void SetToCanceled()
+        public void SetToCanceled(Sprint sprint)
         {
-            throw new NotImplementedException();
+            sprint.State = new CanceledState();
+            sprint.Notification.SendNotification(sprint);
         }
 
-        public void SetToFinished()
+        public void SetToFinished(Sprint sprint)
         {
-            throw new NotImplementedException();
+            sprint.State = new FinishedState();
         }
 
-        public void SetToOngoing()
+        public void SetToOngoing(Sprint sprint)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
     }
 }

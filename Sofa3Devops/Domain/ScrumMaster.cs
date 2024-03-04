@@ -8,5 +8,8 @@ namespace Sofa3Devops.Domain
 {
     public class ScrumMaster : Member
     {
+        public ScrumMaster(string emailAddress, string slackUserName) : base(emailAddress, slackUserName)
+        {
+        }
     }
 }
