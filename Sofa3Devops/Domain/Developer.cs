@@ -8,6 +8,9 @@ namespace Sofa3Devops.Domain
 {
     public class Developer : Member
     {
+        public Developer(string emailAddress, string slackUserName) : base(emailAddress, slackUserName)
+        {
+        }
 
         public Developer(string name): base(name) {
             

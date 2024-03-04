@@ -8,6 +8,9 @@ namespace Sofa3Devops.Domain
 {
     public class ProductOwner : Member
     {
+        public ProductOwner(string emailAddress, string slackUserName) : base(emailAddress, slackUserName)
+        {
+        }
         public ProductOwner(string name) :base(name) { }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sofa3Devops.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,19 +9,20 @@ namespace Sofa3Devops.SprintStates
 {
     internal class FinishedState : ISprintState
     {
-        public void SetToCanceled()
+        public void SetToCanceled(Sprint sprint)
         {
-            throw new NotImplementedException();
+            sprint.State = this;
+            sprint.Notification.SendNotification(sprint);
         }
 
-        public void SetToFinished()
+        public void SetToFinished(Sprint sprint)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
-        public void SetToOngoing()
+        public void SetToOngoing(Sprint sprint)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
     }
 }

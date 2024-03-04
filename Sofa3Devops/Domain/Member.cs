@@ -11,6 +11,16 @@ namespace Sofa3Devops.Domain
         public string Name { get; set; }
         public List<CommentThread> PostedThreads { get; set; }
         public List<Response> PostedResponses { get; set; }
+        public string EmailAddress { get; set; }
+        public string SlackUserName { get; set; }
+
+        protected Member(string emailAddress, string slackUserName)
+        {
+            PostedThreads = new List<CommentThread>();
+            PostedResponses = new List<Response>();
+            EmailAddress = emailAddress;
+            SlackUserName = slackUserName;
+        }
 
         public Member(string name) {
             Name = name;
