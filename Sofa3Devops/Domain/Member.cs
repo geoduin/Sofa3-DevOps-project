@@ -39,5 +39,10 @@ namespace Sofa3Devops.Domain
         {
             SprintStrategy.StartSprint(sprint);
         }
+
+        public virtual void CancelSprint(Sprint sprint)
+        {
+            SprintStrategy.CancelSprint(sprint);
+        }
     }
 }

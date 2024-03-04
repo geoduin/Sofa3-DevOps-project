@@ -12,7 +12,7 @@ namespace Sofa3Devops.SprintStates
     {
         public void SetToCanceled(Sprint sprint)
         {
-            throw new InvalidOperationException("Cannot cancel a sprint, without starting one.");
+            sprint.SetSprintState(new CanceledState());
         }
 
         public void SetToFinished(Sprint sprint)

@@ -82,5 +82,10 @@ namespace Sofa3Devops.Domain
         {
             State.SetToOngoing(this);
         }
+
+        public void CancelSprint()
+        {
+            State.SetToCanceled(this);
+        }
     }
 }
