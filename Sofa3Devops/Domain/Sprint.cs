@@ -15,6 +15,7 @@ namespace Sofa3Devops.Domain
         public ISprintState? State { get; set; }
         public SprintReport? SprintReport { get; set; }
         public Pipeline? PublishingPipeline { get; set; }
+        public Member AssignScrumMaster {  get; set; }
         public List<BacklogItem> BacklogItems { get; set; }
         public List<Member> Members { get; set; }
 
@@ -46,6 +47,30 @@ namespace Sofa3Devops.Domain
             StartDate = newStart;
             EndDate = newEnd;
             Name = newName;
+        }
+
+        public void AssignMembersToSprint(Member member)
+        {
+            if(member.GetType() == typeof(ScrumMaster))
+            {
+                AssignScrumMasterToSprint(member);
+            }
+            else
+            {
+                Members.Add(member);
+            }
+        }
+
+        private void AssignScrumMasterToSprint(Member member)
+        {
+            if (AssignScrumMaster == null)
+            {
+                AssignScrumMaster = member;
+            }
+            else
+            {
+                throw new InvalidOperationException("This sprint has already been assigned to a scrummaster");
+            }
         }
     }
 }

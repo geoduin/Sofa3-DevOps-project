@@ -56,5 +56,38 @@ namespace Sofa3DevOpsTest
             // Assert
             Assert.Equal("Does not have the right authorization to perform this action.", sprint.Message);
         }
+
+        [Fact]
+        public void TestAddMembersWithExtraScrumMaster()
+        {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "Sprint 0");
+
+            Member scrumMasterFirst = new ScrumMaster("Leader");
+            Member scrumMasterSecond = new ScrumMaster("Interim-Leader");
+
+            sprint.AssignMembersToSprint(scrumMasterFirst);
+
+            var error = Assert.Throws<InvalidOperationException>(() => sprint.AssignMembersToSprint(scrumMasterSecond));
+
+            Assert.Equal("This sprint has already been assigned to a scrummaster", error.Message);
+        }
+
+        [Fact]
+        public void TestAddMembersToSprintSuccesfully()
+        {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "Sprint 0");
+
+            Member scrumMaster = new ScrumMaster("Leader");
+            Member developer = new Developer("Developer");
+            Member tester = new Tester("Developer");
+
+            sprint.AssignMembersToSprint(scrumMaster);
+            sprint.AssignMembersToSprint(developer);
+            sprint.AssignMembersToSprint(tester);
+
+            Assert.NotNull(sprint.AssignScrumMaster);
+            Assert.Equal("Leader", sprint.AssignScrumMaster.Name);
+            Assert.Equal(2, sprint.Members.Count);
+        }
     }
 }
