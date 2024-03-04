@@ -12,7 +12,7 @@ namespace Sofa3Devops.Domain
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
         public string Name { get; private set; }
-        public ISprintState? State { get; set; }
+        public ISprintState State { get; set; }
         public SprintReport? SprintReport { get; set; }
         public Pipeline? PublishingPipeline { get; set; }
         public Member AssignScrumMaster {  get; set; }
@@ -25,10 +25,15 @@ namespace Sofa3Devops.Domain
             StartDate = startDate;
             EndDate = endDate;
             Name = name;
-            State = null;
+            State = new ConceptState();
             PublishingPipeline = null;
             BacklogItems = new List<BacklogItem>();
             Members = new List<Member>();
+        }
+
+        public void SetSprintState(ISprintState sprintState)
+        {
+            State = sprintState;
         }
 
         public void AddBacklogItem(BacklogItem item)
@@ -38,7 +43,7 @@ namespace Sofa3Devops.Domain
 
         public void ChangeSprint(DateTime newStart, DateTime newEnd, string newName)
         {
-            if (State != null)
+            if (State.GetType() != typeof(ConceptState))
             {
                 throw new InvalidOperationException("Backlog items cannot be changed on ongoing sprint");
             }
@@ -75,35 +80,7 @@ namespace Sofa3Devops.Domain
     
         public void StartSprint()
         {
-            bool leadTesterFlag = false;
-            bool leadDeveloperFlag = false;
-            
-            var testers = Members.FindAll(x => x.GetType() == typeof(Tester));
-            var leadDevs = Members.FindAll(x => x.GetType() == typeof(Developer));
-
-            leadTesterFlag = testers.Count > 0;
-            leadDeveloperFlag = ContainsLeadDeveloper(leadDevs);
-            // Check if at least one scrum-master is assigned
-            if (AssignScrumMaster == null)
-            {
-                throw new InvalidOperationException("At least one scrummaster must be assigned to a sprint");
-            }
-            // Check if at least one tester is assigned
-            // Check if at least one lead developer is assigned.
-            else if (!leadTesterFlag || !leadDeveloperFlag)
-            {
-                throw new InvalidOperationException("At least one tester and developer must be added, before starting a sprint");
-            }
-            // Start sprint
-            Console.WriteLine("Sprint can no be started");
-            // Perhaps notify all parties.
-        }
-
-        private bool ContainsLeadDeveloper(List<Member> list)
-        {
-            var castedList = list.Cast<Developer>().ToList();
-            var result = castedList.FindAll(x => x.Seniority);
-            return result.Count > 0;
+            State.SetToOngoing(this);
         }
     }
 }

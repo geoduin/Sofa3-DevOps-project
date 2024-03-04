@@ -102,7 +102,7 @@ namespace Sofa3DevOpsTest
 
             var error = Assert.Throws<InvalidOperationException>(() => sprint.StartSprint());
 
-            Assert.Equal("At least one scrummaster must be assigned to a sprint", error.Message);
+            Assert.Equal("At least one tester, scrummaster and developer must be added, before starting a sprint", error.Message);
         }
 
         [Fact]
@@ -118,7 +118,7 @@ namespace Sofa3DevOpsTest
 
             var error = Assert.Throws<InvalidOperationException>(() => sprint.StartSprint());
 
-            Assert.Equal("At least one tester and developer must be added, before starting a sprint", error.Message);
+            Assert.Equal("At least one tester, scrummaster and developer must be added, before starting a sprint", error.Message);
         }
 
         [Fact]
@@ -138,7 +138,7 @@ namespace Sofa3DevOpsTest
 
             var error = Assert.Throws<InvalidOperationException>(() => sprint.StartSprint());
 
-            Assert.Equal("At least one tester and developer must be added, before starting a sprint", error.Message);
+            Assert.Equal("At least one tester, scrummaster and developer must be added, before starting a sprint", error.Message);
         }
 
         [Fact]

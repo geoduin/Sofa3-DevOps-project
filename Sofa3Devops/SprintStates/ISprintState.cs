@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sofa3Devops.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,8 @@ namespace Sofa3Devops.SprintStates
 {
     public interface ISprintState
     {
-        public void SetToOngoing();
-        public void SetToFinished();
-        public void SetToCanceled();
+        public void SetToOngoing(Sprint sprint);
+        public void SetToFinished(Sprint sprint);
+        public void SetToCanceled(Sprint sprint);
     }
 }
