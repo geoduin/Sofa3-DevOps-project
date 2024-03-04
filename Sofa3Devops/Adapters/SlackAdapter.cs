@@ -11,7 +11,12 @@ namespace Sofa3Devops.Adapters
     public class SlackAdapter: INotification
     {
 
-        private readonly SlackClient _client = new SlackClient();
+        private readonly SlackClient _client;
+
+        public SlackAdapter(SlackClient client)
+        {
+            _client = client;
+        }
 
         public void SendNotification(string title, string message, DateTime dateOfWriting, List<Member> recipients)
         {

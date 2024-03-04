@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,18 +15,13 @@ namespace Sofa3Devops.Domain
         public string EmailAddress { get; set; }
         public string SlackUserName { get; set; }
 
-        protected Member(string emailAddress, string slackUserName)
-        {
-            PostedThreads = new List<CommentThread>();
-            PostedResponses = new List<Response>();
-            EmailAddress = emailAddress;
-            SlackUserName = slackUserName;
-        }
 
-        public Member(string name) {
+        public Member(string name, string emailAddress, string slackUserName) {
             Name = name;
             PostedResponses = new List<Response>();
             PostedThreads = new List<CommentThread>();
+            EmailAddress = emailAddress;
+            SlackUserName = slackUserName;
         }
     }
 }

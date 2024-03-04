@@ -7,7 +7,7 @@ using Sofa3Devops.Domain;
 
 namespace Sofa3Devops.SprintStates
 {
-    internal class OngoingState : ISprintState
+    public class OngoingState : ISprintState
     {
         public void SetToCanceled(Sprint sprint)
         {

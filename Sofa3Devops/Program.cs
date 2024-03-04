@@ -1,4 +1,5 @@
 ﻿using Sofa3Devops.Adapters;
+using Sofa3Devops.Adapters.Clients;
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
@@ -10,10 +11,10 @@ namespace Sofa3Devops
     {
         static void Main(string[] args)
         {
-            EmailAdapter handler = new EmailAdapter();
+            EmailAdapter handler = new EmailAdapter(new EmailClient());
             TesterNotificationStrategy test = new TesterNotificationStrategy(handler);
-            Member tester = new Tester("henk@henk.nl", "realHenk");
-            Member productOwner = new ProductOwner("ingrid@ingrid.nl", "realIngrid");
+            Member tester = new Tester("henk","henk@henk.nl", "realHenk");
+            Member productOwner = new ProductOwner("ingrid","ingrid@ingrid.nl", "realIngrid");
             List<Member> members = new List<Member>();
             members.Add(tester);
             members.Add(productOwner);

@@ -8,12 +8,8 @@ namespace Sofa3Devops.Domain
 {
     public class Tester : Member
     {
-        public Tester(string emailAddress, string slackUserName) : base(emailAddress, slackUserName)
+        public Tester(string name, string emailAddress, string slackUserName) : base(name, emailAddress, slackUserName)
         {
-        }
-        public Tester(string name) : base(name)
-        {
-
         }
     }
 }

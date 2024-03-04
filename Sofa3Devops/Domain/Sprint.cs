@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sofa3Devops.Adapters;
+using Sofa3Devops.Adapters.Clients;
 using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.SprintStates;
 
@@ -32,7 +33,7 @@ namespace Sofa3Devops.Domain
             PublishingPipeline = publishingPipeline;
             BacklogItems = backlogItems;
             Members = members;
-            this.Notification = new SprintCancelStrategy(new EmailAdapter());
+            this.Notification = new SprintCancelStrategy(new EmailAdapter(new EmailClient()));
         }
 
         public void SetNotificationType(ISprintNotificationStrategy type)

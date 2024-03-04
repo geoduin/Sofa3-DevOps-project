@@ -1,4 +1,5 @@
 ﻿using Sofa3Devops.Adapters;
+using Sofa3Devops.Adapters.Clients;
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.Observers;
@@ -28,7 +29,7 @@ namespace Sofa3Devops.Domain
             Subscribers = new List<Subscriber>();
             Activities = new List<Activity>();
             Threads = new List<CommentThread>();
-            this.NotificationStrategy = new AllNotificationStrategy(new EmailAdapter());
+            this.NotificationStrategy = new AllNotificationStrategy(new EmailAdapter(new EmailClient()));
         }
 
         public void AssignBacklogItem(Member member)
