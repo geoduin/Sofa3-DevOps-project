@@ -96,11 +96,6 @@ namespace Sofa3DevOpsTest
 
         }
 
-        [Fact]
-        public void EmailAdapterShouldSendEmail()
-        {
-           
-        }
 
         [Fact]
         public void SettingSprintToCancelledShouldTriggerNotificationIfInitialStateIsOngoingAndSprintTypeIsReleaseSprint()

@@ -135,7 +135,7 @@ namespace Sofa3Devops.Domain
             list.Remove(subscriber);
         }
 
-        public abstract void NotifyAll();
+        public abstract void NotifyAll(string title, string message);
 
         public void SetNotificationStrategy(INotificationStrategy strategy)
         {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Sofa3Devops.BacklogStates
 {
@@ -27,7 +28,7 @@ namespace Sofa3Devops.BacklogStates
         public void SetToReadyTesting(BacklogItem item)
         {
             item.State = new ReadyToTestingState();
-            item.NotifyAll();
+            item.NotifyAll($"Update over {item.Name}", $"Backlog item {item.Name} has been updated to {item.State}");
         }
 
         public void SetToTested(BacklogItem item)
