@@ -32,11 +32,14 @@ namespace Sofa3Devops.Domain
             this.NotificationStrategy = new AllNotificationStrategy(new EmailAdapter(new EmailClient()));
         }
 
-        public void AssignBacklogItem(Member member)
+        public virtual void AssignBacklogItem(Member member)
         {
             if (ResponsibleMember == null)
             {
                 ResponsibleMember = member;
+                SetToDoing();
+                // Assign member as subscriber.
+                // AddSubscriber(new Subscriber(member));
             }
             else
             {
@@ -77,5 +80,14 @@ namespace Sofa3Devops.Domain
             throw new NotImplementedException();
         }
 
+        public void SetBacklogState(IBacklogState backlogState)
+        {
+            State = backlogState;
+        }
+
+        public void SetToDoing()
+        {
+            State.SetDoing(this);
+        }
     }
 }

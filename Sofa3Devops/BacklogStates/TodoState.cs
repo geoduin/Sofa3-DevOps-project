@@ -11,12 +11,12 @@ namespace Sofa3Devops.BacklogStates
     {
         public void SetDoing(BacklogItem item)
         {
-            throw new NotImplementedException();
+            item.SetBacklogState(new DoingState());
         }
 
         public void SetToDo(BacklogItem item)
         {
-            throw new NotImplementedException();
+            item.SetBacklogState(new TodoState());
         }
 
         public void SetToFinished(BacklogItem item)

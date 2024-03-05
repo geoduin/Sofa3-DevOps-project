@@ -50,5 +50,10 @@ namespace Sofa3Devops.Domain
         {
             SprintStrategy.CancelSprint(sprint);
         }
+
+        public void PickupBacklogItem(BacklogItem backlogItem)
+        {
+            backlogItem.AssignBacklogItem(this);
+        }
     }
 }
