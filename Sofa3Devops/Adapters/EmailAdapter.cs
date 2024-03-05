@@ -10,12 +10,7 @@ namespace Sofa3Devops.Adapters
 {
     public class EmailAdapter: INotificationAdapter
     {
-        public virtual EmailClient _client { get; set; }
-
-        public EmailAdapter(EmailClient client)
-        {
-            this._client = client;
-        }
+        private readonly EmailClient _client = new EmailClient();
 
         public void SendNotification(string title, string message, DateTime dateOfWriting, Member recipient)
         {

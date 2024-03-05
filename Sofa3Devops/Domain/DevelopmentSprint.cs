@@ -14,7 +14,6 @@ namespace Sofa3Devops.Domain
 
         public override void NotifyAll()
         {
-            this.NotificationStrategy.SendNotification($"Update about Sprint {Name}", $"The release for sprint {Name} has been canncelled", this.Subscribers);
         }
     }
 }

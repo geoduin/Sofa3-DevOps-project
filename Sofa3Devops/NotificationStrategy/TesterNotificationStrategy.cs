@@ -11,7 +11,6 @@ namespace Sofa3Devops.NotificationStrategy
 {
     public class TesterNotificationStrategy : INotificationStrategy
     {
-        private INotificationAdapter notificationHandler;
 
         public TesterNotificationStrategy()
         {

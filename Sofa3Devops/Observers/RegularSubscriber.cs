@@ -9,13 +9,10 @@ namespace Sofa3Devops.Observers
 {
     public class RegularSubscriber : Subscriber
     {
-
-        public Member NotifiedUser { get; set; }
-
-        public RegularSubscriber(Member NotifiedUser)
+        public RegularSubscriber(Member NotifiedUser) : base(NotifiedUser)
         {
-            this.NotifiedUser = NotifiedUser;
         }
+
         public override bool Equals(object? obj)
         {
             return base.Equals(obj);

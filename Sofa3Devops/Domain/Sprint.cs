@@ -37,6 +37,15 @@ namespace Sofa3Devops.Domain
             BacklogItems = new List<BacklogItem>();
             Members = new List<Member>();
             Subscribers = new Dictionary<Type, List<Subscriber>>();
+            InitSubscriberDictionary();
+        }
+
+        private void InitSubscriberDictionary()
+        {
+            Subscribers.Add(typeof(Developer), new List<Subscriber>());
+            Subscribers.Add(typeof(ProductOwner), new List<Subscriber>());
+            Subscribers.Add(typeof(ScrumMaster), new List<Subscriber>());
+            Subscribers.Add(typeof(Tester), new List<Subscriber>());
         }
 
         public void AddBacklogItem(BacklogItem item)
@@ -116,7 +125,7 @@ namespace Sofa3Devops.Domain
 
         public void AddSubscriber(Subscriber subscriber)
         {
-            var typeList = this.Subscribers[subscriber.GetType()];
+            var typeList = this.Subscribers[subscriber.NotifiedUser.GetType()];
             typeList.Add(subscriber);
         }
 
