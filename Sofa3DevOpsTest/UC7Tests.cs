@@ -15,20 +15,23 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestDoingToReadyForTesting()
         {
+            var mockedNotificationStrategy = new Mock<INotificationStrategy>();
+            
 
             BacklogItem backlogItem = new BacklogItem("S", "s")
             {
                 ResponsibleMember = new Developer("Herman", "Herr@example.com", "HerrSlack"),
                 State = new DoingState()
             };
-            var mockedNotificationStrategy = new Mock<INotificationStrategy>();
-            mockedNotificationStrategy.Setup(x => x.SendNotification(backlogItem)).Verifiable();
-            backlogItem.NotificationStrategy = mockedNotificationStrategy.Object;
 
+            mockedNotificationStrategy.Setup(x => x.SendNotification("", "", backlogItem.Subscribers));
+            backlogItem.SetNotificationStrategy(mockedNotificationStrategy.Object);
+            
             backlogItem.SetItemReadyForTesting();
 
             Assert.IsType<ReadyToTestingState>(backlogItem.State);
         }
+
         // Future test to validate if all testers receive the message.
         [Fact(Skip = "Notification functionality is still in development, should be tested at a later stage.")]
         public void TestReadyForTestingReceiveeTestersNotification()
