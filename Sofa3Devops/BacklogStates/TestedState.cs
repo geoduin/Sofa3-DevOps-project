@@ -21,12 +21,16 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToFinished(BacklogItem item)
         {
-            throw new NotImplementedException();
+            // Validate if all activities are done.
+            item.SetBacklogState(new FinishedState());
+            // Notify all members.
+            item.NotifyAll();
         }
 
         public void SetToReadyTesting(BacklogItem item)
         {
-            throw new NotImplementedException();
+            item.SetBacklogState(new ReadyToTestingState());
+            item.NotifyAll();
         }
 
         public void SetToTested(BacklogItem item)
