@@ -16,7 +16,7 @@ namespace Sofa3DevOpsTest
         public void TestScrumMasterSprintCreation()
         {
             // Arrange
-            ScrumMaster scrumMaster = new ScrumMaster("Han");
+            ScrumMaster scrumMaster = new ScrumMaster("Han", "dev@dev.nl", "dev@dev.nl");
             AbstractSprintFactory factory = new DevelopmentSprintFactory();
             SprintStrategy strategy = new AuthorizedSprintStrategy(factory);
             scrumMaster.SetSprintStrategy(strategy);
@@ -31,7 +31,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestProductOwnerSprintCreation() {
             // Arrange
-            ProductOwner productOwner = new ProductOwner("Olaf");
+            ProductOwner productOwner = new ProductOwner("Olaf", "dev@dev.nl", "dev@dev.nl");
             AbstractSprintFactory factory = new DevelopmentSprintFactory();
             SprintStrategy strategy = new AuthorizedSprintStrategy(factory);
             productOwner.SetSprintStrategy(strategy);
@@ -46,7 +46,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestUnAuthorisedSprintCreation() {
             // Arrange
-            Developer developer = new Developer("Jonas");
+            Developer developer = new Developer("Jonas", "dev@dev.nl", "dev@dev.nl");
             SprintStrategy strategy = new NonAuthorizedSprintStrategy();
             developer.SetSprintStrategy(strategy);
 
@@ -62,8 +62,8 @@ namespace Sofa3DevOpsTest
         {
             Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "Sprint 0");
 
-            Member scrumMasterFirst = new ScrumMaster("Leader");
-            Member scrumMasterSecond = new ScrumMaster("Interim-Leader");
+            Member scrumMasterFirst = new ScrumMaster("Leader", "leader@leader.nl", "leader");
+            Member scrumMasterSecond = new ScrumMaster("Interim-Leader", "dev@dev.nl", "dev@dev.nl");
 
             sprint.AssignMembersToSprint(scrumMasterFirst);
 
@@ -77,9 +77,9 @@ namespace Sofa3DevOpsTest
         {
             Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "Sprint 0");
 
-            Member scrumMaster = new ScrumMaster("Leader");
-            Member tester = new Tester("Developer");
-            Member developer = new Developer("Developer");
+            Member scrumMaster = new ScrumMaster("Leader", "leader@leader.nl", "leader");
+            Member tester = new Tester("Developer", "dev@dev.nl", "dev2");
+            Member developer = new Developer("Developer", "dev2@dev.nl", "dev2");
             
 
             sprint.AssignMembersToSprint(scrumMaster);
@@ -95,8 +95,8 @@ namespace Sofa3DevOpsTest
         public void TestStartSprintWithoutScrumMaster()
         {
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
-            Member scrumMaster = new ScrumMaster("Leader");
-            Member developer = new Developer("Developer");
+            Member scrumMaster = new ScrumMaster("Leader", "leader@leader.nl", "leader");
+            Member developer = new Developer("Developer", "dev@dev.nl", "dev2");
 
             sprint.AssignMembersToSprint(developer);
 
@@ -109,8 +109,9 @@ namespace Sofa3DevOpsTest
         public void TestStartSprintWithoutTester()
         {
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
-            Member scrumMaster = new ScrumMaster("Leader");
-            Member tester = new Tester("Tester");Member developer = new Developer("Developer");
+            Member scrumMaster = new ScrumMaster("Leader", "leader@leader.nl", "leader");
+            Member tester = new Tester("Developer", "dev@dev.nl", "dev");
+            Member developer = new Developer("Developer", "dev2@dev.nl", "dev2");
             
 
             sprint.AssignMembersToSprint(scrumMaster);
@@ -125,12 +126,12 @@ namespace Sofa3DevOpsTest
         public void TestStartSprintWithoutLeadDeveloper()
         {
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
-            Member scrumMaster = new ScrumMaster("Leader");
-            Member developer = new Developer("Developer")
+            Member scrumMaster = new ScrumMaster("Leader", "leader@leader.nl", "leader");
+            Member developer = new Developer("Developer", "dev@dev.nl", "dev@dev.nl")
             {
                 Seniority = false
             };
-            Member tester = new Tester("Developer");
+            Member tester = new Tester("Developer", "dev2@dev.nl", "dev2@dev.nl");
 
             sprint.AssignMembersToSprint(scrumMaster);
             sprint.AssignMembersToSprint(developer);
@@ -146,12 +147,12 @@ namespace Sofa3DevOpsTest
         {
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
             
-            Member scrumMaster = new ScrumMaster("Leader");
-            Developer developer = new Developer("Developer");
-            Developer developer2 = new Developer("Developer2");
+            Member scrumMaster = new ScrumMaster("Leader", "leader@leader.nl", "leader");
+            Developer developer = new Developer("Developer", "dev@dev.nl", "dev@dev.nl");
+            Developer developer2 = new Developer("Developer2", "dev2@dev.nl", "dev2@dev.nl");
             
-            Tester tester = new Tester("Developer");
-            Tester tester2 = new Tester("Developer");
+            Tester tester = new Tester("Developer", "dev3@dev.nl", "dev3@dev.nl");
+            Tester tester2 = new Tester("Developer", "dev4@dev.nl", "dev4@dev.nl");
 
             developer.SetLeadDeveloper();
            

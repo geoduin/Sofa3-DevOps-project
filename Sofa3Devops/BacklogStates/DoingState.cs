@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sofa3Devops.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,32 +9,33 @@ namespace Sofa3Devops.BacklogStates
 {
     public class DoingState : IBacklogState
     {
-        public void SetDoing()
+        public void SetDoing(BacklogItem item)
         {
             throw new NotImplementedException();
         }
 
-        public void SetToDo()
+        public void SetToDo(BacklogItem item)
         {
             throw new NotImplementedException();
         }
 
-        public void SetToFinished()
+        public void SetToFinished(BacklogItem item)
         {
             throw new NotImplementedException();
         }
 
-        public void SetToReadyTesting()
+        public void SetToReadyTesting(BacklogItem item)
+        {
+            item.State = new ReadyToTestingState();
+            item.NotificationStrategy.SendNotification(item);
+        }
+
+        public void SetToTested(BacklogItem item)
         {
             throw new NotImplementedException();
         }
 
-        public void SetToTested()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetToTesting()
+        public void SetToTesting(BacklogItem item)
         {
             throw new NotImplementedException();
         }

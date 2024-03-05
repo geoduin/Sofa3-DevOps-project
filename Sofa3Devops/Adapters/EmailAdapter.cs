@@ -1,4 +1,5 @@
 ﻿using Sofa3Devops.Adapters.Clients;
+using Sofa3Devops.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +10,21 @@ namespace Sofa3Devops.Adapters
 {
     public class EmailAdapter: INotification
     {
-        private readonly EmailClient _client;
+        public virtual EmailClient _client { get; set; }
 
         public EmailAdapter(EmailClient client)
         {
-            _client = client;
+            this._client = client;
         }
 
-        public void SendNotification()
+        public void SendNotification(string title, string message, DateTime dateOfWriting, List<Member> recipients)
         {
-            throw new NotImplementedException();
+            message += $"\n Send at: {dateOfWriting}";
+            foreach (var recipient in recipients)
+            {
+                this._client.SendToMail("avansdevops@notarealemail.nl", recipient.EmailAddress, title, message);
+
+            }
         }
     }
 }
