@@ -64,6 +64,15 @@ namespace Sofa3Devops.Domain
             }
         }
 
+        public virtual bool HasAllTaskBeenCompleted()
+        {
+            // Tests if the state of this object is tested.
+            bool IsItemTested = State.GetType() == typeof(TestedState);
+            // If array is empty or all activities are in TestedState, this value should always return true.
+            bool AreActivitiesTested = Activities.TrueForAll(x => x.State.GetType() == typeof(TestedState)) || Activities.Count == 0;
+            return IsItemTested && AreActivitiesTested;
+        }
+
         public void AddSubscriber(Subscriber subscriber)
         {
             var typeList = this.Subscribers[subscriber.GetType()];
@@ -73,7 +82,7 @@ namespace Sofa3Devops.Domain
 
         public void NotifyAll(string title, string message)
         {
-            this.NotificationStrategy.SendNotification(title, message, Subscribers);
+            NotificationStrategy.SendNotification(title, message, Subscribers);
         }
 
         public void RemoveSubscriber(Subscriber subscriber)
@@ -110,6 +119,11 @@ namespace Sofa3Devops.Domain
         public void SetItemReadyForTesting()
         {
             State.SetToReadyTesting(this);
+        }
+
+        public void SetItemToFinished()
+        {
+            State.SetToFinished(this);
         }
     }
 }
