@@ -28,7 +28,7 @@ namespace Sofa3Devops.BacklogStates
         public void SetToReadyTesting(BacklogItem item)
         {
             item.State = new ReadyToTestingState();
-            item.NotificationStrategy.SendNotification(item);
+            item.NotifyAll();
         }
 
         public void SetToTested(BacklogItem item)

@@ -8,23 +8,15 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.Adapters
 {
-    public class EmailAdapter: INotification
+    public class EmailAdapter: INotificationAdapter
     {
-        public virtual EmailClient _client { get; set; }
+        private readonly EmailClient _client = new EmailClient();
 
-        public EmailAdapter(EmailClient client)
+        public void SendNotification(string title, string message, DateTime dateOfWriting, Member recipient)
         {
-            this._client = client;
-        }
+            message += $"\n send at {dateOfWriting}";
+            this._client.SendToMail("avansdevops@notarealemail.nl", recipient.EmailAddress, title, message);
 
-        public void SendNotification(string title, string message, DateTime dateOfWriting, List<Member> recipients)
-        {
-            message += $"\n Send at: {dateOfWriting}";
-            foreach (var recipient in recipients)
-            {
-                this._client.SendToMail("avansdevops@notarealemail.nl", recipient.EmailAddress, title, message);
-
-            }
         }
     }
 }

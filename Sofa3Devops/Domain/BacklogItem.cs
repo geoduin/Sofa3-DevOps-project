@@ -13,11 +13,11 @@ namespace Sofa3Devops.Domain
         public string Description { get; set; }
         public IBacklogState State { get; set; }
         public Member? ResponsibleMember { get; set; }
-        public List<Subscriber> Subscribers { get; set; }
+        public Dictionary<Type, List<Subscriber>> Subscribers { get; private set; }
         public List<Activity> Activities { get; set; }
         public List<CommentThread> Threads { get; set; }
         public Sprint? Sprint { get; set; }
-        public INotificationStrategy NotificationStrategy;
+        public INotificationStrategy NotificationStrategy { get; private set; }
         
 
         public BacklogItem(string name, string description)
@@ -26,10 +26,9 @@ namespace Sofa3Devops.Domain
             Description = description;
             State = new TodoState();
             ResponsibleMember = null;
-            Subscribers = new List<Subscriber>();
+            Subscribers = new Dictionary<Type, List<Subscriber>>();
             Activities = new List<Activity>();
             Threads = new List<CommentThread>();
-            this.NotificationStrategy = new AllNotificationStrategy(new EmailAdapter(new EmailClient()));
         }
 
         public virtual void AssignBacklogItem(Member member)
@@ -67,17 +66,25 @@ namespace Sofa3Devops.Domain
 
         public void AddSubscriber(Subscriber subscriber)
         {
-            throw new NotImplementedException();
+            var typeList = this.Subscribers[subscriber.GetType()];
+            typeList.Add(subscriber);
+
         }
 
         public void NotifyAll()
         {
-            throw new NotImplementedException();
+            this.NotificationStrategy.SendNotification($"Update over {Name}", $"Backlog item {Name} has been updated to {State}", Subscribers);
         }
 
         public void RemoveSubscriber(Subscriber subscriber)
         {
-            throw new NotImplementedException();
+            var list = this.Subscribers[subscriber.GetType()];
+            list.Remove(subscriber);
+        }
+
+        public void SetNotificationStrategy(INotificationStrategy strategy)
+        {
+            this.NotificationStrategy = strategy;
         }
 
         public void SetBacklogState(IBacklogState backlogState)
