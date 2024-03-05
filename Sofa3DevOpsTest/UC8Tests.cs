@@ -80,7 +80,7 @@ namespace Sofa3DevOpsTest
         {
             var error = Assert.Throws<UnauthorizedAccessException>(() => developer.DisapproveItemForTesting(backlogItem));
 
-            Assert.Equal("Does not have authority to approve item for testing. Only testers are allowed to move.", error.Message);
+            Assert.Equal("Does not have authority to disapprove item for testing. Only testers are allowed to move.", error.Message);
         }
 
     }

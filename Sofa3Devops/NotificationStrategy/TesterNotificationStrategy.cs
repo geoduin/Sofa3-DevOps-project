@@ -18,7 +18,7 @@ namespace Sofa3Devops.NotificationStrategy
 
         public void SendNotification(string title, string message, Dictionary<Type, List<Subscriber>> subscribers)
         {
-            var testers = subscribers[typeof(Tester)];
+            var testers = subscribers.GetValueOrDefault(typeof(Tester), new List<Subscriber>());
             foreach (var tester in testers)
             {
                 tester.Notify(title, message);

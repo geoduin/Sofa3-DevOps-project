@@ -75,7 +75,7 @@ namespace Sofa3Devops.Domain
 
         public void AddSubscriber(Subscriber subscriber)
         {
-            var typeList = this.Subscribers[subscriber.GetType()];
+            var typeList = this.Subscribers.GetValueOrDefault(subscriber.GetType(), new List<Subscriber>());
             typeList.Add(subscriber);
 
         }

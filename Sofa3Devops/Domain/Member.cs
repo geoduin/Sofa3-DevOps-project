@@ -65,14 +65,26 @@ namespace Sofa3Devops.Domain
             backlogItem.AssignBacklogItem(this);
         }
 
+        // Only relevant for testers and ReadyForTesting backlogitems.
         public virtual void ApproveItemForTesting(BacklogItem item)
         {
             throw new UnauthorizedAccessException("Does not have authority to approve item for testing. Only testers are allowed to move.");
         }
 
+        // Only relevant for testers and ReadyForTesting backlogitems.
         public virtual void DisapproveItemForTesting(BacklogItem item)
         {
-            throw new UnauthorizedAccessException("Does not have authority to approve item for testing. Only testers are allowed to move.");
+            throw new UnauthorizedAccessException("Does not have authority to disapprove item for testing. Only testers are allowed to move.");
+        }
+
+        public virtual void ApproveAndFinishItem(BacklogItem item)
+        {
+            throw new UnauthorizedAccessException("Does not have authority to Finish the backlog item. Only lead developers are allowed to do that.");
+        }
+
+        public virtual void DisapproveTestedItem(BacklogItem item)
+        {
+            throw new UnauthorizedAccessException("Does not have authority to Disapprove the backlog item. Only lead developers are allowed to do that.");
         }
     }
 }
