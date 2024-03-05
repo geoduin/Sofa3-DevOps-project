@@ -31,7 +31,7 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToTested(BacklogItem item)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
         public void SetToTesting(BacklogItem item)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sofa3Devops.NotificationStrategy;
 
 namespace Sofa3Devops.BacklogStates
 {
@@ -16,7 +17,11 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToDo(BacklogItem item)
         {
-            throw new NotImplementedException();
+            item.State = new TodoState();
+            var strat = item.NotificationStrategy;
+            item.SetNotificationStrategy(new ProductOwnerStrategy());
+            item.NotifyAll($"Update for backlog item {item.Name}", $"{item.Name} has been set to {item.State}");
+            item.SetNotificationStrategy(strat);
         }
 
         public void SetToFinished(BacklogItem item)
@@ -31,7 +36,11 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToTested(BacklogItem item)
         {
-            throw new NotImplementedException();
+            var strat = item.NotificationStrategy;
+            item.SetNotificationStrategy(new ProductOwnerStrategy());
+            item.State = new TestedState();
+            item.NotifyAll($"Update for backlog item {item.Name}", $"{item.Name} has been set to {item.State}");
+            item.SetNotificationStrategy(strat);
         }
 
         public void SetToTesting(BacklogItem item)

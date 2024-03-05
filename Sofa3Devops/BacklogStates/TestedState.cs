@@ -16,7 +16,7 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToDo(BacklogItem item)
         {
-            throw new NotImplementedException();
+            item.State = new TodoState();
         }
 
         public void SetToFinished(BacklogItem item)
@@ -31,7 +31,7 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToTested(BacklogItem item)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
         public void SetToTesting(BacklogItem item)

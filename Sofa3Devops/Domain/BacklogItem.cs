@@ -1,8 +1,11 @@
-﻿using Sofa3Devops.Adapters;
+﻿using System.Diagnostics.Eventing.Reader;
+using System.Diagnostics.Metrics;
+using Sofa3Devops.Adapters;
 using Sofa3Devops.Adapters.Clients;
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.Observers;
+using Sofa3Devops.Services;
 
 namespace Sofa3Devops.Domain
 {
@@ -27,6 +30,7 @@ namespace Sofa3Devops.Domain
             State = new TodoState();
             ResponsibleMember = null;
             Subscribers = new Dictionary<Type, List<Subscriber>>();
+            SubscriberServices.InitializeSubscriberDictionary(Subscribers);
             Activities = new List<Activity>();
             Threads = new List<CommentThread>();
         }
@@ -63,7 +67,7 @@ namespace Sofa3Devops.Domain
 
         public void AddSubscriber(Subscriber subscriber)
         {
-            var typeList = this.Subscribers[subscriber.GetType()];
+            var typeList = this.Subscribers[subscriber.NotifiedUser.GetType()];
             typeList.Add(subscriber);
 
         }
@@ -75,13 +79,53 @@ namespace Sofa3Devops.Domain
 
         public void RemoveSubscriber(Subscriber subscriber)
         {
-            var list = this.Subscribers[subscriber.GetType()];
+            var list = this.Subscribers[subscriber.NotifiedUser.GetType()];
             list.Remove(subscriber);
         }
 
         public void SetNotificationStrategy(INotificationStrategy strategy)
         {
             this.NotificationStrategy = strategy;
+        }
+
+        public void SetToTested(Member tester)
+        {
+            if (tester.GetType().Equals(typeof(Tester)) && this.Sprint.Members.Contains(tester))
+            {
+                this.State.SetToTested(this);
+            }
+            else
+            {
+                throw new UnauthorizedAccessException(
+                    "Only testers that are members of the sprint can set backlog items to tested");
+            }
+            
+        }
+
+        public void SetToFinished(Member productOwner)
+        {
+            if (productOwner.GetType().Equals(typeof(ProductOwner)) && this.Sprint.Members.Contains(productOwner))
+            {
+                this.State.SetToFinished(this);
+            }
+            else
+            {
+                throw new UnauthorizedAccessException(
+                    "Only Product Owners that are members of the sprint can set backlog items to finished");
+            }
+        }
+
+        public void SetToToDo(Member productOwner)
+        {
+            if (productOwner.GetType().Equals(typeof(ProductOwner)) && this.Sprint.Members.Contains(productOwner))
+            {
+                this.State.SetToDo(this);
+            }
+            else
+            {
+                throw new UnauthorizedAccessException(
+                    "Only Product Owners that are members of the sprint can set backlog items to to-do");
+            }
         }
 
     }
