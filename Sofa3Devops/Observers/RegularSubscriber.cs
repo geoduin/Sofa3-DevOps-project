@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sofa3Devops.Domain;
 
 namespace Sofa3Devops.Observers
 {
     public class RegularSubscriber : Subscriber
     {
+
+        public Member NotifiedUser { get; set; }
+
+        public RegularSubscriber(Member NotifiedUser)
+        {
+            this.NotifiedUser = NotifiedUser;
+        }
         public override bool Equals(object? obj)
         {
             return base.Equals(obj);
@@ -18,9 +26,9 @@ namespace Sofa3Devops.Observers
             return base.GetHashCode();
         }
 
-        public override void Notify()
+        public override void Notify(string title, string message)
         {
-            throw new NotImplementedException();
+            NotifiedUser.WayToNotify.SendNotification(title, message, DateTime.Now, this.NotifiedUser);
         }
 
         public override string? ToString()

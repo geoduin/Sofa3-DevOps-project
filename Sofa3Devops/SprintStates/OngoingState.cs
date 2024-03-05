@@ -12,7 +12,7 @@ namespace Sofa3Devops.SprintStates
         public void SetToCanceled(Sprint sprint)
         {
             sprint.State = new CanceledState();
-            sprint.Notification.SendNotification(sprint);
+            sprint.NotifyAll();
         }
 
         public void SetToFinished(Sprint sprint)

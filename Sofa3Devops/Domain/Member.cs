@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using Sofa3Devops.Adapters;
 
 namespace Sofa3Devops.Domain
 {
@@ -16,6 +17,7 @@ namespace Sofa3Devops.Domain
         public List<Response> PostedResponses { get; set; }
         public string EmailAddress { get; set; }
         public string SlackUserName { get; set; }
+        public INotificationAdapter WayToNotify { get; set; }
 
 
         public Member(string name, string emailAddress, string slackUserName) {

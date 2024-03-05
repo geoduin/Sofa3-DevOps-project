@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using Sofa3Devops.Adapters;
 using Sofa3Devops.Adapters.Clients;
 using Sofa3Devops.NotificationStrategy;
+using Sofa3Devops.Observers;
 using Sofa3Devops.SprintStates;
 
 namespace Sofa3Devops.Domain
 {
-    public abstract class Sprint
+    public abstract class Sprint : INotificationObservable
     {
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
@@ -21,7 +22,9 @@ namespace Sofa3Devops.Domain
         public Member AssignScrumMaster {  get; set; }
         public List<BacklogItem> BacklogItems { get; set; }
         public List<Member> Members { get; set; }
-        public ISprintNotificationStrategy Notification { get; set; }
+        public Dictionary<Type, List<Subscriber>> Subscribers { get; private set; }
+        public INotificationStrategy NotificationStrategy { get; private set; }
+
 
 
         public Sprint(DateTime startDate, DateTime endDate, string name)
@@ -33,6 +36,7 @@ namespace Sofa3Devops.Domain
             PublishingPipeline = null;
             BacklogItems = new List<BacklogItem>();
             Members = new List<Member>();
+            Subscribers = new Dictionary<Type, List<Subscriber>>();
         }
 
         public void AddBacklogItem(BacklogItem item)
@@ -108,6 +112,25 @@ namespace Sofa3Devops.Domain
             var castedList = list.Cast<Developer>().ToList();
             var result = castedList.FindAll(x => x.Seniority);
             return result.Count > 0;
+        }
+
+        public void AddSubscriber(Subscriber subscriber)
+        {
+            var typeList = this.Subscribers[subscriber.GetType()];
+            typeList.Add(subscriber);
+        }
+
+        public void RemoveSubscriber(Subscriber subscriber)
+        {
+            var list = this.Subscribers[subscriber.GetType()];
+            list.Remove(subscriber);
+        }
+
+        public abstract void NotifyAll();
+
+        public void SetNotificationStrategy(INotificationStrategy strategy)
+        {
+            this.NotificationStrategy = strategy;
         }
     }
 }

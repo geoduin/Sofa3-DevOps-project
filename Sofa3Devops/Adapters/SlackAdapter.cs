@@ -18,14 +18,10 @@ namespace Sofa3Devops.Adapters
             _client = client;
         }
 
-        public void SendNotification(string title, string message, DateTime dateOfWriting, List<Member> recipients)
+        public void SendNotification(string title, string message, DateTime dateOfWriting, Member recipient)
         {
             message += $"\n Send at: {dateOfWriting}";
-            foreach (var recipient in recipients)
-            {
-                this._client.Sent("@someslackusername", recipient.SlackUserName, title, message);
-
-            }
+            this._client.Sent("@someslackusername", recipient.SlackUserName, title, message);
         }
     }
 }

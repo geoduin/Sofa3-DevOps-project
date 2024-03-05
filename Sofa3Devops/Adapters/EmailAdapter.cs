@@ -17,14 +17,11 @@ namespace Sofa3Devops.Adapters
             this._client = client;
         }
 
-        public void SendNotification(string title, string message, DateTime dateOfWriting, List<Member> recipients)
+        public void SendNotification(string title, string message, DateTime dateOfWriting, Member recipient)
         {
-            message += $"\n Send at: {dateOfWriting}";
-            foreach (var recipient in recipients)
-            {
-                this._client.SendToMail("avansdevops@notarealemail.nl", recipient.EmailAddress, title, message);
+            message += $"\n send at {dateOfWriting}";
+            this._client.SendToMail("avansdevops@notarealemail.nl", recipient.EmailAddress, title, message);
 
-            }
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Sofa3Devops.Observers
     public abstract class Subscriber
     {
 
-        public abstract void Notify();
+        public abstract void Notify(string title, string message);
 
     }
 }

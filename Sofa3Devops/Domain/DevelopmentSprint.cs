@@ -11,5 +11,10 @@ namespace Sofa3Devops.Domain
         public DevelopmentSprint(DateTime startDate, DateTime endDate, string name) : base(startDate, endDate, name)
         {
         }
+
+        public override void NotifyAll()
+        {
+            this.NotificationStrategy.SendNotification($"Update about Sprint {Name}", $"The release for sprint {Name} has been canncelled", this.Subscribers);
+        }
     }
 }
