@@ -7,21 +7,22 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.SprintStates
 {
-    internal class FinishedState : ISprintState
+    public class FinishedState : ISprintState
     {
         public void SetToCanceled(Sprint sprint)
         {
-            throw new NotImplementedException();
+            sprint.State = this;
+            sprint.Notification.SendNotification(sprint);
         }
 
         public void SetToFinished(Sprint sprint)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
         public void SetToOngoing(Sprint sprint)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
     }
 }

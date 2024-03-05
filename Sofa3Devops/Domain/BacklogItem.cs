@@ -1,4 +1,7 @@
-﻿using Sofa3Devops.BacklogStates;
+﻿using Sofa3Devops.Adapters;
+using Sofa3Devops.Adapters.Clients;
+using Sofa3Devops.BacklogStates;
+using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.Observers;
 
 namespace Sofa3Devops.Domain
@@ -13,6 +16,9 @@ namespace Sofa3Devops.Domain
         public List<Subscriber> Subscribers { get; set; }
         public List<Activity> Activities { get; set; }
         public List<CommentThread> Threads { get; set; }
+        public Sprint? Sprint { get; set; }
+        public INotificationStrategy NotificationStrategy;
+        
 
         public BacklogItem(string name, string description)
         {
@@ -23,6 +29,7 @@ namespace Sofa3Devops.Domain
             Subscribers = new List<Subscriber>();
             Activities = new List<Activity>();
             Threads = new List<CommentThread>();
+            this.NotificationStrategy = new AllNotificationStrategy(new EmailAdapter(new EmailClient()));
         }
 
         public void AssignBacklogItem(Member member)
@@ -69,5 +76,6 @@ namespace Sofa3Devops.Domain
         {
             throw new NotImplementedException();
         }
+
     }
 }

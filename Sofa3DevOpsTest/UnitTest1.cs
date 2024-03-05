@@ -8,7 +8,7 @@ namespace Sofa3DevOpsTest
         public void TestAssignmentOfBacklogItem()
         {
             BacklogItem backlogItem = new BacklogItem("Task 1", "Test description");
-            Developer developer = new Developer("Bob");
+            Developer developer = new Developer("Bob", "bob@bob.nl", "bob");
 
             backlogItem.AssignBacklogItem(developer);
 
@@ -20,8 +20,8 @@ namespace Sofa3DevOpsTest
         public void TestAssignmentOfBacklogItemAlreadyTaken() 
         {
             BacklogItem backlogItem = new BacklogItem("Task 1", "Test description");
-            Developer developer = new Developer("Bob");
-            Developer existingDeveloper = new Developer("Arnold");
+            Developer developer = new Developer("Bob", "bob@bob.nl", "bob");
+            Developer existingDeveloper = new Developer("Arnold", "arnold@arnold.nl", "arnold");
             backlogItem.AssignBacklogItem(existingDeveloper); 
            
             var result = Assert.Throws<InvalidOperationException>(() => backlogItem.AssignBacklogItem(developer));
@@ -35,7 +35,7 @@ namespace Sofa3DevOpsTest
         public void TestUnassignBacklogItem()
         {
 
-            Developer developer = new Developer("Bob");
+            Developer developer = new Developer("Bob", "bob@bob.nl", "bob");
             BacklogItem backlogItem = new BacklogItem("Task 1", "Test description")
             {
                 ResponsibleMember = developer
@@ -49,7 +49,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestAddActivityToBacklogItem()
         {
-            Developer developer = new Developer("Bob");
+            Developer developer = new Developer("Bob", "bob@bob.nl", "bob");
             BacklogItem backlogItem = new BacklogItem("Task 1", "Test description")
             {
                 ResponsibleMember = developer

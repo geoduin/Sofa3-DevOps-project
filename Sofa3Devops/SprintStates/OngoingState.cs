@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sofa3Devops.Domain;
 
 namespace Sofa3Devops.SprintStates
 {
@@ -11,17 +12,18 @@ namespace Sofa3Devops.SprintStates
     {
         public void SetToCanceled(Sprint sprint)
         {
-            throw new NotImplementedException();
+            sprint.State = new CanceledState();
+            sprint.Notification.SendNotification(sprint);
         }
 
         public void SetToFinished(Sprint sprint)
         {
-            throw new NotImplementedException();
+            sprint.State = new FinishedState();
         }
 
         public void SetToOngoing(Sprint sprint)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
     }
 }
