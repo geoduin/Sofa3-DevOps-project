@@ -95,7 +95,7 @@ namespace Sofa3DevOpsTest
         public void StartSprintWithoutAuthority()
         {
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
-            Member tester = new Tester("D");
+            Member tester = new Tester("D", "D@Outlook.com", "DSlack");
             tester.SetSprintStrategy(new NonAuthorizedSprintStrategy());
             
             var result = Assert.Throws<UnauthorizedAccessException>(()=> tester.StartSprint(sprint));
@@ -107,9 +107,9 @@ namespace Sofa3DevOpsTest
         public void StartSprintWithAuthorityScrumMaster()
         {
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
-            Member scrumMaster = new ScrumMaster("D");
-            Developer developer = new Developer("Developer");
-            Tester tester = new Tester("Developer");
+            Member scrumMaster = new ScrumMaster("D", "D@Outlook.com", "DSlack");
+            Developer developer = new Developer("Developer", "D@Outlook.com", "DSlack");
+            Tester tester = new Tester("Developer", "D@Outlook.com", "DSlack");
             developer.SetLeadDeveloper();
 
             sprint.AssignMembersToSprint(scrumMaster);

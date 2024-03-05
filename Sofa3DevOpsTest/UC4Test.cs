@@ -2,11 +2,6 @@
 using Sofa3Devops.Factories;
 using Sofa3Devops.SprintStrategies;
 using Sofa3Devops.SprintStates;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sofa3DevOpsTest
 {
@@ -16,7 +11,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestSprintCancelation()
         {
-            ScrumMaster scrumMaster = new ScrumMaster("Scrum");
+            ScrumMaster scrumMaster = new ScrumMaster("Scrum", "D@Outlook.com", "DSlack");
             scrumMaster.SetSprintStrategy(new AuthorizedSprintStrategy(new ReleaseSprintFactory()));
             Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint canceled");
 
@@ -27,7 +22,7 @@ namespace Sofa3DevOpsTest
 
         [Fact]
         public void TestSprintCancelingNonAuthorised() {
-            Developer dev = new Developer("Scrum");
+            Developer dev = new Developer("Scrum", "D@Outlook.com", "DSlack");
             dev.SetSprintStrategy(new NonAuthorizedSprintStrategy());
             Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint canceled");
 
