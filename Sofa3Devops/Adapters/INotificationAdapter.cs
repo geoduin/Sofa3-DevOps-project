@@ -7,7 +7,7 @@ using Sofa3Devops.Domain;
 
 namespace Sofa3Devops.Adapters
 {
-    public interface INotification
+    public interface INotificationAdapter
     {
         public void SendNotification(string title, string message, DateTime dateOfWriting, List<Member> recipients);
     }

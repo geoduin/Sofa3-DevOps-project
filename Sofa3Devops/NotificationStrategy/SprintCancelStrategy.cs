@@ -13,8 +13,8 @@ namespace Sofa3Devops.NotificationStrategy
 
     {
 
-        private INotification notificationHandler;
-        public SprintCancelStrategy(INotification notificationHandler)
+        private INotificationAdapter notificationHandler;
+        public SprintCancelStrategy(INotificationAdapter notificationHandler)
         {
             this.notificationHandler = notificationHandler;
         }

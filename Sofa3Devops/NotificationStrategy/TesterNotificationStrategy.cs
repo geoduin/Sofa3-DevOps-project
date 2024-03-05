@@ -10,9 +10,9 @@ namespace Sofa3Devops.NotificationStrategy
 {
     public class TesterNotificationStrategy : INotificationStrategy
     {
-        private INotification notificationHandler;
+        private INotificationAdapter notificationHandler;
 
-        public TesterNotificationStrategy(INotification notificationHandler)
+        public TesterNotificationStrategy(INotificationAdapter notificationHandler)
         {
             this.notificationHandler = notificationHandler;
         }

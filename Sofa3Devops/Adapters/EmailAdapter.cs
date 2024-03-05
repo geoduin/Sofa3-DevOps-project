@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.Adapters
 {
-    public class EmailAdapter: INotification
+    public class EmailAdapter: INotificationAdapter
     {
         public virtual EmailClient _client { get; set; }
 

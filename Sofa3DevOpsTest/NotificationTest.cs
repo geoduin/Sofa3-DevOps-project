@@ -18,7 +18,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestNotificationShouldOnlySendNotificationToTesters()
         {
-            var handler = new Mock<INotification>();
+            var handler = new Mock<INotificationAdapter>();
             INotificationStrategy notification = new TesterNotificationStrategy(handler.Object);
             BacklogItem item = new BacklogItem("Test", "Test");
             List<BacklogItem> items = new List<BacklogItem>();
@@ -41,7 +41,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestNotificationShouldSendNotificationToAllTesters()
         {
-            var handler = new Mock<INotification>();
+            var handler = new Mock<INotificationAdapter>();
             INotificationStrategy notification = new TesterNotificationStrategy(handler.Object);
             BacklogItem item = new BacklogItem("Test", "Test");
             List<BacklogItem> items = new List<BacklogItem>();
@@ -65,7 +65,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void AllNotificationShouldSendNotificationToAllMembers()
         {
-            var handler = new Mock<INotification>();
+            var handler = new Mock<INotificationAdapter>();
             INotificationStrategy notification = new AllNotificationStrategy(handler.Object);
             BacklogItem item = new BacklogItem("Test", "Test");
             List<BacklogItem> items = new List<BacklogItem>();
@@ -159,7 +159,7 @@ namespace Sofa3DevOpsTest
             members.Add(testMember2);
             Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
             sprint.Members = members;
-            var mockHandler = new Mock<INotification>();
+            var mockHandler = new Mock<INotificationAdapter>();
             ISprintNotificationStrategy sut = new SprintCancelStrategy(mockHandler.Object);
             sut.SendNotification(sprint);
             mockHandler.Verify(c => c.SendNotification(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), members), Times.Exactly(1));

@@ -11,9 +11,9 @@ namespace Sofa3Devops.NotificationStrategy
 {
     public class AllNotificationStrategy : INotificationStrategy
     {
-        private INotification notificationHandler;
+        private INotificationAdapter notificationHandler;
 
-        public AllNotificationStrategy(INotification notificationHandler)
+        public AllNotificationStrategy(INotificationAdapter notificationHandler)
         {
             this.notificationHandler = notificationHandler; 
         }
