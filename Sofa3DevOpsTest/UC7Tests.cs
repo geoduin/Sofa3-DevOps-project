@@ -2,6 +2,7 @@
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
+using Sofa3Devops.Observers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,17 +34,29 @@ namespace Sofa3DevOpsTest
         }
 
         // Future test to validate if all testers receive the message.
-        [Fact(Skip = "Notification functionality is still in development, should be tested at a later stage.")]
+        [Fact]
         public void TestReadyForTestingReceiveeTestersNotification()
         {
+            var test1Subscriber = new Mock<RegularSubscriber>(new Tester("test", "test", "test"));
+            var test2Subscriber = new Mock<RegularSubscriber>(new Tester("test", "test", "test"));
+
+
             BacklogItem backlogItem = new BacklogItem("S", "s")
             {
                 ResponsibleMember = new Developer("Herman", "Herr@example.com", "HerrSlack"),
                 State = new DoingState()
             };
+            backlogItem.AddSubscriber(test1Subscriber.Object);
+            backlogItem.AddSubscriber(test2Subscriber.Object);
+
+            backlogItem.SetNotificationStrategy(new TesterNotificationStrategy());
+            // Act
             backlogItem.SetItemReadyForTesting();
 
+            // Assert
+            Assert.Equal("Sofa3Devops.Domain.Tester", test1Subscriber.Object.NotifiedUser.ToString());
             Assert.IsType<ReadyToTestingState>(backlogItem.State);
+            //test1Subscriber.Verify(x => x.Notify("", ""), Times.Exactly(1));
         }
 
         // Other test, to ensure the state follows the state diagram
