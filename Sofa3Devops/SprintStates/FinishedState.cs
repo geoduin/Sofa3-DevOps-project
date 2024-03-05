@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Sofa3Devops.SprintStates
 {
@@ -12,7 +13,11 @@ namespace Sofa3Devops.SprintStates
         public void SetToCanceled(Sprint sprint)
         {
             sprint.State = this;
-            sprint.Notification.SendNotification(sprint);
+            if (sprint.GetType().Equals(typeof(ReleaseSprint)))
+            {
+                sprint.NotifyAll($"Update over {sprint.Name}", $"Backlog item {sprint.Name} has been updated to {sprint.State}");
+
+            }
         }
 
         public void SetToFinished(Sprint sprint)

@@ -11,5 +11,10 @@ namespace Sofa3Devops.Domain
         public ReleaseSprint(DateTime startDate, DateTime endDate, string name) : base(startDate, endDate, name)
         {
         }
+
+        public override void NotifyAll(string title, string message)
+        {
+            this.NotificationStrategy.SendNotification(title, message, this.Subscribers);
+        }
     }
 }

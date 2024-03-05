@@ -9,6 +9,7 @@ using Sofa3Devops.Adapters.Clients;
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
+using Sofa3Devops.Observers;
 using Sofa3Devops.SprintStates;
 
 namespace Sofa3DevOpsTest
@@ -18,152 +19,107 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestNotificationShouldOnlySendNotificationToTesters()
         {
-            var handler = new Mock<INotification>();
-            INotificationStrategy notification = new TesterNotificationStrategy(handler.Object);
-            BacklogItem item = new BacklogItem("Test", "Test");
-            List<BacklogItem> items = new List<BacklogItem>();
-            items.Add(item);
-            Member testMember = new Tester("Henk", "henk@henk.nl", "realHenk");
-            Member notTestMember = new ProductOwner("ingrid", "ingrid@ingrid.nl", "ingrid");
-            List<Member> members = new List<Member>();
-            members.Add(testMember);
-            members.Add(notTestMember);
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
-            sprint.Members = members;
-            item.Sprint = sprint;
-            notification.SendNotification(item);
-            List<Member> expectedList = new List<Member>();
-            expectedList.Add(testMember);
+            var test1Subscriber = new Mock<Subscriber>(new Tester("test", "test", "test"));
+            //test1Subscriber.Setup(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()))
+            var dev1Subscriber = new Mock<Subscriber>(new Developer("dev", "dev", "dev"));
+            var sm1Subscriber = new Mock<Subscriber>(new ScrumMaster("sm", "sm", "sm"));
+            var po1Subscriber = new Mock<Subscriber>(new ProductOwner("po", "po", "po"));
 
-            handler.Verify(x => x.SendNotification(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), expectedList), Times.Exactly(1));
+            Dictionary<Type, List<Subscriber>> subDictionary = new Dictionary<Type, List<Subscriber>>
+            {
+                { typeof(Tester), new List<Subscriber>() },
+                { typeof(Developer), new List<Subscriber>() },
+                { typeof(ScrumMaster), new List<Subscriber>() },
+                { typeof(ProductOwner), new List<Subscriber>() }
+            };
+            subDictionary[typeof(Tester)].Add(test1Subscriber.Object);
+            subDictionary[typeof(Developer)].Add(dev1Subscriber.Object);
+            subDictionary[typeof(ScrumMaster)].Add(sm1Subscriber.Object);
+            subDictionary[typeof(ProductOwner)].Add(po1Subscriber.Object);
+            INotificationStrategy testStrategy = new TesterNotificationStrategy();
+            testStrategy.SendNotification("test", "test", subDictionary);
+            test1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(1));
+            dev1Subscriber.Verify(t => t.Notify("dev", "dev"), Times.Exactly(0));
+            sm1Subscriber.Verify(t => t.Notify("sm", "sm"), Times.Exactly(0));
+            po1Subscriber.Verify(t => t.Notify("po", "po"), Times.Exactly(0));
+
+
         }
 
         [Fact]
         public void TestNotificationShouldSendNotificationToAllTesters()
         {
-            var handler = new Mock<INotification>();
-            INotificationStrategy notification = new TesterNotificationStrategy(handler.Object);
-            BacklogItem item = new BacklogItem("Test", "Test");
-            List<BacklogItem> items = new List<BacklogItem>();
-            items.Add(item);
-            Member testMember = new Tester("Henk", "henk@henk.nl", "realHenk");
-            Member testMember2 = new Tester("Henk", "henk@henk.nl", "realHenk");
-            Member notTestMember = new ProductOwner("ingrid", "ingrid@ingrid.nl", "ingrid");
-            List<Member> members = new List<Member>();
-            members.Add(testMember);
-            members.Add(notTestMember);
-            members.Add(testMember2);
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
-            sprint.Members = members; item.Sprint = sprint;
-            notification.SendNotification(item);
-            List<Member> expectedList = new List<Member>();
-            expectedList.Add(testMember);
-            expectedList.Add(testMember2);
-            handler.Verify(x => x.SendNotification(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), expectedList), Times.Exactly(1));
+            var test1Subscriber = new Mock<Subscriber>(new Tester("test", "test", "test"));
+            var test2Subscriber = new Mock<Subscriber>(new Tester("test", "test", "test"));
+            var dev1Subscriber = new Mock<Subscriber>(new Developer("dev", "dev", "dev"));
+            Dictionary<Type, List<Subscriber>> subDictionary = new Dictionary<Type, List<Subscriber>>();
+            subDictionary.Add(typeof(Tester), new List<Subscriber>());
+            subDictionary.Add(typeof(Developer), new List<Subscriber>());
+            subDictionary[typeof(Tester)].Add(test1Subscriber.Object);
+            subDictionary[typeof(Tester)].Add(test2Subscriber.Object);
+            subDictionary[typeof(Developer)].Add(dev1Subscriber.Object);
+            INotificationStrategy testStrategy = new TesterNotificationStrategy();
+            testStrategy.SendNotification("test", "test", subDictionary);
+            test1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(1));
+            test2Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(1));
+            dev1Subscriber.Verify(t => t.Notify("dev", "dev"), Times.Exactly(0));
+
+
         }
 
         [Fact]
         public void AllNotificationShouldSendNotificationToAllMembers()
         {
-            var handler = new Mock<INotification>();
-            INotificationStrategy notification = new AllNotificationStrategy(handler.Object);
-            BacklogItem item = new BacklogItem("Test", "Test");
-            List<BacklogItem> items = new List<BacklogItem>();
-            items.Add(item);
-            Member testMember = new Tester("Henk", "henk@henk.nl", "realHenk");
-            Member testMember2 = new Tester("Henk", "henk@henk.nl", "realHenk");
-            Member notTestMember = new ProductOwner("ingrid", "ingrid@ingrid.nl", "ingrid");
-            List<Member> members = new List<Member>();
-            members.Add(testMember);
-            members.Add(notTestMember);
-            members.Add(testMember2);
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
-            sprint.Members = members; item.Sprint = sprint;
-            notification.SendNotification(item);
-            List<Member> expectedList = new List<Member>();
-            expectedList.Add(testMember);
-            expectedList.Add(notTestMember);
-            expectedList.Add(testMember2);
-            handler.Verify(x => x.SendNotification(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), expectedList), Times.Exactly(1));
-        }
-        //EmailClient is not mockable, so the INotification itself cannot be tested directly
-        //[Fact]
-        //public void EmailAdapterShouldSendEmail()
-        //{
-        //    var mockClient = new Mock<EmailClient>();
-        //    Member testMember = new Tester("Henk", "henk@henk.nl", "realHenk");
-        //    //Member testMember2 = new Tester("Henk", "henk@henk.nl", "realHenk");
-        //    //Member notTestMember = new ProductOwner("ingrid", "ingrid@ingrid.nl", "ingrid");
-        //    List<Member> expectedList = new List<Member>();
-        //    expectedList.Add(testMember);
-        //    //expectedList.Add(testMember2);
-        //    //expectedList.Add(notTestMember);
+            var test1Subscriber = new Mock<Subscriber>(new Tester("test", "test", "test"));
+            //test1Subscriber.Setup(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()))
+            var dev1Subscriber = new Mock<Subscriber>(new Developer("dev", "dev", "dev"));
+            var sm1Subscriber = new Mock<Subscriber>(new ScrumMaster("sm", "sm", "sm"));
+            var po1Subscriber = new Mock<Subscriber>(new ProductOwner("po", "po", "po"));
 
-        //    INotification sut = new EmailAdapter(mockClient.Object);
-        //    sut.SendNotification("test", "test", DateTime.Now, expectedList);
-        //    mockClient.Verify(c => c.SendToMail("test", "teest", "test", "test"), Times.AtLeastOnce);
-        //}
+            Dictionary<Type, List<Subscriber>> subDictionary = new Dictionary<Type, List<Subscriber>>
+            {
+                { typeof(Tester), new List<Subscriber>() },
+                { typeof(Developer), new List<Subscriber>() },
+                { typeof(ScrumMaster), new List<Subscriber>() },
+                { typeof(ProductOwner), new List<Subscriber>() }
+            };
+            subDictionary[typeof(Tester)].Add(test1Subscriber.Object);
+            subDictionary[typeof(Developer)].Add(dev1Subscriber.Object);
+            subDictionary[typeof(ScrumMaster)].Add(sm1Subscriber.Object);
+            subDictionary[typeof(ProductOwner)].Add(po1Subscriber.Object);
+            INotificationStrategy testStrategy = new AllNotificationStrategy();
+            testStrategy.SendNotification("test", "test", subDictionary);
+            test1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(1));
+            dev1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(1));
+            sm1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(1));
+            po1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(1));
+
+        }
+
 
         [Fact]
-        public void SettingSprintToCancelledShouldTriggerNotificationIfInitialStateIsOngoing()
+        public void SettingSprintToCancelledShouldTriggerNotificationIfInitialStateIsOngoingAndSprintTypeIsReleaseSprint()
         {
+            var notificationMock = new Mock<INotificationStrategy>();
+            Sprint testSprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "test");
+            testSprint.SetNotificationStrategy(notificationMock.Object);
+            testSprint.State = new OngoingState();
+            testSprint.State.SetToCanceled(testSprint);
+            notificationMock.Verify(c => c.SendNotification(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<Type, List<Subscriber>>>()), Times.Exactly(1));
 
-            Member tester = new Tester("henk", "henk@henk.nl", "realHenk");
-            Member productOwner = new ProductOwner("ingrid", "ingrid@ingrid.nl", "realIngrid");
-            List<Member> members = new List<Member>();
-            members.Add(tester);
-            members.Add(productOwner);
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
-            sprint.Members = members; BacklogItem backlogItem = new BacklogItem("test", "test");
-            backlogItem.State = new DoingState();
-            var sprintNotification = new Mock<ISprintNotificationStrategy>();
-            sprint.Notification = sprintNotification.Object;
-            //backlogItem.State.SetToReadyTesting(backlogItem);
-
-            sprint.State = new OngoingState();
-            sprint.State.SetToCanceled(sprint);
-            sprintNotification.Verify(c => c.SendNotification(sprint), Times.AtLeastOnce);
         }
 
         [Fact]
-        public void SettingSprintToCancelledShouldTriggerNotificationIfInitialStateIsFinished()
+        public void SettingSprintToCancelledShouldNotTriggerNotificationIfSprintTypeIsDevelopmentSprint()
         {
-
-            Member tester = new Tester("henk", "henk@henk.nl", "realHenk");
-            Member productOwner = new ProductOwner("ingrid", "ingrid@ingrid.nl", "realIngrid");
-            List<Member> members = new List<Member>();
-            members.Add(tester);
-            members.Add(productOwner);
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
-            sprint.Members = members; BacklogItem backlogItem = new BacklogItem("test", "test");
-            backlogItem.State = new DoingState();
-            var sprintNotification = new Mock<ISprintNotificationStrategy>();
-            sprint.Notification = sprintNotification.Object;
-            //backlogItem.State.SetToReadyTesting(backlogItem);
-
-            sprint.State = new Sofa3Devops.SprintStates.FinishedState();
-            sprint.State.SetToCanceled(sprint);
-            sprintNotification.Verify(c => c.SendNotification(sprint), Times.AtLeastOnce);
+            var notificationMock = new Mock<INotificationStrategy>();
+            Sprint testSprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
+            testSprint.SetNotificationStrategy(notificationMock.Object);
+            testSprint.State = new OngoingState();
+            testSprint.State.SetToCanceled(testSprint);
+            notificationMock.Verify(c => c.SendNotification(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<Type, List<Subscriber>>>()), Times.Exactly(0));
         }
 
-        [Fact]
-        public void SettingSprintToCancelledShouldSendNotificationToAllMembers()
-        {
-
-            Member testMember = new Tester("Henk", "henk@henk.nl", "realHenk");
-            Member testMember2 = new Tester("Henk", "henk@henk.nl", "realHenk");
-            Member notTestMember = new ProductOwner("ingrid", "ingrid@ingrid.nl", "ingrid");
-            List<Member> members = new List<Member>();
-            members.Add(testMember);
-            members.Add(notTestMember);
-            members.Add(testMember2);
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.MaxValue, "a sprint");
-            sprint.Members = members;
-            var mockHandler = new Mock<INotification>();
-            ISprintNotificationStrategy sut = new SprintCancelStrategy(mockHandler.Object);
-            sut.SendNotification(sprint);
-            mockHandler.Verify(c => c.SendNotification(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), members), Times.Exactly(1));
-        }
 
     }
 }

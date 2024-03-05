@@ -5,22 +5,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sofa3Devops.Observers;
 
 namespace Sofa3Devops.NotificationStrategy
 {
     public class TesterNotificationStrategy : INotificationStrategy
     {
-        private INotification notificationHandler;
 
-        public TesterNotificationStrategy(INotification notificationHandler)
+        public TesterNotificationStrategy()
         {
-            this.notificationHandler = notificationHandler;
         }
 
-        public void SendNotification(BacklogItem backlogItem)
+        public void SendNotification(string title, string message, Dictionary<Type, List<Subscriber>> subscribers)
         {
-            var testers = backlogItem.Sprint.Members.FindAll(m => m is Tester);
-            this.notificationHandler.SendNotification($"Update for {backlogItem.Name}", $"{backlogItem.Name} has been updated to {backlogItem.State.ToString()}", DateTime.Now, testers);
+            var testers = subscribers[typeof(Tester)];
+            foreach (var tester in testers)
+            {
+                tester.Notify(title, message);
+            }
+            
         }
 
     }
