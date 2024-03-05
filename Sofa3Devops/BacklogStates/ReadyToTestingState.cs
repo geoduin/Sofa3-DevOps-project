@@ -16,7 +16,8 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToDo(BacklogItem item)
         {
-            throw new NotImplementedException();
+            item.SetBacklogState(new TodoState());
+            // Send notification to scrum master.
         }
 
         public void SetToFinished(BacklogItem item)
@@ -36,7 +37,8 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToTesting(BacklogItem item)
         {
-            throw new NotImplementedException();
+            item.SetBacklogState(new TestingState());
+            // Notify lead developer.
         }
     }
 }

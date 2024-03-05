@@ -85,9 +85,19 @@ namespace Sofa3Devops.Domain
             State = backlogState;
         }
 
+        public void SetToTodo()
+        {
+            State.SetToDo(this);
+        }
+
         public void SetToDoing()
         {
             State.SetDoing(this);
+        }
+
+        public void SetToTesting()
+        {
+            State.SetToTesting(this);
         }
 
         public void SetItemReadyForTesting()
