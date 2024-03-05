@@ -4,6 +4,7 @@ using Sofa3Devops.Adapters.Clients;
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
+using Sofa3Devops.Observers;
 using Sofa3Devops.SprintStates;
 
 namespace Sofa3Devops

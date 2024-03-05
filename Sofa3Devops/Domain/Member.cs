@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using Sofa3Devops.Adapters;
+using Sofa3Devops.NotificationStrategy;
 
 namespace Sofa3Devops.Domain
 {
@@ -16,6 +18,8 @@ namespace Sofa3Devops.Domain
         public List<Response> PostedResponses { get; set; }
         public string EmailAddress { get; set; }
         public string SlackUserName { get; set; }
+        //A member always has to be notifiable, hence the default value
+        public INotificationAdapter WayToNotify { get; set; } = new EmailAdapter();
 
 
         public Member(string name, string emailAddress, string slackUserName) {
@@ -39,6 +43,11 @@ namespace Sofa3Devops.Domain
         public virtual Sprint AddBacklogItem(Sprint sprint, BacklogItem backlogItem)
         {
             return SprintStrategy.AddBacklogItem(sprint, backlogItem);
+        }
+
+        public void SetWayToNotify(INotificationAdapter wayToNotify)
+        {
+            this.WayToNotify = wayToNotify;
         }
     }
 }
