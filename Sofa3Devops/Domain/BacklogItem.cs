@@ -71,9 +71,9 @@ namespace Sofa3Devops.Domain
 
         }
 
-        public void NotifyAll()
+        public void NotifyAll(string title, string message)
         {
-            this.NotificationStrategy.SendNotification($"Update over {Name}", $"Backlog item {Name} has been updated to {State}", Subscribers);
+            this.NotificationStrategy.SendNotification(title, message, Subscribers);
         }
 
         public void RemoveSubscriber(Subscriber subscriber)

@@ -12,9 +12,9 @@ namespace Sofa3Devops.Domain
         {
         }
 
-        public override void NotifyAll()
+        public override void NotifyAll(string title, string message)
         {
-            this.NotificationStrategy.SendNotification($"Update about Sprint {Name}", $"The release for sprint {Name} has been canncelled", this.Subscribers);
+            this.NotificationStrategy.SendNotification(title, message, this.Subscribers);
         }
     }
 }
