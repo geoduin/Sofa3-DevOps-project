@@ -43,5 +43,24 @@ namespace Sofa3DevOpsTest
 
             Assert.Equal("Olivier", activity.ResponsibleMember!.Name);
         }
+        
+        [Fact]
+        public void TestTodoToTodo()
+        {
+            BacklogItem backlogItem = new BacklogItem("Task1", "");
+
+            backlogItem.State.SetToDo(backlogItem);
+            Assert.IsType<TodoState>(backlogItem.State);
+        }
+
+        [Fact]
+        public void TestItemFromTodoToReadyForTesting()
+        {
+            BacklogItem backlogItem = new BacklogItem("Task1", "");
+
+            var error = Assert.Throws<InvalidOperationException>(()=> backlogItem.SetItemReadyForTesting());
+
+            Assert.Equal("Item or activity must first be moved to Doing, before it can be moved to ready for testing.", error.Message);
+        }
     }
 }

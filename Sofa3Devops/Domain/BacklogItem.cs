@@ -89,5 +89,10 @@ namespace Sofa3Devops.Domain
         {
             State.SetDoing(this);
         }
+
+        public void SetItemReadyForTesting()
+        {
+            State.SetToReadyTesting(this);
+        }
     }
 }
