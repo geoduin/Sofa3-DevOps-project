@@ -1,5 +1,6 @@
 ﻿using Sofa3Devops.Domain;
 using Sofa3Devops.Factories;
+using Sofa3Devops.SprintStates;
 using Sofa3Devops.SprintStrategies;
 using System;
 using System.Collections.Generic;
@@ -118,6 +119,8 @@ namespace Sofa3DevOpsTest
 
             scrumMaster.SetSprintStrategy(new AuthorizedSprintStrategy(new ReleaseSprintFactory()));
             scrumMaster.StartSprint(sprint);
+
+            Assert.IsType<OngoingState>(sprint.State);
         }
 
         [Fact]
