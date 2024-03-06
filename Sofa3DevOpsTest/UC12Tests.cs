@@ -1,4 +1,5 @@
-﻿using Sofa3Devops.BacklogStates;
+﻿using Moq;
+using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
 using Sofa3Devops.Observers;
 using Sofa3Devops.SprintStates;
@@ -16,23 +17,29 @@ namespace Sofa3DevOpsTest
         private Member developer { get; set; }
         private Member scrumMaster { get; set; }
         private Developer leadDeveloper { get; set; }
-        private BacklogItem backlogItem1 { get; set; }
-        private BacklogItem backlogItem2 { get; set; }
+        private BacklogItem readyForTestingItem { get; set; }
+        private BacklogItem testingItem { get; set; }
         private Sprint sprint { get; set; }
+
+        private Mock<Subscriber> leadDevSubscriber { get; set; }
+        private Mock<Subscriber> devSubscriber { get; set; }
+        private Mock<Subscriber> testerSubscriber { get; set; }
+        private Mock<Subscriber> scrumMasterSubscriber { get; set; }
 
         public UC12Tests()
         {
             tester = new Tester("Test", "Test@example.com", "TestSlack");
             developer = new Developer("Developer", "Developer@example.com", "DevSlack");
-            scrumMaster = new ScrumMaster("Master", "Master@example.com", "MasterSlack");
+            scrumMaster =  new ScrumMaster("Master", "Master@example.com", "MasterSlack");
             leadDeveloper = new Developer("LeadDeveloper", "LeadDeveloper@example.com", "DevSlack");
             leadDeveloper.SetLeadDeveloper();
-            backlogItem1 = new BacklogItem("Head task", "")
+
+            readyForTestingItem = new BacklogItem("Head task", "")
             {
                 State = new ReadyToTestingState(),
                 ResponsibleMember = developer
             };
-            backlogItem2 = new BacklogItem("Head task", "")
+            testingItem = new BacklogItem("Head task", "")
             {
                 State = new TestingState(),
                 ResponsibleMember = developer
@@ -41,20 +48,25 @@ namespace Sofa3DevOpsTest
             {
                 State = new OngoingState()
             };
-            var leadDevSubscriber = new RegularSubscriber(leadDeveloper);
-            var devSubscriber = new RegularSubscriber(developer);
-            var testerSubscriber = new RegularSubscriber(tester);
-            var scrumMasterSubscriber = new RegularSubscriber(scrumMaster);
+
+            sprint.AddBacklogItem(testingItem);
+            sprint.AddBacklogItem(readyForTestingItem);
+
+            leadDevSubscriber = new Mock<Subscriber>(leadDeveloper);
+            devSubscriber = new Mock<Subscriber>(developer);
+            testerSubscriber = new Mock<Subscriber>(tester);
+            scrumMasterSubscriber = new Mock<Subscriber>(scrumMaster);
 
             sprint.AssignMembersToSprint(tester);
             sprint.AssignMembersToSprint(developer);
             sprint.AssignMembersToSprint(leadDeveloper);
             sprint.AssignMembersToSprint(scrumMaster);
 
-            sprint.AddSubscriber(testerSubscriber);
-            sprint.AddSubscriber(leadDevSubscriber);
-            sprint.AddSubscriber(devSubscriber); 
-            sprint.AddSubscriber(scrumMasterSubscriber);
+            sprint.AddSubscriber(testerSubscriber.Object);
+            sprint.AddSubscriber(leadDevSubscriber.Object);
+            sprint.AddSubscriber(devSubscriber.Object); 
+            sprint.AddSubscriber(scrumMasterSubscriber.Object);
+
         }
 
         [Fact]
@@ -70,6 +82,34 @@ namespace Sofa3DevOpsTest
             Assert.Single(result!);
             Assert.Equal(2, resultDevelopers!.Count);
             Assert.Single(resultScrumMaster!);
+        }
+
+        [Fact]
+        public void TestIfScrumMasterIsNotifiedWhenItemIsRejectedByTesterInReadyTestingState()
+        {
+            // Ready testing -> Todo
+            // Act
+            tester.DisapproveItemForTesting(readyForTestingItem);
+            
+            // Assert
+            leadDevSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", "This backlog-item is rejected by our testers. The scrum-master will reprehend the responsible developer for his implementation."), Times.Never());
+            devSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", "This backlog-item is rejected by our testers. The scrum-master will reprehend the responsible developer for his implementation."), Times.Never());
+            testerSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", "This backlog-item is rejected by our testers. The scrum-master will reprehend the responsible developer for his implementation."), Times.Never());
+            scrumMasterSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", "This backlog-item is rejected by our testers. The scrum-master will reprehend the responsible developer for his implementation."), Times.Once());
+        }
+
+        [Fact]
+        public void TestIfScrumMasterIsNotifiedWhenItemIsRejectedByTesterInTestingState()
+        {
+            // Ready testing -> Todo
+            // Act
+            tester.DisapproveItemForTesting(testingItem);
+
+            // Assert
+            leadDevSubscriber.Verify(x => x.Notify($"Backlog item: {testingItem.Name} has been rejected.", "This backlog-item needs be implemented better."), Times.Never());
+            devSubscriber.Verify(x => x.Notify($"Backlog item: {testingItem.Name} has been rejected.", "This backlog-item needs be implemented better."), Times.Never());
+            testerSubscriber.Verify(x => x.Notify($"Backlog item: {testingItem.Name} has been rejected.", "This backlog-item needs be implemented better."), Times.Never());
+            scrumMasterSubscriber.Verify(x => x.Notify($"Backlog item: {testingItem.Name} has been rejected.", "This backlog-item needs be implemented better."), Times.Once());
         }
     }
 }

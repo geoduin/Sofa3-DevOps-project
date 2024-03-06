@@ -93,7 +93,7 @@ namespace Sofa3Devops.Domain
 
         public void NotifyAll(string title, string message)
         {
-            NotificationStrategy.SendNotification(title, message, Subscribers);
+            this.Sprint.NotifyAll(title, message);
         }
 
         public void RemoveSubscriber(Subscriber subscriber)

@@ -1,4 +1,5 @@
 ﻿using Sofa3Devops.Domain;
+using Sofa3Devops.NotificationStrategy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +26,6 @@ namespace Sofa3Devops.BacklogStates
             if (item.HasAllTaskBeenCompleted())
             {
                 item.SetBacklogState(new FinishedState());
-                // Notify all members.
-                item.NotifyAll($"Backlogitem: {item.Name}, has been completed.", "Backlogitem status is from Tested to Finised. Please resume your work.");
             }
             else
             {
@@ -37,6 +36,7 @@ namespace Sofa3Devops.BacklogStates
         public void SetToReadyTesting(BacklogItem item)
         {
             item.SetBacklogState(new ReadyToTestingState());
+            item.Sprint.SetNotificationStrategy(new TesterNotificationStrategy());
             item.NotifyAll($"Backlogitem: {item.Name}, is moved back for more testing.", "The lead developer has stated that the current implementation does not fullfill the Definition of Done as written down. More testing is required.");
         }
 
