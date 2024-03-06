@@ -36,7 +36,7 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToTesting(BacklogItem item)
         {
-            throw new NotImplementedException();
+            item.State = new TestingState();
         }
     }
 }

@@ -71,7 +71,6 @@ namespace Sofa3DevOpsTest
         public void AllNotificationShouldSendNotificationToAllMembers()
         {
             var test1Subscriber = new Mock<Subscriber>(new Tester("test", "test", "test"));
-            //test1Subscriber.Setup(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()))
             var dev1Subscriber = new Mock<Subscriber>(new Developer("dev", "dev", "dev"));
             var sm1Subscriber = new Mock<Subscriber>(new ScrumMaster("sm", "sm", "sm"));
             var po1Subscriber = new Mock<Subscriber>(new ProductOwner("po", "po", "po"));

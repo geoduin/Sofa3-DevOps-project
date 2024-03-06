@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.NotificationStrategy
 {
-    internal class ProductOwnerStrategy : INotificationStrategy
+    internal class ScrumMasterStrategy : INotificationStrategy
     {
         public void SendNotification(string title, string message, Dictionary<Type, List<Subscriber>> subscribers)
         {
-            var productOwners = subscribers[typeof(ProductOwner)];
+            var productOwners = subscribers[typeof(ScrumMaster)];
             foreach (var productOwner in productOwners)
             {
                 productOwner.Notify(title, message);
