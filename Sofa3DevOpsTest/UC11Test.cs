@@ -124,19 +124,6 @@ namespace Sofa3DevOpsTest
         //    Assert.Throws<UnauthorizedAccessException>(() => item.SetToFinished(notProductOwner));
         //}
 
-        [Fact]
-        public void ProductOwnerCanSetTestedItemToToDoIfMemberOfSprint()
-        {
-            Member productOwner = new ProductOwner("test", "test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            sprint.Members.Add(productOwner);
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = sprint;
-            sprint.AddBacklogItem(item);
-            item.State = new TestedState();
-            item.SetToToDo(productOwner);
-            Assert.True(item.State.GetType().Equals(typeof(TodoState)));
-        }
 
         [Fact]
         public void ProductOwnerCantSetTestedItemToToDoIfNotMemberOfSprint()

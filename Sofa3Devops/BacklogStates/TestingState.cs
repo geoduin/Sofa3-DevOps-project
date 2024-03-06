@@ -37,10 +37,10 @@ namespace Sofa3Devops.BacklogStates
         public void SetToTested(BacklogItem item)
         {
             var strat = item.NotificationStrategy;
-            item.SetNotificationStrategy(new ScrumMasterStrategy());
+            item.Sprint.SetNotificationStrategy(new ScrumMasterStrategy());
             item.State = new TestedState();
             item.NotifyAll($"Update for backlog item {item.Name}", $"{item.Name} has been set to {item.State}");
-            item.SetNotificationStrategy(strat);
+            item.Sprint.SetNotificationStrategy(strat);
         }
 
         public void SetToTesting(BacklogItem item)
