@@ -10,6 +10,6 @@ namespace Sofa3Devops.Observers
     {
         void AddSubscriber(Subscriber subscriber);
         void RemoveSubscriber(Subscriber subscriber);
-        void NotifyAll();
+        void NotifyAll(string title, string message);
     }
 }

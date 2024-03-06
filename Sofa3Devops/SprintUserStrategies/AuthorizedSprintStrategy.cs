@@ -22,9 +22,21 @@ namespace Sofa3Devops.SprintStrategies
             return sprint;
         }
 
+        public override Sprint CancelSprint(Sprint sprint)
+        {
+            sprint.CancelSprint();
+            return sprint;
+        }
+
         public override Sprint CreateSprint(DateTime start, DateTime end, string name)
         {
             return abstractSprintFactory.CreateSprint(start, end, name);
+        }
+
+        public override Sprint StartSprint(Sprint sprint)
+        {
+            sprint.StartSprint();
+            return sprint;
         }
     }
 }

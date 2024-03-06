@@ -17,7 +17,7 @@ namespace Sofa3Devops.Domain
         public List<Activity> Activities { get; set; }
         public List<CommentThread> Threads { get; set; }
         public Sprint? Sprint { get; set; }
-        public INotificationStrategy NotificationStrategy { get; private set; }
+        public INotificationStrategy? NotificationStrategy { get; private set; }
         
 
         public BacklogItem(string name, string description)
@@ -31,11 +31,14 @@ namespace Sofa3Devops.Domain
             Threads = new List<CommentThread>();
         }
 
-        public void AssignBacklogItem(Member member)
+        public virtual void AssignBacklogItem(Member member)
         {
             if (ResponsibleMember == null)
             {
                 ResponsibleMember = member;
+                SetToDoing();
+                // Assign member as subscriber.
+                // AddSubscriber(new Subscriber(member));
             }
             else
             {
@@ -61,21 +64,41 @@ namespace Sofa3Devops.Domain
             }
         }
 
+        public virtual bool HasAllTaskBeenCompleted()
+        {
+            // Tests if the state of this object is tested.
+            bool IsItemTested = State.GetType() == typeof(TestedState);
+            // If array is empty or all activities are in TestedState, this value should always return true.
+            bool AreActivitiesTested = Activities.TrueForAll(x => x.State.GetType() == typeof(TestedState)) || Activities.Count == 0;
+            return IsItemTested && AreActivitiesTested;
+        }
+
         public void AddSubscriber(Subscriber subscriber)
         {
-            var typeList = this.Subscribers[subscriber.GetType()];
-            typeList.Add(subscriber);
+            try
+            {
+                var typeList = Subscribers[subscriber.NotifiedUser.GetType()];
+                typeList.Add(subscriber);
+            }
+            catch
+            {
+                List<Subscriber> list = new List<Subscriber>()
+                {
+                    subscriber
+                };
+                Subscribers.Add(subscriber.NotifiedUser.GetType(), list);
+            }
 
         }
 
-        public void NotifyAll()
+        public void NotifyAll(string title, string message)
         {
-            this.NotificationStrategy.SendNotification($"Update over {Name}", $"Backlog item {Name} has been updated to {State}", Subscribers);
+            NotificationStrategy.SendNotification(title, message, Subscribers);
         }
 
         public void RemoveSubscriber(Subscriber subscriber)
         {
-            var list = this.Subscribers[subscriber.GetType()];
+            var list = this.Subscribers[subscriber.NotifiedUser.GetType()];
             list.Remove(subscriber);
         }
 
@@ -84,5 +107,34 @@ namespace Sofa3Devops.Domain
             this.NotificationStrategy = strategy;
         }
 
+        public void SetBacklogState(IBacklogState backlogState)
+        {
+            State = backlogState;
+        }
+
+        public void SetToTodo()
+        {
+            State.SetToDo(this);
+        }
+
+        public void SetToDoing()
+        {
+            State.SetDoing(this);
+        }
+
+        public void SetToTesting()
+        {
+            State.SetToTesting(this);
+        }
+
+        public void SetItemReadyForTesting()
+        {
+            State.SetToReadyTesting(this);
+        }
+
+        public void SetItemToFinished()
+        {
+            State.SetToFinished(this);
+        }
     }
 }

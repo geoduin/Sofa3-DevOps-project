@@ -14,5 +14,15 @@ namespace Sofa3Devops.Domain
         public ScrumMaster(string name, string emailAddress, string slackUserName) : base(name, emailAddress, slackUserName)
         {
         }
+
+        public override void ApproveAndFinishItem(BacklogItem item)
+        {
+            item.SetItemToFinished();
+        }
+
+        public override void DisapproveTestedItem(BacklogItem item)
+        {
+            item.SetItemReadyForTesting();
+        }
     }
 }

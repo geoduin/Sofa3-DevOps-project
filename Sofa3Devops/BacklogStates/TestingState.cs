@@ -16,7 +16,8 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToDo(BacklogItem item)
         {
-            throw new NotImplementedException();
+
+            item.SetBacklogState(new TodoState());
         }
 
         public void SetToFinished(BacklogItem item)

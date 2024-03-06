@@ -12,8 +12,9 @@ namespace Sofa3Devops.Domain
         {
         }
 
-        public override void NotifyAll()
+        public override void NotifyAll(string title, string message)
         {
+            NotificationStrategy.SendNotification(title, message, Subscribers);
         }
     }
 }

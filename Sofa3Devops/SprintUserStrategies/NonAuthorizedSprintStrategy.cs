@@ -15,7 +15,17 @@ namespace Sofa3Devops.SprintStrategies
             throw DefaultAuthorisationError();
         }
 
+        public override Sprint CancelSprint(Sprint sprint)
+        {
+            throw DefaultAuthorisationError();
+        }
+
         public override Sprint CreateSprint(DateTime start, DateTime end, string name)
+        {
+            throw DefaultAuthorisationError();
+        }
+
+        public override Sprint StartSprint(Sprint sprint)
         {
             throw DefaultAuthorisationError();
         }

@@ -1,5 +1,6 @@
 ﻿using Sofa3Devops.Domain;
 using Sofa3Devops.Factories;
+using Sofa3Devops.SprintStates;
 using Sofa3Devops.SprintStrategies;
 using System;
 using System.Collections.Generic;
@@ -92,6 +93,37 @@ namespace Sofa3DevOpsTest
         }
 
         [Fact]
+        public void StartSprintWithoutAuthority()
+        {
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
+            Member tester = new Tester("D", "D@Outlook.com", "DSlack");
+            tester.SetSprintStrategy(new NonAuthorizedSprintStrategy());
+            
+            var result = Assert.Throws<UnauthorizedAccessException>(()=> tester.StartSprint(sprint));
+
+            Assert.Equal("Does not have the right authorization to perform this action.", result.Message);
+        }
+
+        [Fact]
+        public void StartSprintWithAuthorityScrumMaster()
+        {
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
+            Member scrumMaster = new ScrumMaster("D", "D@Outlook.com", "DSlack");
+            Developer developer = new Developer("Developer", "D@Outlook.com", "DSlack");
+            Tester tester = new Tester("Developer", "D@Outlook.com", "DSlack");
+            developer.SetLeadDeveloper();
+
+            sprint.AssignMembersToSprint(scrumMaster);
+            sprint.AssignMembersToSprint(developer);
+            sprint.AssignMembersToSprint(tester);
+
+            scrumMaster.SetSprintStrategy(new AuthorizedSprintStrategy(new ReleaseSprintFactory()));
+            scrumMaster.StartSprint(sprint);
+
+            Assert.IsType<OngoingState>(sprint.State);
+        }
+
+        [Fact]
         public void TestStartSprintWithoutScrumMaster()
         {
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
@@ -102,7 +134,7 @@ namespace Sofa3DevOpsTest
 
             var error = Assert.Throws<InvalidOperationException>(() => sprint.StartSprint());
 
-            Assert.Equal("At least one scrummaster must be assigned to a sprint", error.Message);
+            Assert.Equal("At least one tester, scrummaster and developer must be added, before starting a sprint", error.Message);
         }
 
         [Fact]
@@ -119,7 +151,7 @@ namespace Sofa3DevOpsTest
 
             var error = Assert.Throws<InvalidOperationException>(() => sprint.StartSprint());
 
-            Assert.Equal("At least one tester and developer must be added, before starting a sprint", error.Message);
+            Assert.Equal("At least one tester, scrummaster and developer must be added, before starting a sprint", error.Message);
         }
 
         [Fact]
@@ -139,7 +171,7 @@ namespace Sofa3DevOpsTest
 
             var error = Assert.Throws<InvalidOperationException>(() => sprint.StartSprint());
 
-            Assert.Equal("At least one tester and developer must be added, before starting a sprint", error.Message);
+            Assert.Equal("At least one tester, scrummaster and developer must be added, before starting a sprint", error.Message);
         }
 
         [Fact]
