@@ -92,10 +92,10 @@ namespace Sofa3DevOpsTest
             tester.DisapproveItemForTesting(readyForTestingItem);
             
             // Assert
-            leadDevSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", "This backlog-item is rejected by our testers. The scrum-master will reprehend the responsible developer for his implementation."), Times.Never());
-            devSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", "This backlog-item is rejected by our testers. The scrum-master will reprehend the responsible developer for his implementation."), Times.Never());
-            testerSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", "This backlog-item is rejected by our testers. The scrum-master will reprehend the responsible developer for his implementation."), Times.Never());
-            scrumMasterSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", "This backlog-item is rejected by our testers. The scrum-master will reprehend the responsible developer for his implementation."), Times.Once());
+            leadDevSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Never());
+            devSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Never());
+            testerSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Never());
+            scrumMasterSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Once());
         }
 
         [Fact]
