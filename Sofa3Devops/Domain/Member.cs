@@ -84,7 +84,7 @@ namespace Sofa3Devops.Domain
 
         public virtual void DisapproveTestedItem(BacklogItem item)
         {
-            throw new UnauthorizedAccessException("Does not have authority to Disapprove the backlog item. Only lead developers are allowed to do that.");
+            throw new UnauthorizedAccessException("Does not have authority to disapprove the backlog item. Only lead developers are allowed to do that.");
         }
     }
 }

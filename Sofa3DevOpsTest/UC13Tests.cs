@@ -141,7 +141,7 @@ namespace Sofa3DevOpsTest
 
             Member randomDeveloper = new Developer("Dic", "", "");
             Member quackDeveloper = new Developer("Rick", "", "");
-            Member daveDeveloper = new Developer("Dave", "", "");
+            Member daveDeveloper = new ScrumMaster("Dave", "", "");
 
 
             var error1 = Assert.Throws<UnauthorizedAccessException>(() => randomDeveloper.ApproveAndFinishItem(backlogItem));
@@ -164,14 +164,14 @@ namespace Sofa3DevOpsTest
 
             Member randomDeveloper = new Developer("Dic", "", "");
             Member quackDeveloper = new Developer("Rick", "", "");
-            Member daveDeveloper = new Developer("Dave", "", "");
+            Member daveDeveloper = new ScrumMaster("Dave", "", "");
 
 
             var error1 = Assert.Throws<UnauthorizedAccessException>(() => randomDeveloper.DisapproveTestedItem(backlogItem));
             var error2 = Assert.Throws<UnauthorizedAccessException>(() => quackDeveloper.DisapproveTestedItem(backlogItem));
             var error3 = Assert.Throws<UnauthorizedAccessException>(() => daveDeveloper.DisapproveTestedItem(backlogItem));
 
-            var ExpectedErrorMessage = "Does not have authority to Disapprove the backlog item. Only lead developers are allowed to do that.";
+            var ExpectedErrorMessage = "Does not have authority to disapprove the backlog item. Only lead developers are allowed to do that.";
             Assert.Equal(ExpectedErrorMessage, error1.Message);
             Assert.Equal(ExpectedErrorMessage, error2.Message);
             Assert.Equal(ExpectedErrorMessage, error2.Message);
@@ -185,7 +185,8 @@ namespace Sofa3DevOpsTest
                 State = new TestedState()
             };
             backlogItem.SetNotificationStrategy(new TesterNotificationStrategy());
-            Member randomDeveloper = new ScrumMaster("Dic", "", "");
+            Developer randomDeveloper = new Developer("Dic", "", "");
+            randomDeveloper.SetLeadDeveloper();
             Tester tester = new Tester("Bob", "Test@example.com", "");
             backlogItem.AddSubscriber(new RegularSubscriber(tester));
 
@@ -199,7 +200,8 @@ namespace Sofa3DevOpsTest
         {
             // Arrange
             Member tester = new Tester("Bob", "Test@example.com", "");
-            Member scrumMaster = new ScrumMaster("Dic", "", "");
+            Developer randomDeveloper = new Developer("Dic", "", "");
+            randomDeveloper.SetLeadDeveloper();
             BacklogItem backlogItem = new BacklogItem("Task1", "Description")
             {
                 State = new TestedState()
@@ -208,7 +210,7 @@ namespace Sofa3DevOpsTest
             backlogItem.AddSubscriber(new RegularSubscriber(tester));
 
             // Act
-            scrumMaster.ApproveAndFinishItem(backlogItem);
+            randomDeveloper.ApproveAndFinishItem(backlogItem);
 
             // Assert
             Assert.IsType<FinishedState>(backlogItem.State);

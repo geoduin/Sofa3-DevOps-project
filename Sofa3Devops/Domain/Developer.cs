@@ -22,5 +22,32 @@ namespace Sofa3Devops.Domain
         {
             Seniority = true;
         }
+
+        public override void ApproveAndFinishItem(BacklogItem item)
+        {
+            if(Seniority)
+            {
+                item.SetItemToFinished();
+            }
+            else
+            {
+                base.ApproveAndFinishItem (item);
+            }
+            
+        }
+
+        public override void DisapproveTestedItem(BacklogItem item)
+        {
+            
+            if (Seniority)
+            {
+                item.SetItemReadyForTesting();
+            }
+            else
+            {
+                base.DisapproveTestedItem(item);
+            }
+            
+        }
     }
 }
