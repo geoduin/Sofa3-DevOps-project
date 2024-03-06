@@ -15,14 +15,6 @@ namespace Sofa3Devops.Domain
         {
         }
 
-        public override void ApproveAndFinishItem(BacklogItem item)
-        {
-            item.SetItemToFinished();
-        }
-
-        public override void DisapproveTestedItem(BacklogItem item)
-        {
-            item.SetItemReadyForTesting();
-        }
+        
     }
 }
