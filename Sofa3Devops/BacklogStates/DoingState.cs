@@ -1,4 +1,5 @@
 ﻿using Sofa3Devops.Domain;
+using Sofa3Devops.NotificationStrategy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,9 @@ namespace Sofa3Devops.BacklogStates
         public void SetToReadyTesting(BacklogItem item)
         {
             item.State = new ReadyToTestingState();
+            // Set strategy to send to Testers.
+            item.SetNotificationStrategy(new TesterNotificationStrategy());
+            // Notifies all testers of backlog-item that are ready for testing.
             item.NotifyAll($"Update over {item.Name}", $"Backlog item {item.Name} has been updated to {item.State}");
         }
 
