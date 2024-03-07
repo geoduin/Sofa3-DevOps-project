@@ -1,11 +1,6 @@
 ﻿using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sofa3Devops.NotificationStrategy;
+
 
 namespace Sofa3Devops.BacklogStates
 {
@@ -37,7 +32,7 @@ namespace Sofa3Devops.BacklogStates
         public void SetToReadyTesting(BacklogItem item)
         {
             item.SetBacklogState(new ReadyToTestingState());
-            item.Sprint.SetNotificationStrategy(new TesterNotificationStrategy());
+            item.Sprint!.SetNotificationStrategy(new TesterNotificationStrategy());
             item.NotifyAll($"Backlogitem: {item.Name}, is moved back for more testing.", "The lead developer has stated that the current implementation does not fullfill the Definition of Done as written down. More testing is required.");
         }
 

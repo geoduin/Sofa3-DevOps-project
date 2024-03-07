@@ -93,7 +93,7 @@ namespace Sofa3Devops.Domain
 
         public void NotifyAll(string title, string message)
         {
-            this.Sprint!.NotifyAll(title, message);
+            Sprint!.NotifyAll(title, message);
         }
 
         public void RemoveSubscriber(Subscriber subscriber)
@@ -109,7 +109,7 @@ namespace Sofa3Devops.Domain
 
         public void SetToTesting(Member tester)
         {
-            if (tester.GetType().Equals(typeof(Tester)) && this.Sprint.Members.Contains(tester))
+            if (tester.GetType().Equals(typeof(Tester)) && this.Sprint!.Members.Contains(tester))
             {
                 this.State.SetToTesting(this);
             }
@@ -122,7 +122,7 @@ namespace Sofa3Devops.Domain
         
         public void SetToToDo(Member member)
         {
-            if (member.GetType().Equals(typeof(Tester)) && this.Sprint.Members.Contains(member))
+            if (member.GetType().Equals(typeof(Tester)) && this.Sprint!.Members.Contains(member))
             {
                 this.State.SetToDo(this);
                 return;

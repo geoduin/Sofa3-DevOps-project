@@ -6,7 +6,7 @@ namespace Sofa3Devops.Domain
     public abstract class Member
     {
         public string Name { get; set; }
-        public SprintStrategy SprintStrategy { get; set; }
+        public SprintStrategy? SprintStrategy { get; set; }
         public List<CommentThread> PostedThreads { get; set; }
         public List<Response> PostedResponses { get; set; }
         public string EmailAddress { get; set; }
@@ -21,6 +21,7 @@ namespace Sofa3Devops.Domain
             PostedThreads = new List<CommentThread>();
             EmailAddress = emailAddress;
             SlackUserName = slackUserName;
+            SprintStrategy = null;
         }
 
         public void SetSprintStrategy(SprintStrategy strategy)
@@ -30,12 +31,12 @@ namespace Sofa3Devops.Domain
 
         public virtual Sprint CreateSprint(DateTime start, DateTime end, string name)
         {
-            return SprintStrategy.CreateSprint(start, end, name);
+            return SprintStrategy!.CreateSprint(start, end, name);
         }
 
         public virtual Sprint AddBacklogItem(Sprint sprint, BacklogItem backlogItem)
         {
-            return SprintStrategy.AddBacklogItem(sprint, backlogItem);
+            return SprintStrategy!.AddBacklogItem(sprint, backlogItem);
         }
 
         public void SetWayToNotify(INotificationAdapter wayToNotify)
@@ -45,12 +46,12 @@ namespace Sofa3Devops.Domain
 
         public virtual void StartSprint(Sprint sprint)
         {
-            SprintStrategy.StartSprint(sprint);
+            SprintStrategy!.StartSprint(sprint);
         }
 
         public virtual void CancelSprint(Sprint sprint)
         {
-            SprintStrategy.CancelSprint(sprint);
+            SprintStrategy!.CancelSprint(sprint);
         }
 
         // Doing ready testing.
@@ -59,7 +60,7 @@ namespace Sofa3Devops.Domain
             backlogItem.SetItemReadyForTesting();
         }
 
-        // Todo -> Doing
+        // 'to do' -> Doing
         public void PickupBacklogItem(BacklogItem backlogItem)
         {
             backlogItem.AssignBacklogItem(this);
@@ -85,7 +86,7 @@ namespace Sofa3Devops.Domain
             throw new UnauthorizedAccessException("Non-testers are not allowed to move this item to tested.");
         }
 
-        // Testing -> Todo
+        // Testing -> 'to do'
         public virtual void SetItemFromTestingBackToTodo(BacklogItem item)
         {
             throw new UnauthorizedAccessException("Non-testers are not allowed to move this item to tested.");
