@@ -17,7 +17,7 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToDo(BacklogItem item)
         {
-            item.State = new TodoState();
+            throw new InvalidOperationException("Can't set item to todo from tested");
         }
 
         public void SetToFinished(BacklogItem item)

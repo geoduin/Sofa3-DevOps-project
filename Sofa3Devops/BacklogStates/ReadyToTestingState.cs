@@ -1,4 +1,5 @@
 ﻿using Sofa3Devops.Domain;
+using Sofa3Devops.NotificationStrategy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,11 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToDo(BacklogItem item)
         {
-            throw new NotImplementedException();
+            item.State = new TodoState();
+            var strat = item.Sprint.NotificationStrategy;
+            item.Sprint.SetNotificationStrategy(new ScrumMasterStrategy());
+            item.NotifyAll($"Update for backlog item {item.Name}", $"{item.Name} has been set to {item.State}");
+            item.Sprint.SetNotificationStrategy(strat);
         }
 
         public void SetToFinished(BacklogItem item)

@@ -18,10 +18,10 @@ namespace Sofa3Devops.BacklogStates
         public void SetToDo(BacklogItem item)
         {
             item.State = new TodoState();
-            var strat = item.NotificationStrategy;
-            item.SetNotificationStrategy(new ScrumMasterStrategy());
+            var strat = item.Sprint.NotificationStrategy;
+            item.Sprint.SetNotificationStrategy(new ScrumMasterStrategy());
             item.NotifyAll($"Update for backlog item {item.Name}", $"{item.Name} has been set to {item.State}");
-            item.SetNotificationStrategy(strat);
+            item.Sprint.SetNotificationStrategy(strat);
         }
 
         public void SetToFinished(BacklogItem item)

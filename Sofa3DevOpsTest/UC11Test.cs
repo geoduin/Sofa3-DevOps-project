@@ -84,51 +84,12 @@ namespace Sofa3DevOpsTest
             item.State = new TestingState();
             Assert.Throws<UnauthorizedAccessException>(() => item.SetToTested(notTester));
         }
-
-        //[Fact]
-        //public void ProductOwnerCanSetTestedItemToFinishedIfMemberOfSprint()
-        //{
-        //    Member productOwner = new ProductOwner("test", "test", "test");
-        //    Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-        //    sprint.Members.Add(productOwner);
-        //    BacklogItem item = new BacklogItem("test", "test");
-        //    item.Sprint = sprint;
-        //    sprint.AddBacklogItem(item);
-        //    item.State = new TestedState();
-        //    item.SetToFinished(productOwner);
-        //    Assert.True(item.State.GetType().Equals(typeof(FinishedState)));
-        //}
-
-        //[Fact]
-        //public void ProductOwnerCantSetTestedItemToFinishedIfNotMemberOfSprint()
-        //{
-        //    Member productOwner = new ProductOwner("test", "test", "test");
-        //    Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-        //    BacklogItem item = new BacklogItem("test", "test");
-        //    item.Sprint = sprint;
-        //    sprint.AddBacklogItem(item);
-        //    item.State = new TestedState();
-        //    Assert.Throws<UnauthorizedAccessException>(() => item.SetToFinished(productOwner));
-        //}
-
-        //[Fact]
-        //public void MemberCantSetTestedItemToFinishedIfProductOwner()
-        //{
-        //    Member notProductOwner = new Developer("test", "test", "test");
-        //    Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-        //    sprint.Members.Add(notProductOwner);
-        //    BacklogItem item = new BacklogItem("test", "test");
-        //    item.Sprint = sprint;
-        //    sprint.AddBacklogItem(item);
-        //    item.State = new TestedState();
-        //    Assert.Throws<UnauthorizedAccessException>(() => item.SetToFinished(notProductOwner));
-        //}
-
-
+        
+        
         [Fact]
-        public void ProductOwnerCantSetTestedItemToToDoIfNotMemberOfSprint()
+        public void MemberCantSetTestedItemToToDoIfNotMemberOfSprint()
         {
-            Member productOwner = new ProductOwner("test", "test", "test");
+            Member productOwner = new Tester("test", "test", "test");
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
             BacklogItem item = new BacklogItem("test", "test");
             item.Sprint = sprint;
@@ -138,16 +99,44 @@ namespace Sofa3DevOpsTest
         }
 
         [Fact]
-        public void MemberCantSetTestedItemToTodoIfProductOwner()
+        public void MemberCantSetTestedItemToTodoIfNotTester()
         {
-            Member notProductOwner = new Developer("test", "test", "test");
+            Member productOwner = new ProductOwner("test", "test", "test");
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            sprint.Members.Add(notProductOwner);
+            sprint.Members.Add(productOwner);
             BacklogItem item = new BacklogItem("test", "test");
             item.Sprint = sprint;
             sprint.AddBacklogItem(item);
             item.State = new TestedState();
-            Assert.Throws<UnauthorizedAccessException>(() => item.SetToToDo(notProductOwner));
+            Assert.Throws<UnauthorizedAccessException>(() => item.SetToToDo(productOwner));
+        }
+
+        [Fact]
+        public void AuthorizedTesterCanSetTestedItemToTodoIfStateIsTesting()
+        {
+            Member tester = new Tester("test", "test", "test");
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
+            sprint.Members.Add(tester);
+            BacklogItem item = new BacklogItem("test", "test");
+            item.Sprint = sprint;
+            sprint.AddBacklogItem(item);
+            item.State = new TestingState();
+            item.SetToToDo(tester);
+            Assert.True(item.State == new TodoState());
+        }
+
+        [Fact]
+        public void AuthorizedTesterCanSetItemToToDoIfStateIsReadyForTesting()
+        {
+            Member tester = new Tester("test", "test", "test");
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
+            sprint.Members.Add(tester);
+            BacklogItem item = new BacklogItem("test", "test");
+            item.Sprint = sprint;
+            sprint.AddBacklogItem(item);
+            item.State = new ReadyToTestingState();
+            item.SetToToDo(tester);
+            Assert.True(item.State == new TodoState());
         }
 
         [Fact]
@@ -174,6 +163,34 @@ namespace Sofa3DevOpsTest
             item.State = new TestingState();
             item.SetToToDo(tester);
             mockSprint.Verify(m => m.NotifyAll(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce);
+        }
+
+        [Fact]
+        public void ScrumMasterStrategyOnlySendsNotificationToScrumMasters()
+        {
+            Member sm1 = new ScrumMaster("test", "test", "test");
+            var s1 = new Mock<Subscriber>(sm1);
+            Member sm2 = new ScrumMaster("test", "test", "test");
+            var s2 = new Mock<Subscriber>(sm2);
+            Member t1 = new Tester("test", "test", "test");
+            var s3 = new Mock<Subscriber>(sm1);
+            INotificationStrategy strategy = new ScrumMasterStrategy();
+            Dictionary<Type, List<Subscriber>> subDictionary = new Dictionary<Type, List<Subscriber>>();
+            subDictionary[typeof(ScrumMaster)] = new List<Subscriber>();
+            subDictionary[typeof(ScrumMaster)].Add(s1.Object);
+            subDictionary[typeof(ScrumMaster)].Add(s2.Object);
+            subDictionary[typeof(Tester)] = new List<Subscriber>();
+            subDictionary[typeof(Tester)].Add(s3.Object);
+
+            strategy.SendNotification("test", "test", subDictionary);
+
+            s1.Verify(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce());
+            s2.Verify(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce());
+            s3.Verify(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+
+
+
+
         }
     }
 }

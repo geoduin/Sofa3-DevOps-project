@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.NotificationStrategy
 {
-    internal class ScrumMasterStrategy : INotificationStrategy
+    public class ScrumMasterStrategy : INotificationStrategy
     {
         public void SendNotification(string title, string message, Dictionary<Type, List<Subscriber>> subscribers)
         {
