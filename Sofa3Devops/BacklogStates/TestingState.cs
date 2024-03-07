@@ -17,11 +17,7 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToDo(BacklogItem item)
         {
-            item.State = new TodoState();
-            var strat = item.Sprint.NotificationStrategy;
-            item.Sprint.SetNotificationStrategy(new ScrumMasterStrategy());
-            item.NotifyAll($"Update for backlog item {item.Name}", $"{item.Name} has been set to {item.State}");
-            item.Sprint.SetNotificationStrategy(strat);
+            
         }
 
         public void SetToFinished(BacklogItem item)
@@ -37,10 +33,13 @@ namespace Sofa3Devops.BacklogStates
         public void SetToTested(BacklogItem item)
         {
             var strat = item.NotificationStrategy;
-            item.Sprint.SetNotificationStrategy(new ScrumMasterStrategy());
+            foreach (var activity in item.Activities)
+            {
+                activity.State = new TestedState();
+
+            }
             item.State = new TestedState();
-            item.NotifyAll($"Update for backlog item {item.Name}", $"{item.Name} has been set to {item.State}");
-            item.Sprint.SetNotificationStrategy(strat);
+
         }
 
         public void SetToTesting(BacklogItem item)

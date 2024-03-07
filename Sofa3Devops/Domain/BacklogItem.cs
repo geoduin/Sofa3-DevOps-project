@@ -1,8 +1,4 @@
-﻿using System.Diagnostics.Eventing.Reader;
-using System.Diagnostics.Metrics;
-using Sofa3Devops.Adapters;
-using Sofa3Devops.Adapters.Clients;
-using Sofa3Devops.BacklogStates;
+﻿using Sofa3Devops.BacklogStates;
 using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.Observers;
 using Sofa3Devops.Services;
