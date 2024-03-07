@@ -5,6 +5,7 @@ using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.Observers;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestDoingToReadyForTesting()
         {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
             var mockedNotificationStrategy = new Mock<INotificationStrategy>();
             
 
@@ -24,9 +26,9 @@ namespace Sofa3DevOpsTest
                 ResponsibleMember = new Developer("Herman", "Herr@example.com", "HerrSlack"),
                 State = new DoingState()
             };
-
+            sprint.AddBacklogItem(backlogItem);
             mockedNotificationStrategy.Setup(x => x.SendNotification("", "", backlogItem.Subscribers));
-            backlogItem.SetNotificationStrategy(mockedNotificationStrategy.Object);
+            backlogItem.Sprint.SetNotificationStrategy(mockedNotificationStrategy.Object);
             
             backlogItem.SetItemReadyForTesting();
 
@@ -37,6 +39,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestReadyForTestingReceiveeTestersNotification()
         {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
             var test1Subscriber = new Mock<RegularSubscriber>(new Tester("test", "test", "test"));
             var test2Subscriber = new Mock<RegularSubscriber>(new Tester("test", "test", "test"));
 
@@ -46,10 +49,11 @@ namespace Sofa3DevOpsTest
                 ResponsibleMember = new Developer("Herman", "Herr@example.com", "HerrSlack"),
                 State = new DoingState()
             };
+            sprint.AddBacklogItem(backlogItem);
             backlogItem.AddSubscriber(test1Subscriber.Object);
             backlogItem.AddSubscriber(test2Subscriber.Object);
 
-            backlogItem.SetNotificationStrategy(new TesterNotificationStrategy());
+            backlogItem.Sprint.SetNotificationStrategy(new TesterNotificationStrategy());
             // Act
             backlogItem.SetItemReadyForTesting();
 

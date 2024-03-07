@@ -80,11 +80,14 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestBacklogItemTestedToTestedValid()
         {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
+            
             BacklogItem backlogItem = new BacklogItem("Task1", "Description")
             {
                 State = new TestedState()
             };
-            backlogItem.SetNotificationStrategy(new AllNotificationStrategy());
+            sprint.AddBacklogItem(backlogItem);
+            backlogItem.Sprint.SetNotificationStrategy(new AllNotificationStrategy());
             Activity activity = new Activity("", "", backlogItem) { State = new TestedState() };
             Activity activity1 = new Activity("", "", backlogItem) { State = new TestedState() };
 
@@ -180,12 +183,16 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestAuthorizedItemDisapprove()
         {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
+            Developer randomDeveloper = new Developer("Dic", "", "");
             BacklogItem backlogItem = new BacklogItem("Task1", "Description")
             {
                 State = new TestedState()
             };
-            backlogItem.SetNotificationStrategy(new TesterNotificationStrategy());
-            Developer randomDeveloper = new Developer("Dic", "", "");
+            sprint.AddBacklogItem(backlogItem);
+            sprint.AssignMembersToSprint(randomDeveloper);
+            backlogItem.Sprint.SetNotificationStrategy(new TesterNotificationStrategy());
+            
             randomDeveloper.SetLeadDeveloper();
             Tester tester = new Tester("Bob", "Test@example.com", "");
             backlogItem.AddSubscriber(new RegularSubscriber(tester));
@@ -198,6 +205,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestAuthorizedItemFinished()
         {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
             // Arrange
             Member tester = new Tester("Bob", "Test@example.com", "");
             Developer randomDeveloper = new Developer("Dic", "", "");
@@ -206,8 +214,10 @@ namespace Sofa3DevOpsTest
             {
                 State = new TestedState()
             };
-            backlogItem.SetNotificationStrategy(new TesterNotificationStrategy());
-            backlogItem.AddSubscriber(new RegularSubscriber(tester));
+            sprint.AddBacklogItem(backlogItem);
+            sprint.AssignMembersToSprint(tester);
+            backlogItem.Sprint.SetNotificationStrategy(new TesterNotificationStrategy());
+            sprint.AddSubscriber(new RegularSubscriber(tester));
 
             // Act
             randomDeveloper.ApproveAndFinishItem(backlogItem);

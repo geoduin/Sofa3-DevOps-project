@@ -50,6 +50,7 @@ namespace Sofa3Devops.Domain
 
         public void AddBacklogItem(BacklogItem item)
         {
+            item.Sprint = this;
             BacklogItems.Add(item);
         }
 
@@ -102,8 +103,21 @@ namespace Sofa3Devops.Domain
 
         public void AddSubscriber(Subscriber subscriber)
         {
-            var typeList = this.Subscribers[subscriber.NotifiedUser.GetType()];
-            typeList.Add(subscriber);
+            try
+            {
+                var typeList = this.Subscribers[subscriber.NotifiedUser.GetType()];
+                typeList.Add(subscriber);
+            }
+            catch
+            {
+                List<Subscriber> list = new List<Subscriber>()
+                {
+                    subscriber
+                };
+                Subscribers.Add(subscriber.NotifiedUser.GetType(), list);
+
+            }
+            
         }
 
         public void RemoveSubscriber(Subscriber subscriber)
