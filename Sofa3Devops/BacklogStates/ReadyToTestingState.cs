@@ -1,4 +1,5 @@
 ﻿using Sofa3Devops.Domain;
+using Sofa3Devops.NotificationStrategy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToTested(BacklogItem item)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
         public void SetToTesting(BacklogItem item)

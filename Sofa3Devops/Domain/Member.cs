@@ -1,12 +1,5 @@
 ﻿using Sofa3Devops.SprintStrategies;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 using Sofa3Devops.Adapters;
-using Sofa3Devops.NotificationStrategy;
 
 namespace Sofa3Devops.Domain
 {

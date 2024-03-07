@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sofa3Devops.NotificationStrategy;
 
 namespace Sofa3Devops.BacklogStates
 {
@@ -32,7 +33,14 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToTested(BacklogItem item)
         {
-            throw new NotImplementedException();
+            var strat = item.NotificationStrategy;
+            foreach (var activity in item.Activities)
+            {
+                activity.State = new TestedState();
+
+            }
+            item.State = new TestedState();
+
         }
 
         public void SetToTesting(BacklogItem item)

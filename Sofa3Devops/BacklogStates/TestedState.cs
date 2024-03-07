@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sofa3Devops.NotificationStrategy;
 
 namespace Sofa3Devops.BacklogStates
 {
@@ -16,7 +17,7 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToDo(BacklogItem item)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Can't set item to todo from tested");
         }
 
         public void SetToFinished(BacklogItem item)
@@ -44,6 +45,7 @@ namespace Sofa3Devops.BacklogStates
         {
             // Logic needs to be implemented.
             throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
         public void SetToTesting(BacklogItem item)
