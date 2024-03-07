@@ -11,17 +11,14 @@ namespace Sofa3Devops.BacklogStates
     {
         public void SetDoing(BacklogItem item)
         {
-            throw new NotImplementedException();
         }
 
         public void SetToDo(BacklogItem item)
         {
-            throw new NotImplementedException();
         }
 
         public void SetToFinished(BacklogItem item)
         {
-            throw new NotImplementedException();
         }
 
         public void SetToReadyTesting(BacklogItem item)
@@ -31,12 +28,10 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToTested(BacklogItem item)
         {
-            throw new InvalidOperationException();
         }
 
         public void SetToTesting(BacklogItem item)
         {
-            throw new NotImplementedException();
         }
     }
 }
