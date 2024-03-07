@@ -50,6 +50,7 @@ namespace Sofa3Devops.Domain
 
         public void AddBacklogItem(BacklogItem item)
         {
+            item.Sprint = this;
             BacklogItems.Add(item);
         }
 

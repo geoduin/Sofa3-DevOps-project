@@ -1,4 +1,5 @@
 ﻿using Sofa3Devops.Domain;
+using Sofa3Devops.NotificationStrategy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace Sofa3Devops.BacklogStates
         {
 
             item.SetBacklogState(new TodoState());
+            item.Sprint.SetNotificationStrategy(new ScrumMasterNotificationStrategy());
+            item.NotifyAll($"Backlog item: {item.Name} has been rejected.", "This backlog-item needs be implemented better.");
         }
 
         public void SetToFinished(BacklogItem item)

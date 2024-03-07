@@ -12,12 +12,14 @@ namespace Sofa3DevOpsTest
 {
     public class UC13Tests
     {
+        private Sprint sprint { get; set; }
 
+        public UC13Tests() {
+            sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Scrum project");
+        }
         [Fact]
         public void TestSingleBacklogTest()
         {
-            
-            Developer developer = new Developer("Bob", "", "");
             BacklogItem backlogItem = new BacklogItem("Task1", "Description")
             {
                 State = new TestedState()
@@ -118,6 +120,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestActivityIfFinishedStateStillReturnsTrue()
         {
+            
             BacklogItem backlogItem = new BacklogItem("Task1", "Description")
             {
                 State = new TestedState()
@@ -125,6 +128,7 @@ namespace Sofa3DevOpsTest
             Activity activity1 = new Activity("", "", backlogItem) { State = new FinishedState() };
 
             backlogItem.AddActivityToBacklogItem(activity1);
+            sprint.AddBacklogItem(backlogItem);
 
             var result = activity1.HasAllTaskBeenCompleted();
 
@@ -189,6 +193,7 @@ namespace Sofa3DevOpsTest
             randomDeveloper.SetLeadDeveloper();
             Tester tester = new Tester("Bob", "Test@example.com", "");
             backlogItem.AddSubscriber(new RegularSubscriber(tester));
+            sprint.AddBacklogItem(backlogItem);
 
             randomDeveloper.DisapproveTestedItem(backlogItem);
 

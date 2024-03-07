@@ -13,9 +13,16 @@ namespace Sofa3DevOpsTest
 {
     public class UC7Tests
     {
+        private Sprint testSprint {  get; set; }
+
+        public UC7Tests() {
+            testSprint = new ReleaseSprint(DateTime.Now, DateTime.Now.AddDays(1), "");
+        }
+
         [Fact]
         public void TestDoingToReadyForTesting()
         {
+            
             var mockedNotificationStrategy = new Mock<INotificationStrategy>();
             
 
@@ -26,7 +33,8 @@ namespace Sofa3DevOpsTest
             };
 
             mockedNotificationStrategy.Setup(x => x.SendNotification("", "", backlogItem.Subscribers));
-            backlogItem.SetNotificationStrategy(mockedNotificationStrategy.Object);
+            testSprint.AddBacklogItem(backlogItem);
+            testSprint.SetNotificationStrategy(mockedNotificationStrategy.Object);
             
             backlogItem.SetItemReadyForTesting();
 
@@ -48,8 +56,9 @@ namespace Sofa3DevOpsTest
             };
             backlogItem.AddSubscriber(test1Subscriber.Object);
             backlogItem.AddSubscriber(test2Subscriber.Object);
+            testSprint.AddBacklogItem(backlogItem);
+            testSprint.SetNotificationStrategy(new TesterNotificationStrategy());
 
-            backlogItem.SetNotificationStrategy(new TesterNotificationStrategy());
             // Act
             backlogItem.SetItemReadyForTesting();
 

@@ -17,8 +17,10 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToDo(BacklogItem item)
         {
+            item.Sprint.SetNotificationStrategy(new ScrumMasterNotificationStrategy());
+            
             item.SetBacklogState(new TodoState());
-            // Send notification to scrum master.
+            item.NotifyAll($"Backlog-item: {item.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {item.State.GetType().Name}");
         }
 
         public void SetToFinished(BacklogItem item)
@@ -39,7 +41,6 @@ namespace Sofa3Devops.BacklogStates
         public void SetToTesting(BacklogItem item)
         {
             item.SetBacklogState(new TestingState());
-            // Notify lead developer.
         }
     }
 }
