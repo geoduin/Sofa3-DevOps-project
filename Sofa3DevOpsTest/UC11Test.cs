@@ -4,6 +4,7 @@ using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.Observers;
+using TodoState = Sofa3Devops.BacklogStates.TodoState;
 
 namespace Sofa3DevOpsTest
 {
@@ -122,7 +123,7 @@ namespace Sofa3DevOpsTest
             sprint.AddBacklogItem(item);
             item.State = new TestingState();
             item.SetToToDo(tester);
-            Assert.True(item.State == new TodoState());
+            Assert.True(item.State.GetType() == typeof(TodoState));
         }
 
         [Fact]
@@ -136,7 +137,7 @@ namespace Sofa3DevOpsTest
             sprint.AddBacklogItem(item);
             item.State = new ReadyToTestingState();
             item.SetToToDo(tester);
-            Assert.True(item.State == new TodoState());
+            Assert.True(item.State.GetType() == typeof(TodoState));
         }
 
         [Fact]
@@ -152,18 +153,6 @@ namespace Sofa3DevOpsTest
             mockSprint.Verify(m => m.NotifyAll(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce);
         }
 
-        [Fact]
-        public void SettingItemFromTestingToToDoTriggersSendingOfNotificationTo()
-        {
-            Member tester = new Tester("test", "test", "test");
-            var mockSprint = new Mock<Sprint>(DateTime.Now, DateTime.MaxValue, "test");
-            mockSprint.Object.Members.Add(tester);
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = mockSprint.Object;
-            item.State = new TestingState();
-            item.SetToToDo(tester);
-            mockSprint.Verify(m => m.NotifyAll(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce);
-        }
 
         [Fact]
         public void ScrumMasterStrategyOnlySendsNotificationToScrumMasters()
