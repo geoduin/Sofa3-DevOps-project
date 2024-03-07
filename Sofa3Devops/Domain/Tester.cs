@@ -15,11 +15,15 @@ namespace Sofa3Devops.Domain
 
         public override void ApproveItemForTesting(BacklogItem item)
         {
+            // When state is in ReadyForTesting or Testing, this method will work without exceptions.
+            // Otherwise, exception will be thrown.
             item.SetToTesting();
         }
 
         public override void DisapproveItemForTesting(BacklogItem item)
         {
+            // When state is in ReadyForTesting or Testing, this method will work without exceptions.
+            // Otherwise, exception will be thrown.
             item.SetToTodo();
         }
     }

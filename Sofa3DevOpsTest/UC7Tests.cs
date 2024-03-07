@@ -14,6 +14,12 @@ namespace Sofa3DevOpsTest
 {
     public class UC7Tests
     {
+        private Sprint testSprint {  get; set; }
+
+        public UC7Tests() {
+            testSprint = new ReleaseSprint(DateTime.Now, DateTime.Now.AddDays(1), "");
+        }
+
         [Fact]
         public void TestDoingToReadyForTesting()
         {
@@ -52,6 +58,8 @@ namespace Sofa3DevOpsTest
             sprint.AddBacklogItem(backlogItem);
             backlogItem.AddSubscriber(test1Subscriber.Object);
             backlogItem.AddSubscriber(test2Subscriber.Object);
+            testSprint.AddBacklogItem(backlogItem);
+            testSprint.SetNotificationStrategy(new TesterNotificationStrategy());
 
             backlogItem.Sprint.SetNotificationStrategy(new TesterNotificationStrategy());
             // Act
