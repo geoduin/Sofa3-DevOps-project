@@ -27,12 +27,7 @@ namespace Sofa3Devops
             Subscriber poSub = new RegularSubscriber(member2);
             item.AddSubscriber(memSubscriber);
             item.AddSubscriber(poSub);
-            item.SetToTested(member);
-            
-
-
-
-
+            item.SetToTested();
         }
     }
 }

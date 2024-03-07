@@ -1,12 +1,5 @@
 ﻿using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Sofa3Devops.NotificationStrategy;
 
 namespace Sofa3Devops.BacklogStates
 {
@@ -25,12 +18,11 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToFinished(BacklogItem item)
         {
-            throw new NotImplementedException();
         }
 
         public void SetToReadyTesting(BacklogItem item)
         {
-            var strat = item.Sprint.NotificationStrategy;
+            var strat = item.Sprint!.NotificationStrategy;
             item.State = new ReadyToTestingState();
             // Set strategy to send to Testers.
             item.SetNotificationStrategy(new TesterNotificationStrategy());
