@@ -49,45 +49,6 @@ namespace Sofa3DevOpsTest
         }
 
         [Fact]
-        public void TestersCanSetTestingItemToTestedIfMemberOfSprint()
-        {
-            Member tester = new Tester("test", "test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            sprint.Members.Add(tester);
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = sprint;
-            sprint.AddBacklogItem(item);
-            item.State = new TestingState();
-            item.SetToTested(tester);
-            Assert.True(item.State.GetType().Equals(typeof(TestedState)));
-        }
-
-        [Fact]
-        public void TestersCantSetTestingItemToTestedIfNotMemberOfSprint()
-        {
-            Member tester = new Tester("test", "test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = sprint;
-            sprint.AddBacklogItem(item);
-            item.State = new TestingState();
-            Assert.Throws<UnauthorizedAccessException>(() => item.SetToTested(tester));
-        }
-        [Fact]
-        public void MemberOfSprintCantSetItemToTestedIfRoleIsNotTester()
-        {
-            Member notTester = new Developer("test", "test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            sprint.Members.Add(notTester);
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = sprint;
-            sprint.AddBacklogItem(item);
-            item.State = new TestingState();
-            Assert.Throws<UnauthorizedAccessException>(() => item.SetToTested(notTester));
-        }
-        
-        
-        [Fact]
         public void MemberCantSetTestedItemToToDoIfNotMemberOfSprint()
         {
             Member productOwner = new Tester("test", "test", "test");
@@ -176,10 +137,78 @@ namespace Sofa3DevOpsTest
             s1.Verify(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce());
             s2.Verify(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce());
             s3.Verify(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+        }
 
+        [Fact]
+        public void TestItemFromTestingToTestedByNonTesters()
+        {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
+            BacklogItem backlog = new BacklogItem("", "")
+            {
+                State = new TestingState()
+            };
+            sprint.SetNotificationStrategy(new AllNotificationStrategy());
+            sprint.AddBacklogItem(backlog);
 
+            Member tester = new Developer("", "", "");
 
+            var error = Assert.Throws<UnauthorizedAccessException>(()=> tester.SetItemFromTestingToTested(backlog));
 
+            Assert.Equal("Non-testers are not allowed to move this item to tested.", error.Message);
+        }
+
+        [Fact]
+        public void TestItemFromTestingToTestedByTesters()
+        {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
+            BacklogItem backlog = new BacklogItem("", "")
+            {
+                State = new TestingState()
+            };
+            sprint.SetNotificationStrategy(new AllNotificationStrategy());
+            sprint.AddBacklogItem(backlog);
+
+            Member tester = new Tester("", "", "");
+
+            tester.SetItemFromTestingToTested(backlog);
+
+            Assert.IsType<TestedState>(backlog.State);
+        }
+
+        [Fact]
+        public void TestItemFromTestingToTodoByNonTesters()
+        {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
+            BacklogItem backlog = new BacklogItem("", "")
+            {
+                State = new TestingState()
+            };
+            sprint.SetNotificationStrategy(new AllNotificationStrategy());
+            sprint.AddBacklogItem(backlog);
+
+            Member tester = new Developer("", "", "");
+
+            var error = Assert.Throws<UnauthorizedAccessException>(() => tester.SetItemFromTestingBackToTodo(backlog));
+
+            Assert.Equal("Non-testers are not allowed to move this item to tested.", error.Message);
+        }
+
+        [Fact]
+        public void TestItemFromTestingToTodoByTesters()
+        {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
+            BacklogItem backlog = new BacklogItem("", "")
+            {
+                State = new TestingState()
+            };
+            sprint.SetNotificationStrategy(new AllNotificationStrategy());
+            sprint.AddBacklogItem(backlog);
+
+            Member tester = new Tester("", "", "");
+
+            tester.SetItemFromTestingBackToTodo(backlog);
+
+            Assert.IsType<TodoState>(backlog.State);
         }
     }
 }

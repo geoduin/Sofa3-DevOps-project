@@ -6,7 +6,7 @@ namespace Sofa3Devops.Domain
     public abstract class Member
     {
         public string Name { get; set; }
-        public SprintStrategy SprintStrategy { get; set; }
+        public SprintStrategy? SprintStrategy { get; set; }
         public List<CommentThread> PostedThreads { get; set; }
         public List<Response> PostedResponses { get; set; }
         public string EmailAddress { get; set; }
@@ -21,6 +21,7 @@ namespace Sofa3Devops.Domain
             PostedThreads = new List<CommentThread>();
             EmailAddress = emailAddress;
             SlackUserName = slackUserName;
+            SprintStrategy = null;
         }
 
         public void SetSprintStrategy(SprintStrategy strategy)
@@ -30,12 +31,12 @@ namespace Sofa3Devops.Domain
 
         public virtual Sprint CreateSprint(DateTime start, DateTime end, string name)
         {
-            return SprintStrategy.CreateSprint(start, end, name);
+            return SprintStrategy!.CreateSprint(start, end, name);
         }
 
         public virtual Sprint AddBacklogItem(Sprint sprint, BacklogItem backlogItem)
         {
-            return SprintStrategy.AddBacklogItem(sprint, backlogItem);
+            return SprintStrategy!.AddBacklogItem(sprint, backlogItem);
         }
 
         public void SetWayToNotify(INotificationAdapter wayToNotify)
@@ -45,39 +46,64 @@ namespace Sofa3Devops.Domain
 
         public virtual void StartSprint(Sprint sprint)
         {
-            SprintStrategy.StartSprint(sprint);
+            SprintStrategy!.StartSprint(sprint);
         }
 
         public virtual void CancelSprint(Sprint sprint)
         {
-            SprintStrategy.CancelSprint(sprint);
+            SprintStrategy!.CancelSprint(sprint);
         }
 
+        // Doing ready testing.
+        public void SetItemForReadyTesting(BacklogItem backlogItem)
+        {
+            backlogItem.SetItemReadyForTesting();
+        }
+
+        // 'to do' -> Doing
         public void PickupBacklogItem(BacklogItem backlogItem)
         {
             backlogItem.AssignBacklogItem(this);
         }
 
         // Only relevant for testers and ReadyForTesting backlogitems.
+        // ReadyForTesting -> Testing
         public virtual void ApproveItemForTesting(BacklogItem item)
         {
             throw new UnauthorizedAccessException("Does not have authority to approve item for testing. Only testers are allowed to move.");
         }
 
         // Only relevant for testers and ReadyForTesting backlogitems.
+        // ReadyForTesting -> Testing
         public virtual void DisapproveItemForTesting(BacklogItem item)
         {
             throw new UnauthorizedAccessException("Does not have authority to disapprove item for testing. Only testers are allowed to move.");
         }
 
+        // Testing -> Tested
+        public virtual void SetItemFromTestingToTested(BacklogItem item)
+        {
+            throw new UnauthorizedAccessException("Non-testers are not allowed to move this item to tested.");
+        }
+
+        // Testing -> 'to do'
+        public virtual void SetItemFromTestingBackToTodo(BacklogItem item)
+        {
+            throw new UnauthorizedAccessException("Non-testers are not allowed to move this item to tested.");
+        }
+
+        // Tested -> Finished
         public virtual void ApproveAndFinishItem(BacklogItem item)
         {
             throw new UnauthorizedAccessException("Does not have authority to Finish the backlog item. Only lead developers are allowed to do that.");
         }
 
+        // Tested -> ReadyForTesting
         public virtual void DisapproveTestedItem(BacklogItem item)
         {
             throw new UnauthorizedAccessException("Does not have authority to disapprove the backlog item. Only lead developers are allowed to do that.");
         }
+    
+        
     }
 }
