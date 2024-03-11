@@ -6,11 +6,11 @@ namespace Sofa3Devops.BacklogStates
 {
     public class TestingState : IBacklogState
     {
-        public void SetDoing(BacklogItem item)
+        public void SetDoing(BacklogItem item, Member member)
         {
         }
 
-        public void SetToDo(BacklogItem item)
+        public void SetToDo(BacklogItem item, Member member)
         {
 
             item.SetBacklogState(new TodoState());
@@ -18,15 +18,15 @@ namespace Sofa3Devops.BacklogStates
             item.NotifyAll($"Backlog item: {item.Name} has been rejected.", "This backlog-item needs be implemented better.");
         }
 
-        public void SetToFinished(BacklogItem item)
+        public void SetToFinished(BacklogItem item, Member member)
         {
         }
 
-        public void SetToReadyTesting(BacklogItem item)
+        public void SetToReadyTesting(BacklogItem item, Member member)
         {
         }
 
-        public void SetToTested(BacklogItem item)
+        public void SetToTested(BacklogItem item, Member member)
         {
             var strat = item.NotificationStrategy;
             item.Activities.ForEach(activities => activities.SetBacklogState(new TestedState()));
@@ -34,7 +34,7 @@ namespace Sofa3Devops.BacklogStates
             item.SetBacklogState(new TestedState());
         }
 
-        public void SetToTesting(BacklogItem item)
+        public void SetToTesting(BacklogItem item, Member member)
         {
         }
     }

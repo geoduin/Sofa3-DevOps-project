@@ -13,7 +13,7 @@ namespace DomainServices.DomainServicesImpl
         public void FinishTesting(Member member, BacklogItem item) {
             if (IsTester(member))
             {
-                item.SetToTested();
+                item.SetToTested(member);
             }
             else
             {
@@ -24,7 +24,7 @@ namespace DomainServices.DomainServicesImpl
         public void SetItemBackToTodo(Member member, BacklogItem item) {
             if (IsTester(member))
             {
-                item.SetToTodo();
+                item.SetToTodo(member);
             }
             else
             {
@@ -33,13 +33,13 @@ namespace DomainServices.DomainServicesImpl
         }
         
         public void SetItemForReadyTesting(Member member, BacklogItem item) {
-            item.SetItemReadyForTesting();
+            item.SetItemReadyForTesting(member);
         }
         
         public void FinishItem(Member member, BacklogItem item) {
             if (IsLeadDeveloper(member))
             {
-                item.SetItemToFinished();
+                item.SetItemToFinished(member);
             }
             else
             {
@@ -50,7 +50,7 @@ namespace DomainServices.DomainServicesImpl
         public void RejectTestedItem(Member member, BacklogItem item) {
             if (IsLeadDeveloper(member))
             {
-                item.SetItemReadyForTesting();
+                item.SetItemReadyForTesting(member);
             }
             else
             {
@@ -62,7 +62,7 @@ namespace DomainServices.DomainServicesImpl
         {
             if(IsTester(member))
             {
-                item.SetToTesting();
+                item.SetToTesting(member);
             }
             else
             {

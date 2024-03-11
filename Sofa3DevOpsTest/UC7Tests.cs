@@ -16,9 +16,11 @@ namespace Sofa3DevOpsTest
     public class UC7Tests
     {
         private Sprint testSprint {  get; set; }
+        private Member dev {  get; set; }
 
         public UC7Tests() {
             testSprint = new ReleaseSprint(DateTime.Now, DateTime.Now.AddDays(1), "");
+            dev = new Developer("", "", "");
         }
 
         [Fact]
@@ -37,7 +39,7 @@ namespace Sofa3DevOpsTest
             mockedNotificationStrategy.Setup(x => x.SendNotification("", "", backlogItem.Subscribers));
             backlogItem.Sprint.SetNotificationStrategy(mockedNotificationStrategy.Object);
             
-            backlogItem.SetItemReadyForTesting();
+            backlogItem.SetItemReadyForTesting(new Developer("Herman", "Herr@example.com", "HerrSlack"));
 
             Assert.IsType<ReadyToTestingState>(backlogItem.State);
         }
@@ -51,7 +53,7 @@ namespace Sofa3DevOpsTest
                 State = new DoingState()
             };
 
-            backlogItem.State.SetToDo(backlogItem);
+            backlogItem.State.SetToDo(backlogItem, dev);
             Assert.IsType<TodoState>(backlogItem.State);
         }
 
@@ -63,7 +65,7 @@ namespace Sofa3DevOpsTest
                 State = new DoingState()
             };
 
-            backlogItem.SetToDoing();
+            backlogItem.SetToDoing(new Developer("", "", ""));
 
             Assert.IsType<DoingState>(backlogItem.State);
         }

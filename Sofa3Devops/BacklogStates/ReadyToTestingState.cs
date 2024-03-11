@@ -10,36 +10,36 @@ namespace Sofa3Devops.BacklogStates
 {
     public class ReadyToTestingState : IBacklogState
     {
-        public void SetDoing(BacklogItem item)
+        public void SetDoing(BacklogItem item, Member member)
         {
             throw new NotImplementedException();
         }
 
-        public void SetToDo(BacklogItem item)
+        public void SetToDo(BacklogItem item, Member member)
         {
             item.Sprint!.SetNotificationStrategy(new ScrumMasterNotificationStrategy());
             
             item.SetBacklogState(new TodoState());
-            item.Activities.ForEach(a => a.SetToTodo());
+            item.Activities.ForEach(a => a.SetToTodo(member));
             item.NotifyAll($"Backlog-item: {item.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {item.State.GetType().Name}");
         }
 
-        public void SetToFinished(BacklogItem item)
+        public void SetToFinished(BacklogItem item, Member member)
         {
             throw new NotImplementedException();
         }
 
-        public void SetToReadyTesting(BacklogItem item)
+        public void SetToReadyTesting(BacklogItem item, Member member)
         {
             throw new NotImplementedException();
         }
 
-        public void SetToTested(BacklogItem item)
+        public void SetToTested(BacklogItem item, Member member)
         {
             throw new InvalidOperationException();
         }
 
-        public void SetToTesting(BacklogItem item)
+        public void SetToTesting(BacklogItem item, Member member)
         {
             item.SetBacklogState(new TestingState());
         }
