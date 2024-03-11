@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DomainServices\DomainServices.csproj" />
     <ProjectReference Include="..\Sofa3Devops\Sofa3Devops.csproj" />
   </ItemGroup>
 

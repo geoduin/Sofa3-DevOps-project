@@ -21,6 +21,7 @@ namespace Sofa3Devops.BacklogStates
             // Validate if all activities are done.
             if (item.HasAllTaskBeenCompleted())
             {
+                item.Activities.ForEach(act => act.SetItemToFinished());
                 item.SetBacklogState(new FinishedState());
             }
             else

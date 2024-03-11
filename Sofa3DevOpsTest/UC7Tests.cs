@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using DomainServices.DomainServicesImpl;
+using Moq;
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
@@ -70,7 +71,19 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestDoingToReadyTestingViaService()
         {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
+            BacklogStateManager backlogStateManager = new BacklogStateManager();
+            
+            BacklogItem backlogItem = new BacklogItem("Task1", "")
+            {
+                State = new DoingState()
+            };
+            sprint.AddBacklogItem(backlogItem);
+            sprint.SetNotificationStrategy(new Mock<INotificationStrategy>().Object);
+            Member member = new Developer("Dave", "Dave@example.com", "");
+            backlogStateManager.SetItemForReadyTesting(member, backlogItem);
 
+            Assert.IsType<ReadyToTestingState>(backlogItem.State);
         }
     }
 }

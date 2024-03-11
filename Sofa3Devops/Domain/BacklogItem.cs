@@ -55,6 +55,7 @@ namespace Sofa3Devops.Domain
             // Check if activity is the same as it is assigned
             if (Equals(activity.AssignedBacklogItem))
             {
+                activity.Sprint = Sprint;
                 Activities.Add(activity);
             }
             else

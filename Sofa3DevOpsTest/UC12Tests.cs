@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using DomainServices.DomainServicesImpl;
+using DomainServices.DomainServicesIntf;
+using Moq;
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
 using Sofa3Devops.Observers;
@@ -20,6 +22,7 @@ namespace Sofa3DevOpsTest
         private BacklogItem readyForTestingItem { get; set; }
         private BacklogItem testingItem { get; set; }
         private Sprint sprint { get; set; }
+        private IBacklogStateManager backlogStateManager { get; set; }
 
         private Mock<Subscriber> leadDevSubscriber { get; set; }
         private Mock<Subscriber> devSubscriber { get; set; }
@@ -48,6 +51,7 @@ namespace Sofa3DevOpsTest
             {
                 State = new OngoingState()
             };
+            backlogStateManager = new BacklogStateManager();
 
             sprint.AddBacklogItem(testingItem);
             sprint.AddBacklogItem(readyForTestingItem);
@@ -88,28 +92,15 @@ namespace Sofa3DevOpsTest
         public void TestIfScrumMasterIsNotifiedWhenItemIsRejectedByTesterInReadyTestingState()
         {
             // Ready testing -> Todo
+            Tester tester = new Tester("", "", "");
             // Act
-            tester.DisapproveItemForTesting(readyForTestingItem);
+            backlogStateManager.SetItemBackToTodo(tester, readyForTestingItem);
             
             // Assert
             leadDevSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Never());
             devSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Never());
             testerSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Never());
             scrumMasterSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Once());
-        }
-
-        [Fact]
-        public void TestIfScrumMasterIsNotifiedWhenItemIsRejectedByTesterInTestingState()
-        {
-            // Ready testing -> Todo
-            // Act
-            tester.DisapproveItemForTesting(testingItem);
-
-            // Assert
-            leadDevSubscriber.Verify(x => x.Notify($"Backlog item: {testingItem.Name} has been rejected.", "This backlog-item needs be implemented better."), Times.Never());
-            devSubscriber.Verify(x => x.Notify($"Backlog item: {testingItem.Name} has been rejected.", "This backlog-item needs be implemented better."), Times.Never());
-            testerSubscriber.Verify(x => x.Notify($"Backlog item: {testingItem.Name} has been rejected.", "This backlog-item needs be implemented better."), Times.Never());
-            scrumMasterSubscriber.Verify(x => x.Notify($"Backlog item: {testingItem.Name} has been rejected.", "This backlog-item needs be implemented better."), Times.Once());
         }
     }
 }

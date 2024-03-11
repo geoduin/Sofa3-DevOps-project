@@ -17,9 +17,10 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToDo(BacklogItem item)
         {
-            item.Sprint.SetNotificationStrategy(new ScrumMasterNotificationStrategy());
+            item.Sprint!.SetNotificationStrategy(new ScrumMasterNotificationStrategy());
             
             item.SetBacklogState(new TodoState());
+            item.Activities.ForEach(a => a.SetToTodo());
             item.NotifyAll($"Backlog-item: {item.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {item.State.GetType().Name}");
         }
 

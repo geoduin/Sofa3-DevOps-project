@@ -15,6 +15,9 @@ namespace Sofa3Devops.Domain
         {
         }
 
-        
+        public override string ToString()
+        {
+            return "Scrum-master";
+        }
     }
 }
