@@ -24,34 +24,9 @@ namespace Sofa3Devops.Domain
             SprintStrategy = null;
         }
 
-        public void SetSprintStrategy(SprintStrategy strategy)
-        {
-            SprintStrategy = strategy;
-        }
-
-        public virtual Sprint CreateSprint(DateTime start, DateTime end, string name)
-        {
-            return SprintStrategy!.CreateSprint(start, end, name);
-        }
-
-        public virtual Sprint AddBacklogItem(Sprint sprint, BacklogItem backlogItem)
-        {
-            return SprintStrategy!.AddBacklogItem(sprint, backlogItem);
-        }
-
         public void SetWayToNotify(INotificationAdapter wayToNotify)
         {
             this.WayToNotify = wayToNotify;
-        }
-
-        public virtual void StartSprint(Sprint sprint)
-        {
-            SprintStrategy!.StartSprint(sprint);
-        }
-
-        public virtual void CancelSprint(Sprint sprint)
-        {
-            SprintStrategy!.CancelSprint(sprint);
         }
     }
 }
