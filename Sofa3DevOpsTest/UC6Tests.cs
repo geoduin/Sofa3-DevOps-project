@@ -10,19 +10,6 @@ namespace Sofa3DevOpsTest
 {
     public class UC6Tests
     {
-
-        [Fact]
-        public void TestAssignmentBacklogItem()
-        {
-            Developer developer = new Developer("Olivier", "Olivier@onmicrosoft.net", "OlivierF");
-            BacklogItem backlogItem = new BacklogItem("Task1", "");
-
-            developer.PickupBacklogItem(backlogItem);
-
-            Assert.IsType<DoingState>(backlogItem.State);
-            Assert.Equal("Olivier", backlogItem.ResponsibleMember!.Name);
-        }
-
         [Fact]
         public void TestAssignmentEmptyActivity() {
             Developer developer = new Developer("Olivier", "Olivier@onmicrosoft.net", "OlivierF");
@@ -34,7 +21,7 @@ namespace Sofa3DevOpsTest
             backlogItem.AddActivityToBacklogItem(activity2);
 
             // Act
-            developer.PickupBacklogItem(activity);
+            activity.AssignBacklogItem(developer);
 
             // Assert
             Assert.IsType<DoingState>(backlogItem.State);

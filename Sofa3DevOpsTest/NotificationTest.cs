@@ -67,5 +67,36 @@ namespace Sofa3DevOpsTest
             testSprint.State.SetToCanceled(testSprint);
             notificationMock.Verify(c => c.SendNotification(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<Type, List<Subscriber>>>()), Times.Exactly(0));
         }
+
+        [Fact]
+        public void TestLeadDeveloperNotificationStrategy()
+        {
+            var test1Subscriber = new Mock<Subscriber>(new Tester("test", "test", "test"));
+            var dev1Subscriber = new Mock<Subscriber>(new Developer("dev", "dev", "dev")
+            {
+                Seniority = true
+            });
+            var sm1Subscriber = new Mock<Subscriber>(new ScrumMaster("sm", "sm", "sm"));
+            var po1Subscriber = new Mock<Subscriber>(new ProductOwner("po", "po", "po"));
+
+            Dictionary<Type, List<Subscriber>> subDictionary = new Dictionary<Type, List<Subscriber>>
+            {
+                { typeof(Tester), new List<Subscriber>() },
+                { typeof(Developer), new List<Subscriber>() },
+                { typeof(ScrumMaster), new List<Subscriber>() },
+                { typeof(ProductOwner), new List<Subscriber>() }
+            };
+            subDictionary[typeof(Tester)].Add(test1Subscriber.Object);
+            subDictionary[typeof(Developer)].Add(dev1Subscriber.Object);
+            subDictionary[typeof(ScrumMaster)].Add(sm1Subscriber.Object);
+            subDictionary[typeof(ProductOwner)].Add(po1Subscriber.Object);
+            INotificationStrategy testStrategy = new LeadDeveloperNotificationStrategy();
+            testStrategy.SendNotification("test", "test", subDictionary);
+            
+            test1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(0));
+            dev1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(1));
+            sm1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(0));
+            po1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(0));
+        }
     }
 }

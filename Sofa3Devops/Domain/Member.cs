@@ -53,17 +53,5 @@ namespace Sofa3Devops.Domain
         {
             SprintStrategy!.CancelSprint(sprint);
         }
-
-        // Doing ready testing.
-        public void SetItemForReadyTesting(BacklogItem backlogItem)
-        {
-            backlogItem.SetItemReadyForTesting();
-        }
-
-        // 'to do' -> Doing
-        public void PickupBacklogItem(BacklogItem backlogItem)
-        {
-            backlogItem.AssignBacklogItem(this);
-        }
     }
 }
