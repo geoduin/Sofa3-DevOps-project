@@ -3,7 +3,6 @@ using DomainServices.DomainServicesIntf;
 using Sofa3Devops.Domain;
 using Sofa3Devops.Factories;
 using Sofa3Devops.SprintStates;
-using Sofa3Devops.SprintStrategies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,7 +55,6 @@ namespace Sofa3DevOpsTest
         public void TestUnAuthorisedSprintCreation() {
             // Arrange
             Developer developer = new Developer("Jonas", "dev@dev.nl", "dev@dev.nl");
-            SprintStrategy strategy = new NonAuthorizedSprintStrategy();
 
             //Act
             var sprint = Assert.Throws<UnauthorizedAccessException>(()=> sprintManager.CreateSprint(DateTime.Now, DateTime.Now, "First sprint of the day", developer));

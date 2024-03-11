@@ -1,5 +1,4 @@
 ﻿using Sofa3Devops.Factories;
-using Sofa3Devops.SprintStrategies;
 using System;
 using System.Collections.Generic;
 using System.Linq;

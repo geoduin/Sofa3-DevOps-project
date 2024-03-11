@@ -1,12 +1,10 @@
-﻿using Sofa3Devops.SprintStrategies;
-using Sofa3Devops.Adapters;
+﻿using Sofa3Devops.Adapters;
 
 namespace Sofa3Devops.Domain
 {
     public abstract class Member
     {
         public string Name { get; set; }
-        public SprintStrategy? SprintStrategy { get; set; }
         public List<CommentThread> PostedThreads { get; set; }
         public List<Response> PostedResponses { get; set; }
         public string EmailAddress { get; set; }
@@ -21,7 +19,6 @@ namespace Sofa3Devops.Domain
             PostedThreads = new List<CommentThread>();
             EmailAddress = emailAddress;
             SlackUserName = slackUserName;
-            SprintStrategy = null;
         }
 
         public void SetWayToNotify(INotificationAdapter wayToNotify)

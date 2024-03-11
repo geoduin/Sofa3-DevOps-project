@@ -1,6 +1,5 @@
 ﻿using Sofa3Devops.Domain;
 using Sofa3Devops.Factories;
-using Sofa3Devops.SprintStrategies;
 using Sofa3Devops.SprintStates;
 using DomainServices.DomainServicesImpl;
 using DomainServices.DomainServicesIntf;

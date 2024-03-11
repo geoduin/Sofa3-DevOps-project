@@ -1,7 +1,6 @@
 ﻿using DomainServices.DomainServicesIntf;
 using Sofa3Devops.Domain;
 using Sofa3Devops.Factories;
-using Sofa3Devops.SprintStrategies;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
@@ -28,6 +27,7 @@ namespace DomainServices.DomainServicesImpl
             if (performAction(member))
             {
                 sprint.StartSprint();
+                return;
             }
             throw AuthorizationException();
         }
@@ -37,6 +37,7 @@ namespace DomainServices.DomainServicesImpl
             if(performAction(member))
             {
                 sprint.CancelSprint();
+                return;
             }
             throw AuthorizationException();
         }
