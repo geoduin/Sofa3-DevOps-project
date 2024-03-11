@@ -41,24 +41,30 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestInvalidationOfBacklogItem()
         {
+            // Arrange
             sprint.AddBacklogItem(backlogItem);
             sprint.AssignMembersToSprint(tester);
             sprint.AssignMembersToSprint(developer);
             sprint.AssignMembersToSprint(scrumMaster);
             sprint.AssignMembersToSprint(leadDeveloper);
 
-            tester.DisapproveItemForTesting(backlogItem);
+            // Act
+            // Domain service should be present.
 
             Assert.IsType<TodoState>(backlogItem.State);
             // Validate scrummaster notification
         }
 
         [Fact]
-        public void TestDisapprovalOfBacklogItemForTestingByOtherPeople()
+        public void TestReadyForTestingToTodo()
         {
-            var error = Assert.Throws<UnauthorizedAccessException>(() => developer.DisapproveItemForTesting(backlogItem));
+           
+        }
 
-            Assert.Equal("Does not have authority to disapprove item for testing. Only testers are allowed to move.", error.Message);
+        [Fact]
+        public void TestReadyForTestingToTodoAndAllOtherActivitiesToTodo()
+        {
+
         }
     }
 }

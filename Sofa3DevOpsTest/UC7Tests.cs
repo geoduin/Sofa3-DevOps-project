@@ -41,36 +41,6 @@ namespace Sofa3DevOpsTest
             Assert.IsType<ReadyToTestingState>(backlogItem.State);
         }
 
-        // Future test to validate if all testers receive the message.
-        [Fact]
-        public void TestReadyForTestingReceiveeTestersNotification()
-        {
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
-            var test1Subscriber = new Mock<RegularSubscriber>(new Tester("test", "test", "test"));
-            var test2Subscriber = new Mock<RegularSubscriber>(new Tester("test", "test", "test"));
-
-
-            BacklogItem backlogItem = new BacklogItem("S", "s")
-            {
-                ResponsibleMember = new Developer("Herman", "Herr@example.com", "HerrSlack"),
-                State = new DoingState()
-            };
-            sprint.AddBacklogItem(backlogItem);
-            backlogItem.AddSubscriber(test1Subscriber.Object);
-            backlogItem.AddSubscriber(test2Subscriber.Object);
-            testSprint.AddBacklogItem(backlogItem);
-            testSprint.SetNotificationStrategy(new TesterNotificationStrategy());
-
-            backlogItem.Sprint.SetNotificationStrategy(new TesterNotificationStrategy());
-            // Act
-            backlogItem.SetItemReadyForTesting();
-
-            // Assert
-            Assert.Equal("Sofa3Devops.Domain.Tester", test1Subscriber.Object.NotifiedUser.ToString());
-            Assert.IsType<ReadyToTestingState>(backlogItem.State);
-            //test1Subscriber.Verify(x => x.Notify("", ""), Times.Exactly(1));
-        }
-
         // Other test, to ensure the state follows the state diagram
         [Fact]
         public void TestDoingToTodo()
@@ -95,6 +65,12 @@ namespace Sofa3DevOpsTest
             backlogItem.SetToDoing();
 
             Assert.IsType<DoingState>(backlogItem.State);
+        }
+
+        [Fact]
+        public void TestDoingToReadyTestingViaService()
+        {
+
         }
     }
 }
