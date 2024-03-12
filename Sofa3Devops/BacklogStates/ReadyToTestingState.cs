@@ -1,4 +1,5 @@
-﻿using Sofa3Devops.Domain;
+﻿using Sofa3Devops.AuthorisationStrategy;
+using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace Sofa3Devops.BacklogStates
 {
     public class ReadyToTestingState : IBacklogState
     {
+        private IAuthValidationBehavior? validator { get; set; }
+
         public void SetDoing(BacklogItem item, Member member)
         {
             throw new NotImplementedException();
@@ -17,6 +20,9 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToDo(BacklogItem item, Member member)
         {
+            validator = new TesterValidation();
+            validator.HasPermission(member);
+
             item.Sprint!.SetNotificationStrategy(new ScrumMasterNotificationStrategy());
             
             item.SetBacklogState(new TodoState());
@@ -41,6 +47,8 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToTesting(BacklogItem item, Member member)
         {
+            validator = new TesterValidation();
+            validator.HasPermission(member);
             item.SetBacklogState(new TestingState());
         }
     }

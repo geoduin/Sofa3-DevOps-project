@@ -1,17 +1,24 @@
-﻿using Sofa3Devops.Domain;
+﻿using Sofa3Devops.AuthorisationStrategy;
+using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace Sofa3Devops.BacklogStates
 {
     public class TestingState : IBacklogState
     {
+
+        private IAuthValidationBehavior? validator { get; set; }
+
         public void SetDoing(BacklogItem item, Member member)
         {
         }
 
         public void SetToDo(BacklogItem item, Member member)
         {
+            validator = new TesterValidation();
+            validator.HasPermission(member);
 
             item.SetBacklogState(new TodoState());
             item.Sprint!.SetNotificationStrategy(new ScrumMasterNotificationStrategy());
@@ -28,6 +35,9 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToTested(BacklogItem item, Member member)
         {
+            validator = new TesterValidation();
+            validator.HasPermission(member);
+
             var strat = item.NotificationStrategy;
             item.Activities.ForEach(activities => activities.SetBacklogState(new TestedState()));
             item.Sprint!.SetNotificationStrategy(new LeadDeveloperNotificationStrategy());

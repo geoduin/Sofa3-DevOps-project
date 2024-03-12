@@ -47,7 +47,7 @@ namespace Sofa3DevOpsTest
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now, "Sprint 1");
             BacklogItem backlogItem = new BacklogItem("Task 1", "NA");
             
-            var result = Assert.Throws<UnauthorizedAccessException>(()=> sprintManager.AddBacklogItem(sprint, backlogItem, master));
+            var result = Assert.Throws<UnauthorizedAccessException>(()=> sprintManagerRelease.AddBacklogItem(sprint, backlogItem, master));
 
             Assert.Empty(sprint.BacklogItems);
             Assert.Equal($"Unauthorized action: Users with {master} role are not allowed to set item to testing. Only testers are allowed to move backlog-item to Testing.", result.Message);

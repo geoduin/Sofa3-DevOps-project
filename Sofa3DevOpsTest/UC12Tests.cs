@@ -22,7 +22,6 @@ namespace Sofa3DevOpsTest
         private BacklogItem readyForTestingItem { get; set; }
         private BacklogItem testingItem { get; set; }
         private Sprint sprint { get; set; }
-        private IBacklogStateManager backlogStateManager { get; set; }
 
         private Mock<Subscriber> leadDevSubscriber { get; set; }
         private Mock<Subscriber> devSubscriber { get; set; }
@@ -51,7 +50,6 @@ namespace Sofa3DevOpsTest
             {
                 State = new OngoingState()
             };
-            backlogStateManager = new BacklogStateManager();
 
             sprint.AddBacklogItem(testingItem);
             sprint.AddBacklogItem(readyForTestingItem);
@@ -94,7 +92,7 @@ namespace Sofa3DevOpsTest
             // Ready testing -> Todo
             Tester tester = new Tester("", "", "");
             // Act
-            backlogStateManager.SetItemBackToTodo(tester, readyForTestingItem);
+            readyForTestingItem.SetToTodo(tester);
             
             // Assert
             leadDevSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Never());

@@ -14,7 +14,6 @@ namespace Sofa3DevOpsTest
         private Developer leadDeveloper { get; set; }
         private BacklogItem backlogItem { get; set; }
         private Sprint sprint { get; set; }
-        private readonly IBacklogStateManager stateManager;
 
         public UC11Test()
         {
@@ -32,7 +31,6 @@ namespace Sofa3DevOpsTest
             {
                 State = new OngoingState()
             };
-            stateManager = new BacklogStateManager();
         }
 
         [Fact]    
@@ -40,7 +38,7 @@ namespace Sofa3DevOpsTest
         {
             sprint.AddBacklogItem(backlogItem);
             // Act
-            stateManager.FinishTesting(tester, backlogItem);
+            backlogItem.SetToTested(tester);
             // Assert
             Assert.IsType<TestedState>(backlogItem.State);
         }
@@ -61,7 +59,7 @@ namespace Sofa3DevOpsTest
             backlogItem.AddActivityToBacklogItem(act2);
 
             // Act
-            stateManager.FinishTesting(tester, backlogItem);
+            backlogItem.SetToTested(tester);
 
             // Assert
             Assert.IsType<TestedState>(act1.State);
@@ -71,9 +69,9 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestTestingToTestedByNonTester()
         {
-            var error = Assert.Throws<UnauthorizedAccessException>(() => stateManager.FinishTesting(developer, backlogItem));
-            var errorScrumMaster = Assert.Throws<UnauthorizedAccessException>(() => stateManager.FinishTesting(scrumMaster, backlogItem));
-            var errorLeadDeveloper = Assert.Throws<UnauthorizedAccessException>(() => stateManager.FinishTesting(leadDeveloper, backlogItem));
+            var error = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTested(developer));
+            var errorScrumMaster = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTested(scrumMaster));
+            var errorLeadDeveloper = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTested(leadDeveloper));
 
             // Validate scrummaster notification
             Assert.Equal("Unauthorized action: Users with Developer role are not allowed to perform this action. Only testers are allowed.", error.Message);

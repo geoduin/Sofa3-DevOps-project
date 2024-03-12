@@ -16,11 +16,9 @@ namespace Sofa3DevOpsTest
     public class UC13Tests
     {
         private Sprint sprint { get; set; }
-        private readonly IBacklogStateManager backlogStateManager;
 
         public UC13Tests() {
             sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Scrum project");
-            backlogStateManager = new BacklogStateManager();
         }
 
         // Backlog item logic
@@ -117,9 +115,9 @@ namespace Sofa3DevOpsTest
             Tester quackDeveloper = new Tester("Rick", "", "");
             ScrumMaster daveDeveloper = new ScrumMaster("Dave", "", "");
 
-            var error1 = Assert.Throws<UnauthorizedAccessException>(() => backlogStateManager.RejectTestedItem(randomDeveloper, backlogItem));
-            var error2 = Assert.Throws<UnauthorizedAccessException>(() => backlogStateManager.RejectTestedItem(quackDeveloper, backlogItem));
-            var error3 = Assert.Throws<UnauthorizedAccessException>(() => backlogStateManager.RejectTestedItem(daveDeveloper, backlogItem));
+            var error1 = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetItemReadyForTesting(randomDeveloper));
+            var error2 = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetItemReadyForTesting(quackDeveloper));
+            var error3 = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetItemReadyForTesting(daveDeveloper));
 
             var firstError = $"Unauthorized action: Users with {randomDeveloper} role are not allowed to perform this action. Only lead developers are allowed.";
             var secondError = $"Unauthorized action: Users with {quackDeveloper} role are not allowed to perform this action. Only lead developers are allowed.";
@@ -142,9 +140,9 @@ namespace Sofa3DevOpsTest
             Tester quackDeveloper = new Tester("Rick", "", "");
             ScrumMaster daveDeveloper = new ScrumMaster("Dave", "", "");
 
-            var error1 = Assert.Throws<UnauthorizedAccessException>(() => backlogStateManager.FinishItem(randomDeveloper, backlogItem));
-            var error2 = Assert.Throws<UnauthorizedAccessException>(() => backlogStateManager.FinishItem(quackDeveloper, backlogItem));
-            var error3 = Assert.Throws<UnauthorizedAccessException>(() => backlogStateManager.FinishItem(daveDeveloper, backlogItem));
+            var error1 = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetItemToFinished(randomDeveloper));
+            var error2 = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetItemToFinished(quackDeveloper));
+            var error3 = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetItemToFinished(daveDeveloper));
 
             var firstError = $"Unauthorized action: Users with {randomDeveloper} role are not allowed to perform this action. Only lead developers are allowed.";
             var secondError = $"Unauthorized action: Users with {quackDeveloper} role are not allowed to perform this action. Only lead developers are allowed.";
@@ -173,7 +171,7 @@ namespace Sofa3DevOpsTest
             backlogItem.AddActivityToBacklogItem(activity);
             backlogItem.AddActivityToBacklogItem(activity1);
 
-            backlogStateManager.FinishItem(randomDeveloper, backlogItem);
+            backlogItem.SetItemToFinished(randomDeveloper);
 
             Assert.IsType<FinishedState>(backlogItem.State);
         }
@@ -193,7 +191,7 @@ namespace Sofa3DevOpsTest
             backlogItem.AddActivityToBacklogItem(activity);
             backlogItem.AddActivityToBacklogItem(activity1);
 
-            var error = Assert.Throws<InvalidOperationException>(()=> backlogStateManager.FinishItem(randomDeveloper, backlogItem));
+            var error = Assert.Throws<InvalidOperationException>(()=> backlogItem.SetItemToFinished(randomDeveloper));
 
             Assert.IsNotType<FinishedState>(backlogItem.State);
             Assert.Equal("All tasks and subtasks need to be completed, before finishing this backlog item", error.Message);
@@ -224,7 +222,7 @@ namespace Sofa3DevOpsTest
             backlogItem.AddSubscriber(new RegularSubscriber(tester));
             sprint.AddBacklogItem(backlogItem);
 
-            backlogStateManager.RejectTestedItem(randomDeveloper, backlogItem);
+            backlogItem.SetItemReadyForTesting(randomDeveloper);
 
             Assert.IsType<ReadyToTestingState>(backlogItem.State);
         }
@@ -254,7 +252,7 @@ namespace Sofa3DevOpsTest
             sprint.AddSubscriber(new RegularSubscriber(tester));
 
             // Act
-            backlogStateManager.FinishItem(randomDeveloper, backlogItem);
+            backlogItem.SetItemToFinished(randomDeveloper);
 
             // Assert
             Assert.IsType<FinishedState>(backlogItem.State);

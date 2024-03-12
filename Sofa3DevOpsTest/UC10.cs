@@ -19,7 +19,6 @@ namespace Sofa3DevOpsTest
         private Developer leadDeveloper { get; set; }
         private BacklogItem backlogItem { get; set; }
         private Sprint sprint { get; set; }
-        private readonly IBacklogStateManager stateManager;
 
         public UC10() {
             tester = new Tester("Test", "Test@example.com", "TestSlack");
@@ -36,24 +35,21 @@ namespace Sofa3DevOpsTest
             {
                 State = new OngoingState()
             };
-            stateManager = new BacklogStateManager();
-
         }
 
         [Fact]
         public void TestItemFromReadyForTestingToTesting()
         {
-            stateManager.AcceptItemForTesting(tester, backlogItem);
-
+            backlogItem.SetToTesting(tester);
             Assert.IsType<TestingState>(backlogItem.State);
         }
         
         [Fact]
         public void TestItemFromReadyForTestingToTestingByNonTester()
         {
-            var error = Assert.Throws<UnauthorizedAccessException>(() => stateManager.AcceptItemForTesting(developer, backlogItem));
-            var errorScrumMaster = Assert.Throws<UnauthorizedAccessException>(() => stateManager.AcceptItemForTesting(scrumMaster, backlogItem));
-            var errorLeadDeveloper = Assert.Throws<UnauthorizedAccessException>(() => stateManager.AcceptItemForTesting(leadDeveloper, backlogItem));
+            var error = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTesting(developer));
+            var errorScrumMaster = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTesting(scrumMaster));
+            var errorLeadDeveloper = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTesting(leadDeveloper));
 
             // Validate scrummaster notification
             Assert.Equal("Unauthorized action: Users with Developer role are not allowed to perform this action. Only testers are allowed.", error.Message);

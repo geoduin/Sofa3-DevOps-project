@@ -23,7 +23,6 @@ namespace Sofa3DevOpsTest
         private Developer leadDeveloper { get; set; }
         private BacklogItem backlogItem { get; set; }
         private Sprint sprint { get; set; }
-        private readonly IBacklogStateManager stateManager;
 
         public UC9Tests()
         {
@@ -41,7 +40,6 @@ namespace Sofa3DevOpsTest
             {
                 State = new OngoingState()
             };
-            stateManager = new BacklogStateManager();
         }
 
         [Fact]
@@ -56,9 +54,9 @@ namespace Sofa3DevOpsTest
 
             // Act
             // Domain service should be present.
-            var error = Assert.Throws<UnauthorizedAccessException>(()=> stateManager.SetItemBackToTodo(developer, backlogItem));
-            var errorScrumMaster = Assert.Throws<UnauthorizedAccessException>(() => stateManager.SetItemBackToTodo(scrumMaster, backlogItem));
-            var errorLeadDeveloper = Assert.Throws<UnauthorizedAccessException>(() => stateManager.SetItemBackToTodo(leadDeveloper, backlogItem));
+            var error = Assert.Throws<UnauthorizedAccessException>(()=> backlogItem.SetToTodo(developer));
+            var errorScrumMaster = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTodo(scrumMaster));
+            var errorLeadDeveloper = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTodo(leadDeveloper));
 
             // Validate scrummaster notification
             Assert.Equal("Unauthorized action: Users with Developer role are not allowed to perform this action. Only testers are allowed.", error.Message);
@@ -71,8 +69,8 @@ namespace Sofa3DevOpsTest
         {
             backlogItem.State = new ReadyToTestingState();
             sprint.AddBacklogItem(backlogItem);
-            stateManager.SetItemBackToTodo(tester, backlogItem);
-            
+            backlogItem.SetToTodo(tester);
+
             Assert.IsType<TodoState>(backlogItem.State);
         }
 
@@ -93,7 +91,7 @@ namespace Sofa3DevOpsTest
             backlogItem.AddActivityToBacklogItem(act2);
             
             // Act
-            stateManager.SetItemBackToTodo(tester, backlogItem);
+            backlogItem.SetToTodo(tester);
 
             Assert.IsType<TodoState>(act1.State);
             Assert.IsType<TodoState>(act2.State);
