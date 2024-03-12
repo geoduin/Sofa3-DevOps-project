@@ -1,4 +1,5 @@
 ﻿using DomainServices.DomainServicesIntf;
+using Sofa3Devops.AuthorisationStrategy;
 using Sofa3Devops.Domain;
 using Sofa3Devops.Factories;
 using System;

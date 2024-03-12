@@ -1,4 +1,5 @@
 ﻿using DomainServices.DomainServicesIntf;
+using Sofa3Devops.AuthorisationStrategy;
 using Sofa3Devops.Domain;
 using System;
 using System.Collections.Generic;
@@ -10,26 +11,22 @@ namespace DomainServices.DomainServicesImpl
 {
     public class BacklogStateManager: IBacklogStateManager
     {
+        private IAuthValidationBehavior? validator { get; set; }
+
+        public BacklogStateManager() {
+            validator = null;
+        }
+
         public void FinishTesting(Member member, BacklogItem item) {
-            if (IsTester(member))
-            {
-                item.SetToTested(member);
-            }
-            else
-            {
-                throw new UnauthorizedAccessException($"Unauthorized action: Users with {member} role are not allowed to set item to Tested. Only testers are allowed to move backlog-item to Tested.");
-            }
+            validator = new TesterValidation();
+            validator.HasPermission(member);
+            item.SetToTested(member);
         }
         
         public void SetItemBackToTodo(Member member, BacklogItem item) {
-            if (IsTester(member))
-            {
-                item.SetToTodo(member);
-            }
-            else
-            {
-                throw new UnauthorizedAccessException($"Unauthorized action: Users with {member} role are not allowed to set item to Todo. Only testers are allowed to move backlog-item to Todo.");
-            }
+            validator = new TesterValidation();
+            validator.HasPermission(member);
+            item.SetToTodo(member);
         }
         
         public void SetItemForReadyTesting(Member member, BacklogItem item) {
@@ -37,55 +34,22 @@ namespace DomainServices.DomainServicesImpl
         }
         
         public void FinishItem(Member member, BacklogItem item) {
-            if (IsLeadDeveloper(member))
-            {
-                item.SetItemToFinished(member);
-            }
-            else
-            {
-                throw new UnauthorizedAccessException($"Unauthorized action: Users with {member} role are not allowed to finish a Backlog-item. This is reserved for lead-developers.");
-            }
+            validator = new LeadDeveloperValidation();
+            validator.HasPermission(member);
+            item.SetItemToFinished(member);
         }
         
         public void RejectTestedItem(Member member, BacklogItem item) {
-            if (IsLeadDeveloper(member))
-            {
-                item.SetItemReadyForTesting(member);
-            }
-            else
-            {
-                throw new UnauthorizedAccessException($"Unauthorized action: Users with {member} role are not allowed to reject a Backlog-item and put it back for testing. This is reserved for lead-developers.");
-            }
+            validator = new LeadDeveloperValidation();
+            validator.HasPermission(member);
+            item.SetItemReadyForTesting(member);
         }
         
         public void AcceptItemForTesting(Member member, BacklogItem item)
         {
-            if(IsTester(member))
-            {
-                item.SetToTesting(member);
-            }
-            else
-            {
-                throw new UnauthorizedAccessException($"Unauthorized action: Users with {member} role are not allowed to set item to testing. Only testers are allowed to move backlog-item to Testing.");
-            }
+            validator = new TesterValidation();
+            validator.HasPermission(member);
+            item.SetToTesting(member);
         }
-
-        private bool IsTester(Member member) { 
-            return member.GetType() == typeof(Tester); 
-        }
-
-        private bool IsLeadDeveloper(Member member)
-        {
-            if (member.GetType() == typeof(Developer))
-            {
-                var dev = (Developer)member;
-                return dev.Seniority;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
     }
 }
