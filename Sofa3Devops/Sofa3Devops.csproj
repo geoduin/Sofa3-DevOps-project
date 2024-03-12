@@ -8,8 +8,4 @@
     <SonarQubeTestProject>false</SonarQubeTestProject>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="AuthorisationStrategy\" />
-  </ItemGroup>
-
 </Project>
