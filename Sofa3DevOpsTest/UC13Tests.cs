@@ -120,9 +120,9 @@ namespace Sofa3DevOpsTest
             var error2 = Assert.Throws<UnauthorizedAccessException>(() => backlogStateManager.RejectTestedItem(quackDeveloper, backlogItem));
             var error3 = Assert.Throws<UnauthorizedAccessException>(() => backlogStateManager.RejectTestedItem(daveDeveloper, backlogItem));
 
-            var firstError = $"Unauthorized action: Users with {randomDeveloper} role are not allowed to reject a Backlog-item and put it back for testing. This is reserved for lead-developers.";
-            var secondError = $"Unauthorized action: Users with {quackDeveloper} role are not allowed to reject a Backlog-item and put it back for testing. This is reserved for lead-developers.";
-            var thirdError = $"Unauthorized action: Users with {daveDeveloper} role are not allowed to reject a Backlog-item and put it back for testing. This is reserved for lead-developers.";
+            var firstError = $"Unauthorized action: Users with {randomDeveloper} role are not allowed to perform this action. Only lead developers are allowed.";
+            var secondError = $"Unauthorized action: Users with {quackDeveloper} role are not allowed to perform this action. Only lead developers are allowed.";
+            var thirdError = $"Unauthorized action: Users with {daveDeveloper} role are not allowed to perform this action. Only lead developers are allowed.";
 
             Assert.Equal(firstError, error1.Message);
             Assert.Equal(secondError, error2.Message);
@@ -145,10 +145,10 @@ namespace Sofa3DevOpsTest
             var error2 = Assert.Throws<UnauthorizedAccessException>(() => backlogStateManager.FinishItem(quackDeveloper, backlogItem));
             var error3 = Assert.Throws<UnauthorizedAccessException>(() => backlogStateManager.FinishItem(daveDeveloper, backlogItem));
 
-            var firstError = $"Unauthorized action: Users with {randomDeveloper} role are not allowed to finish a Backlog-item. This is reserved for lead-developers.";
-            var secondError = $"Unauthorized action: Users with {quackDeveloper} role are not allowed to finish a Backlog-item. This is reserved for lead-developers.";
-            var thirdError = $"Unauthorized action: Users with {daveDeveloper} role are not allowed to finish a Backlog-item. This is reserved for lead-developers.";
-            
+            var firstError = $"Unauthorized action: Users with {randomDeveloper} role are not allowed to perform this action. Only lead developers are allowed.";
+            var secondError = $"Unauthorized action: Users with {quackDeveloper} role are not allowed to perform this action. Only lead developers are allowed.";
+            var thirdError = $"Unauthorized action: Users with {daveDeveloper} role are not allowed to perform this action. Only lead developers are allowed.";
+
             Assert.Equal(firstError, error1.Message);
             Assert.Equal(secondError, error2.Message);
             Assert.Equal(thirdError, error3.Message);

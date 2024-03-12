@@ -61,9 +61,9 @@ namespace Sofa3DevOpsTest
             var errorLeadDeveloper = Assert.Throws<UnauthorizedAccessException>(() => stateManager.SetItemBackToTodo(leadDeveloper, backlogItem));
 
             // Validate scrummaster notification
-            Assert.Equal("Unauthorized action: Users with Developer role are not allowed to set item to Todo. Only testers are allowed to move backlog-item to Todo.", error.Message);
-            Assert.Equal("Unauthorized action: Users with Scrum-master role are not allowed to set item to Todo. Only testers are allowed to move backlog-item to Todo.", errorScrumMaster.Message);
-            Assert.Equal("Unauthorized action: Users with Lead developer role are not allowed to set item to Todo. Only testers are allowed to move backlog-item to Todo.", errorLeadDeveloper.Message);
+            Assert.Equal("Unauthorized action: Users with Developer role are not allowed to perform this action. Only testers are allowed.", error.Message);
+            Assert.Equal("Unauthorized action: Users with Scrum-master role are not allowed to perform this action. Only testers are allowed.", errorScrumMaster.Message);
+            Assert.Equal("Unauthorized action: Users with Lead developer role are not allowed to perform this action. Only testers are allowed.", errorLeadDeveloper.Message);
         }
 
         [Fact]
