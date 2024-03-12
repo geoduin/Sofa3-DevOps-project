@@ -14,61 +14,40 @@ namespace DomainServices.DomainServicesImpl
     public class SprintManager: ISprintManager
     {
         private readonly AbstractSprintFactory abstractSprintFactory;
-        private readonly List<Type> authorizedArray;
+        private IAuthValidationBehavior? authValidator { get; set; }
 
         public SprintManager(AbstractSprintFactory abstractSprintFactory) {
             this.abstractSprintFactory = abstractSprintFactory;
-            authorizedArray = new List<Type>() {
-                typeof(ProductOwner), typeof(ScrumMaster)
-            };
+            authValidator = null;
         }
 
         public virtual void StartSprint(Sprint sprint, Member member)
         {
-            if (performAction(member))
-            {
-                sprint.StartSprint();
-                return;
-            }
-            throw AuthorizationException();
+            authValidator = new ScrumMasterPOValidation();
+            authValidator.HasPermission(member);
+            sprint.StartSprint();
         }
 
         public virtual void CancelSprint(Sprint sprint, Member member)
         {
-            if(performAction(member))
-            {
-                sprint.CancelSprint();
-                return;
-            }
-            throw AuthorizationException();
+            authValidator = new ScrumMasterPOValidation();
+            authValidator.HasPermission(member);
+            sprint.CancelSprint();
         }
 
         public virtual Sprint CreateSprint(DateTime start, DateTime end, string name, Member member)
         {
-            if(performAction(member))
-            {
-                return abstractSprintFactory.CreateSprint(start, end, name);
-            }
-            throw AuthorizationException();
+            authValidator = new ScrumMasterPOValidation();
+            authValidator.HasPermission(member);
+            return abstractSprintFactory.CreateSprint(start, end, name);
         }
 
         public virtual Sprint AddBacklogItem(Sprint sprint, BacklogItem backlogItem, Member member)
         {
-            if (performAction(member))
-            {
-                sprint.AddBacklogItem(backlogItem);
-                return sprint;
-            }
-            throw AuthorizationException();
-        }
-
-        private UnauthorizedAccessException AuthorizationException()
-        {
-            return new UnauthorizedAccessException("Does not have the right authorization to perform this action.");
-        }
-
-        private bool performAction(Member member) {
-            return authorizedArray.Contains(member.GetType());
+            authValidator = new ScrumMasterPOValidation();
+            authValidator.HasPermission(member);
+            sprint.AddBacklogItem(backlogItem);
+            return sprint;
         }
     }
 }

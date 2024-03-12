@@ -9,7 +9,7 @@ namespace Sofa3Devops.AuthorisationStrategy
 {
     
     public class ScrumMasterPOValidation : IAuthValidationBehavior
-    {   
+    {
         private readonly List<Type> auth;
 
         public ScrumMasterPOValidation()

@@ -3,6 +3,7 @@ using Sofa3Devops.Factories;
 using Sofa3Devops.SprintStates;
 using DomainServices.DomainServicesImpl;
 using DomainServices.DomainServicesIntf;
+using System.Diagnostics.Metrics;
 
 namespace Sofa3DevOpsTest
 {
@@ -41,7 +42,7 @@ namespace Sofa3DevOpsTest
 
             var error = Assert.Throws<UnauthorizedAccessException>(()=> sprintManager.CancelSprint(sprint, dev));
 
-            Assert.Equal("Does not have the right authorization to perform this action.", error.Message);
+            Assert.Equal($"Unauthorized action: Users with {dev} role are not allowed to set item to testing. Only testers are allowed to move backlog-item to Testing.", error.Message);
         }
     }
 }
