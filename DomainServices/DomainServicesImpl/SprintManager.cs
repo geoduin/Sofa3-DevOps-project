@@ -18,9 +18,6 @@ namespace DomainServices.DomainServicesImpl
 
         public SprintManager(AbstractSprintFactory abstractSprintFactory) {
             this.abstractSprintFactory = abstractSprintFactory;
-            authorizedArray = new List<Type>() {
-                typeof(ProductOwner), typeof(ScrumMaster)
-            };
             authValidator = null;
         }
 
