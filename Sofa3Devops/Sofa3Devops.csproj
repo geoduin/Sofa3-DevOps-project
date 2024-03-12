@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,5 +7,9 @@
     <Nullable>enable</Nullable>
     <SonarQubeTestProject>false</SonarQubeTestProject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="AuthorisationStrategy\" />
+  </ItemGroup>
 
 </Project>
