@@ -41,8 +41,6 @@ namespace Sofa3Devops.Domain
             SubscriberServices.InitializeSubscriberDictionary(Subscribers);
         }
 
-       
-
         public void SetSprintState(ISprintState sprintState)
         {
             State = sprintState;
@@ -101,6 +99,15 @@ namespace Sofa3Devops.Domain
             State.SetToCanceled(this);
         }
 
+        public void FinishSprint(Member member)
+        {
+            State.SetToFinished(this);
+            EndSprint(member);
+        }
+
+        // Will be called upon in the states
+        public abstract void EndSprint(Member member);
+
         public void AddSubscriber(Subscriber subscriber)
         {
             try
@@ -132,7 +139,5 @@ namespace Sofa3Devops.Domain
         {
             this.NotificationStrategy = strategy;
         }
-
-        
     }
 }

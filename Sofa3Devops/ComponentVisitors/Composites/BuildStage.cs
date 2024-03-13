@@ -16,8 +16,7 @@ namespace Sofa3Devops.ComponentVisitors.Composites
         public bool AcceptVisitor(Visitor visitor)
         {
             visitor.VisitBuildStage(this);
-            base.AcceptVisitor(visitor);
-            return Excecute();
+            return base.AcceptVisitor(visitor);
         }
     }
 }

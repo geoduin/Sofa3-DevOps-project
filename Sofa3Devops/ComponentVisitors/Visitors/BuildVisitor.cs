@@ -18,6 +18,9 @@ namespace Sofa3Devops.ComponentVisitors.Visitors
         {
             return true;
         }
+        public void VisitCommand(Command command)
+        {
+        }
 
         public bool VisitTesting(TestStage visitor)
         {

@@ -22,10 +22,20 @@ namespace Sofa3Devops.ComponentVisitors.Composites
         public virtual bool AcceptVisitor(Visitor visitor)
         {
             Visitor = visitor;
-            children.ForEach((child) => {
-                child.AcceptVisitor(visitor);
-            });
-            return true;
+            try
+            {
+                foreach (var child in children)
+                {
+                    var r = child.AcceptVisitor(visitor);
+                    Console.WriteLine(r);
+                }
+                return true;
+            }
+            catch
+            {
+                throw new InvalidOperationException($"command: {title} has failed.");
+            }
+            
         }
 
         public void AddComponent(IComponent component)
@@ -33,19 +43,6 @@ namespace Sofa3Devops.ComponentVisitors.Composites
             children.Add(component);
         }
 
-        public bool Excecute()
-        {
-            try
-            {
-                Console.WriteLine(this.title);
-                children.ForEach(c => c.Excecute());
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
         public List<IComponent> GetChildren()
         {

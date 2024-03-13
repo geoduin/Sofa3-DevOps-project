@@ -27,7 +27,7 @@ namespace Sofa3Devops.AuthorisationStrategy
             {
                 return true;
             }
-            throw new UnauthorizedAccessException($"Unauthorized action: Users with {member} role are not allowed to set item to testing. Only testers are allowed to move backlog-item to Testing.");
+            throw new UnauthorizedAccessException($"Unauthorized action: Users with {member} role are not allowed to perform. Only scrum masters and Product owners.");
         }
     }
 

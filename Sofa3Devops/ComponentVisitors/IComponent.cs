@@ -10,6 +10,5 @@ namespace Sofa3Devops.ComponentVisitors
     public interface IComponent
     {
         bool AcceptVisitor(Visitor visitor);
-        bool Excecute();
     }
 }

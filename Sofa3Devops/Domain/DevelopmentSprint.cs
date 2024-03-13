@@ -16,5 +16,10 @@ namespace Sofa3Devops.Domain
         {
             NotificationStrategy.SendNotification(title, message, Subscribers);
         }
+
+        public override void EndSprint(Member member)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
