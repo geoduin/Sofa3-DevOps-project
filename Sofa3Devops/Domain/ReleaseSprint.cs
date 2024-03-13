@@ -8,13 +8,25 @@ namespace Sofa3Devops.Domain
 {
     public class ReleaseSprint : Sprint
     {
+        public Pipeline Pipeline { get; set; }
+
         public ReleaseSprint(DateTime startDate, DateTime endDate, string name) : base(startDate, endDate, name)
         {
+        }
+
+        public ReleaseSprint(DateTime startDate, DateTime endDate, string name, Pipeline pipeline) : base(startDate, endDate, name)
+        {
+            Pipeline = pipeline;
         }
 
         public override void NotifyAll(string title, string message)
         {
             this.NotificationStrategy.SendNotification(title, message, this.Subscribers);
+        }
+
+        public bool StartReleasePipeline() { 
+            Pipeline.StartPipeline();
+            return Pipeline.HasPipelineSucceeded();
         }
     }
 }
