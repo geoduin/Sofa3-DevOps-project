@@ -25,9 +25,8 @@ namespace Sofa3Devops.ComponentVisitors.Composites
             try
             {
                 foreach (var child in children)
-                {
+                {                    
                     var r = child.AcceptVisitor(visitor);
-                    Console.WriteLine(r);
                 }
                 return true;
             }

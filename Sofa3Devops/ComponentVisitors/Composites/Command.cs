@@ -9,8 +9,8 @@ namespace Sofa3Devops.ComponentVisitors.Composites
 {
     public class Command : IComponent
     {
-        private readonly string title;
-        private readonly string command;
+        public readonly string title;
+        public readonly string command;
         private bool SuccessFlag { get; set; } = true;
         private Visitor? Visitor { get; set; }
 
@@ -23,9 +23,8 @@ namespace Sofa3Devops.ComponentVisitors.Composites
         {
             try
             {
-                visitor.VisitCommand(this);
-                // Perhaps some logic
-
+                Visitor = visitor;
+                Visitor.VisitCommand(this);
                 return SuccessFlag;
             }
             catch

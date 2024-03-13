@@ -21,10 +21,20 @@ namespace Sofa3Devops.ComponentVisitors.Visitors
 
         public void VisitCommand(Command command)
         {
+            Console.WriteLine(command.command);
         }
 
         public bool VisitTesting(TestStage visitor)
         {
+            Console.WriteLine("========");
+            Console.WriteLine("Visit testing");
+            
+            var commands = visitor.GetChildren();
+
+            foreach (var command in commands)
+            {
+                Console.WriteLine(command.ToString());
+            }
             return true;
         }
     }
