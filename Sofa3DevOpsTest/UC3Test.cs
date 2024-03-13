@@ -1,7 +1,8 @@
-﻿using Sofa3Devops.Domain;
+﻿using DomainServices.DomainServicesImpl;
+using DomainServices.DomainServicesIntf;
+using Sofa3Devops.Domain;
 using Sofa3Devops.Factories;
 using Sofa3Devops.SprintStates;
-using Sofa3Devops.SprintStrategies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +13,27 @@ namespace Sofa3DevOpsTest
 {
     public class UC3Test
     {
+        private readonly AbstractSprintFactory devSprintFactory;
+        private readonly AbstractSprintFactory releaseSprintFactory;
+
+        private readonly ISprintManager sprintManager;
+        private readonly ISprintManager sprintManagerRelease;
+
+        public UC3Test() {
+            devSprintFactory = new DevelopmentSprintFactory();
+            releaseSprintFactory = new ReleaseSprintFactory();
+            sprintManager = new SprintManager(devSprintFactory);
+            sprintManagerRelease = new SprintManager(releaseSprintFactory);
+        }
 
         [Fact]
         public void TestScrumMasterSprintCreation()
         {
             // Arrange
-            ScrumMaster scrumMaster = new ScrumMaster("Han", "dev@dev.nl", "dev@dev.nl");
-            AbstractSprintFactory factory = new DevelopmentSprintFactory();
-            SprintStrategy strategy = new AuthorizedSprintStrategy(factory);
-            scrumMaster.SetSprintStrategy(strategy);
+            ScrumMaster productOwner = new ScrumMaster("Olaf", "dev@dev.nl", "dev@dev.nl");
 
             // Act
-            Sprint sprint = scrumMaster.CreateSprint(DateTime.Now, DateTime.Now, "First sprint of the day");
+            Sprint sprint = sprintManager.CreateSprint(DateTime.Now, DateTime.Now, "First sprint of the day", productOwner);
 
             // Assert
             Assert.Equal("First sprint of the day", sprint.Name);
@@ -33,12 +43,9 @@ namespace Sofa3DevOpsTest
         public void TestProductOwnerSprintCreation() {
             // Arrange
             ProductOwner productOwner = new ProductOwner("Olaf", "dev@dev.nl", "dev@dev.nl");
-            AbstractSprintFactory factory = new DevelopmentSprintFactory();
-            SprintStrategy strategy = new AuthorizedSprintStrategy(factory);
-            productOwner.SetSprintStrategy(strategy);
 
             // Act
-            Sprint sprint = productOwner.CreateSprint(DateTime.Now, DateTime.Now, "First sprint of the day");
+            Sprint sprint = sprintManager.CreateSprint(DateTime.Now, DateTime.Now, "First sprint of the day", productOwner);
 
             // Assert
             Assert.Equal("First sprint of the day", sprint.Name);
@@ -48,14 +55,12 @@ namespace Sofa3DevOpsTest
         public void TestUnAuthorisedSprintCreation() {
             // Arrange
             Developer developer = new Developer("Jonas", "dev@dev.nl", "dev@dev.nl");
-            SprintStrategy strategy = new NonAuthorizedSprintStrategy();
-            developer.SetSprintStrategy(strategy);
 
             //Act
-            var sprint = Assert.Throws<UnauthorizedAccessException>(()=> developer.CreateSprint(DateTime.Now, DateTime.Now, "First sprint of the day"));
+            var sprint = Assert.Throws<UnauthorizedAccessException>(()=> sprintManager.CreateSprint(DateTime.Now, DateTime.Now, "First sprint of the day", developer));
 
             // Assert
-            Assert.Equal("Does not have the right authorization to perform this action.", sprint.Message);
+            Assert.Equal($"Unauthorized action: Users with {developer} role are not allowed to set item to testing. Only testers are allowed to move backlog-item to Testing.", sprint.Message);
         }
 
         [Fact]
@@ -97,11 +102,10 @@ namespace Sofa3DevOpsTest
         {
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
             Member tester = new Tester("D", "D@Outlook.com", "DSlack");
-            tester.SetSprintStrategy(new NonAuthorizedSprintStrategy());
             
-            var result = Assert.Throws<UnauthorizedAccessException>(()=> tester.StartSprint(sprint));
+            var result = Assert.Throws<UnauthorizedAccessException>(()=> sprintManagerRelease.StartSprint(sprint, tester));
 
-            Assert.Equal("Does not have the right authorization to perform this action.", result.Message);
+            Assert.Equal($"Unauthorized action: Users with {tester} role are not allowed to set item to testing. Only testers are allowed to move backlog-item to Testing.", result.Message);
         }
 
         [Fact]
@@ -117,8 +121,7 @@ namespace Sofa3DevOpsTest
             sprint.AssignMembersToSprint(developer);
             sprint.AssignMembersToSprint(tester);
 
-            scrumMaster.SetSprintStrategy(new AuthorizedSprintStrategy(new ReleaseSprintFactory()));
-            scrumMaster.StartSprint(sprint);
+            sprintManager.StartSprint(sprint, scrumMaster);
 
             Assert.IsType<OngoingState>(sprint.State);
         }

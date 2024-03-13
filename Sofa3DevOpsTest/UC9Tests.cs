@@ -1,5 +1,9 @@
-﻿using Sofa3Devops.BacklogStates;
+﻿using DomainServices.DomainServicesImpl;
+using DomainServices.DomainServicesIntf;
+using Moq;
+using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
+using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.SprintStates;
 using System;
 using System.Collections.Generic;
@@ -41,24 +45,56 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestInvalidationOfBacklogItem()
         {
+            // Arrange
             sprint.AddBacklogItem(backlogItem);
             sprint.AssignMembersToSprint(tester);
             sprint.AssignMembersToSprint(developer);
             sprint.AssignMembersToSprint(scrumMaster);
             sprint.AssignMembersToSprint(leadDeveloper);
 
-            tester.DisapproveItemForTesting(backlogItem);
+            // Act
+            // Domain service should be present.
+            var error = Assert.Throws<UnauthorizedAccessException>(()=> backlogItem.SetToTodo(developer));
+            var errorScrumMaster = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTodo(scrumMaster));
+            var errorLeadDeveloper = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTodo(leadDeveloper));
 
-            Assert.IsType<TodoState>(backlogItem.State);
             // Validate scrummaster notification
+            Assert.Equal("Unauthorized action: Users with Developer role are not allowed to perform this action. Only testers are allowed.", error.Message);
+            Assert.Equal("Unauthorized action: Users with Scrum-master role are not allowed to perform this action. Only testers are allowed.", errorScrumMaster.Message);
+            Assert.Equal("Unauthorized action: Users with Lead developer role are not allowed to perform this action. Only testers are allowed.", errorLeadDeveloper.Message);
         }
 
         [Fact]
-        public void TestDisapprovalOfBacklogItemForTestingByOtherPeople()
+        public void TestReadyForTestingToTodo()
         {
-            var error = Assert.Throws<UnauthorizedAccessException>(() => developer.DisapproveItemForTesting(backlogItem));
+            backlogItem.State = new ReadyToTestingState();
+            sprint.AddBacklogItem(backlogItem);
+            backlogItem.SetToTodo(tester);
 
-            Assert.Equal("Does not have authority to disapprove item for testing. Only testers are allowed to move.", error.Message);
+            Assert.IsType<TodoState>(backlogItem.State);
+        }
+
+        [Fact]
+        public void TestReadyForTestingToTodoAndAllOtherActivitiesToTodo()
+        {
+            Activity act1 = new Activity("", "", backlogItem)
+            {
+                State = new ReadyToTestingState()
+            };
+            Activity act2 = new Activity("", "", backlogItem)
+            {
+                State = new ReadyToTestingState()
+            };
+            backlogItem.State = new ReadyToTestingState();
+            sprint.AddBacklogItem(backlogItem);
+            backlogItem.AddActivityToBacklogItem(act1);
+            backlogItem.AddActivityToBacklogItem(act2);
+            
+            // Act
+            backlogItem.SetToTodo(tester);
+
+            Assert.IsType<TodoState>(act1.State);
+            Assert.IsType<TodoState>(act2.State);
         }
     }
 }

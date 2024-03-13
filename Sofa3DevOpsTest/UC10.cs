@@ -3,10 +3,15 @@ using DomainServices.DomainServicesIntf;
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
 using Sofa3Devops.SprintStates;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Sofa3DevOpsTest
 {
-    public class UC11Test
+    public class UC10
     {
         private Member tester { get; set; }
         private Member developer { get; set; }
@@ -15,8 +20,7 @@ namespace Sofa3DevOpsTest
         private BacklogItem backlogItem { get; set; }
         private Sprint sprint { get; set; }
 
-        public UC11Test()
-        {
+        public UC10() {
             tester = new Tester("Test", "Test@example.com", "TestSlack");
             developer = new Developer("Developer", "Developer@example.com", "DevSlack");
             scrumMaster = new ScrumMaster("Master", "Master@example.com", "MasterSlack");
@@ -24,7 +28,7 @@ namespace Sofa3DevOpsTest
             leadDeveloper.SetLeadDeveloper();
             backlogItem = new BacklogItem("Head task", "")
             {
-                State = new TestingState(),
+                State = new ReadyToTestingState(),
                 ResponsibleMember = developer
             };
             sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Scrum project")
@@ -33,51 +37,24 @@ namespace Sofa3DevOpsTest
             };
         }
 
-        [Fact]    
-        public void TestTestingToTestedByTester()
-        {
-            sprint.AddBacklogItem(backlogItem);
-            // Act
-            backlogItem.SetToTested(tester);
-            // Assert
-            Assert.IsType<TestedState>(backlogItem.State);
-        }
-
         [Fact]
-        public void TestTestingToTestedByTesterAndAllActivities()
+        public void TestItemFromReadyForTestingToTesting()
         {
-            Activity act1 = new Activity("", "", backlogItem)
-            {
-                State = new ReadyToTestingState()
-            };
-            Activity act2 = new Activity("", "", backlogItem)
-            {
-                State = new ReadyToTestingState()
-            };
-            sprint.AddBacklogItem(backlogItem);
-            backlogItem.AddActivityToBacklogItem(act1);
-            backlogItem.AddActivityToBacklogItem(act2);
-
-            // Act
-            backlogItem.SetToTested(tester);
-
-            // Assert
-            Assert.IsType<TestedState>(act1.State);
-            Assert.IsType<TestedState>(act2.State);
+            backlogItem.SetToTesting(tester);
+            Assert.IsType<TestingState>(backlogItem.State);
         }
-
+        
         [Fact]
-        public void TestTestingToTestedByNonTester()
+        public void TestItemFromReadyForTestingToTestingByNonTester()
         {
-            var error = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTested(developer));
-            var errorScrumMaster = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTested(scrumMaster));
-            var errorLeadDeveloper = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTested(leadDeveloper));
+            var error = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTesting(developer));
+            var errorScrumMaster = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTesting(scrumMaster));
+            var errorLeadDeveloper = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTesting(leadDeveloper));
 
             // Validate scrummaster notification
             Assert.Equal("Unauthorized action: Users with Developer role are not allowed to perform this action. Only testers are allowed.", error.Message);
             Assert.Equal("Unauthorized action: Users with Scrum-master role are not allowed to perform this action. Only testers are allowed.", errorScrumMaster.Message);
             Assert.Equal("Unauthorized action: Users with Lead developer role are not allowed to perform this action. Only testers are allowed.", errorLeadDeveloper.Message);
         }
-
     }
 }

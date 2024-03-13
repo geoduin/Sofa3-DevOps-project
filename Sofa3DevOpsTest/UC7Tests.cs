@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using DomainServices.DomainServicesImpl;
+using Moq;
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
@@ -15,9 +16,11 @@ namespace Sofa3DevOpsTest
     public class UC7Tests
     {
         private Sprint testSprint {  get; set; }
+        private Member dev {  get; set; }
 
         public UC7Tests() {
             testSprint = new ReleaseSprint(DateTime.Now, DateTime.Now.AddDays(1), "");
+            dev = new Developer("", "", "");
         }
 
         [Fact]
@@ -36,39 +39,9 @@ namespace Sofa3DevOpsTest
             mockedNotificationStrategy.Setup(x => x.SendNotification("", "", backlogItem.Subscribers));
             backlogItem.Sprint.SetNotificationStrategy(mockedNotificationStrategy.Object);
             
-            backlogItem.SetItemReadyForTesting();
+            backlogItem.SetItemReadyForTesting(new Developer("Herman", "Herr@example.com", "HerrSlack"));
 
             Assert.IsType<ReadyToTestingState>(backlogItem.State);
-        }
-
-        // Future test to validate if all testers receive the message.
-        [Fact]
-        public void TestReadyForTestingReceiveeTestersNotification()
-        {
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
-            var test1Subscriber = new Mock<RegularSubscriber>(new Tester("test", "test", "test"));
-            var test2Subscriber = new Mock<RegularSubscriber>(new Tester("test", "test", "test"));
-
-
-            BacklogItem backlogItem = new BacklogItem("S", "s")
-            {
-                ResponsibleMember = new Developer("Herman", "Herr@example.com", "HerrSlack"),
-                State = new DoingState()
-            };
-            sprint.AddBacklogItem(backlogItem);
-            backlogItem.AddSubscriber(test1Subscriber.Object);
-            backlogItem.AddSubscriber(test2Subscriber.Object);
-            testSprint.AddBacklogItem(backlogItem);
-            testSprint.SetNotificationStrategy(new TesterNotificationStrategy());
-
-            backlogItem.Sprint.SetNotificationStrategy(new TesterNotificationStrategy());
-            // Act
-            backlogItem.SetItemReadyForTesting();
-
-            // Assert
-            Assert.Equal("Sofa3Devops.Domain.Tester", test1Subscriber.Object.NotifiedUser.ToString());
-            Assert.IsType<ReadyToTestingState>(backlogItem.State);
-            //test1Subscriber.Verify(x => x.Notify("", ""), Times.Exactly(1));
         }
 
         // Other test, to ensure the state follows the state diagram
@@ -80,7 +53,7 @@ namespace Sofa3DevOpsTest
                 State = new DoingState()
             };
 
-            backlogItem.State.SetToDo(backlogItem);
+            backlogItem.State.SetToDo(backlogItem, dev);
             Assert.IsType<TodoState>(backlogItem.State);
         }
 
@@ -92,9 +65,26 @@ namespace Sofa3DevOpsTest
                 State = new DoingState()
             };
 
-            backlogItem.SetToDoing();
+            backlogItem.SetToDoing(new Developer("", "", ""));
 
             Assert.IsType<DoingState>(backlogItem.State);
+        }
+
+        [Fact]
+        public void TestDoingToReadyTestingViaService()
+        {
+            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
+            
+            BacklogItem backlogItem = new BacklogItem("Task1", "")
+            {
+                State = new DoingState()
+            };
+            sprint.AddBacklogItem(backlogItem);
+            sprint.SetNotificationStrategy(new Mock<INotificationStrategy>().Object);
+            Member member = new Developer("Dave", "Dave@example.com", "");
+            backlogItem.SetItemReadyForTesting(member);
+
+            Assert.IsType<ReadyToTestingState>(backlogItem.State);
         }
     }
 }
