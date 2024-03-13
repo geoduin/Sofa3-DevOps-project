@@ -4,6 +4,7 @@ using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.Observers;
+using Sofa3Devops.Services;
 using TodoState = Sofa3Devops.BacklogStates.TodoState;
 
 namespace Sofa3DevOpsTest
@@ -20,7 +21,7 @@ namespace Sofa3DevOpsTest
             item.Sprint = sprint;
             sprint.AddBacklogItem(item);
             item.State = new ReadyToTestingState();
-            item.SetToTesting(tester);
+            BacklogItemServices.SetToTesting(tester, item);
             Assert.True(item.State.GetType().Equals(typeof(TestingState)));
         }
 
@@ -33,7 +34,7 @@ namespace Sofa3DevOpsTest
             item.Sprint = sprint;
             sprint.AddBacklogItem(item);
             item.State = new ReadyToTestingState();
-            Assert.Throws<UnauthorizedAccessException>(() => item.SetToTesting(tester));
+            Assert.Throws<UnauthorizedAccessException>(() => BacklogItemServices.SetToTesting(tester, item));
         }
         [Fact]
         public void MemberOfSprintCantSetItemToTestingIfRoleIsNotTester()
@@ -45,7 +46,7 @@ namespace Sofa3DevOpsTest
             item.Sprint = sprint;
             sprint.AddBacklogItem(item);
             item.State = new ReadyToTestingState();
-            Assert.Throws<UnauthorizedAccessException>(() => item.SetToTesting(notTester));
+            Assert.Throws<UnauthorizedAccessException>(() => BacklogItemServices.SetToTesting(notTester, item));
         }
 
         [Fact]
@@ -57,7 +58,7 @@ namespace Sofa3DevOpsTest
             item.Sprint = sprint;
             sprint.AddBacklogItem(item);
             item.State = new TestedState();
-            Assert.Throws<UnauthorizedAccessException>(() => item.SetToToDo(productOwner));
+            Assert.Throws<UnauthorizedAccessException>(() => BacklogItemServices.SetToToDo(productOwner, item));
         }
 
         [Fact]
@@ -70,7 +71,7 @@ namespace Sofa3DevOpsTest
             item.Sprint = sprint;
             sprint.AddBacklogItem(item);
             item.State = new TestedState();
-            Assert.Throws<UnauthorizedAccessException>(() => item.SetToToDo(productOwner));
+            Assert.Throws<UnauthorizedAccessException>(() => BacklogItemServices.SetToToDo(productOwner, item));
         }
 
         [Fact]
@@ -83,7 +84,7 @@ namespace Sofa3DevOpsTest
             item.Sprint = sprint;
             sprint.AddBacklogItem(item);
             item.State = new TestingState();
-            item.SetToToDo(tester);
+            BacklogItemServices.SetToToDo(tester, item);
             Assert.True(item.State.GetType() == typeof(TodoState));
         }
 
@@ -110,7 +111,7 @@ namespace Sofa3DevOpsTest
             BacklogItem item = new BacklogItem("test", "test");
             item.Sprint = mockSprint.Object;
             item.State = new TestingState();
-            item.SetToToDo(tester);
+            BacklogItemServices.SetToToDo(tester, item);
             mockSprint.Verify(m => m.NotifyAll(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce);
         }
 

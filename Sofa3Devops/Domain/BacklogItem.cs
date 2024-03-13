@@ -26,7 +26,6 @@ namespace Sofa3Devops.Domain
             State = new TodoState();
             ResponsibleMember = null;
             Subscribers = new Dictionary<Type, List<Subscriber>>();
-            SubscriberServices.InitializeSubscriberDictionary(Subscribers);
             Activities = new List<Activity>();
             Threads = new List<CommentThread>();
         }
