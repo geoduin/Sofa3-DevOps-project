@@ -7,7 +7,7 @@ using Sofa3Devops.ComponentVisitors.Visitors;
 
 namespace Sofa3Devops.ComponentVisitors.Composites
 {
-    public class BuildStage : Composite
+    public class BuildStage : CompositeComponent
     {
         public BuildStage(string title) : base(title)
         {
@@ -15,7 +15,9 @@ namespace Sofa3Devops.ComponentVisitors.Composites
 
         public bool AcceptVisitor(Visitor visitor)
         {
-            throw new NotImplementedException();
+            visitor.VisitBuildStage(this);
+            base.AcceptVisitor(visitor);
+            return Excecute();
         }
     }
 }

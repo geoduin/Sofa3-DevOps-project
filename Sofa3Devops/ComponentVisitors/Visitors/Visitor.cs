@@ -9,8 +9,8 @@ namespace Sofa3Devops.ComponentVisitors.Visitors
 {
     public interface Visitor
     {
-        bool VisitBuildStage(AnalyzeStage visitor);
+        bool VisitBuildStage(BuildStage visitor);
         bool VisitAnalysis(AnalyzeStage visitor);
-        bool VisitTesting(AnalyzeStage visitor);
+        bool VisitTesting(TestStage visitor);
     }
 }

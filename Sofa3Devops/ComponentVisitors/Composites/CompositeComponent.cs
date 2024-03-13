@@ -7,20 +7,25 @@ using Sofa3Devops.ComponentVisitors.Visitors;
 
 namespace Sofa3Devops.ComponentVisitors.Composites
 {
-    public abstract class Composite : IComponent
+    public class CompositeComponent : IComponent
     {
         private readonly List<IComponent> children;
         private readonly string title;
+        private Visitor Visitor {  get; set; }
 
-        public Composite(string title)
+        public CompositeComponent(string title)
         {
             children = new List<IComponent>();
             this.title = title;
         }
 
-        public bool AcceptVisitor(Visitor visitor)
+        public virtual bool AcceptVisitor(Visitor visitor)
         {
-            throw new NotImplementedException();
+            Visitor = visitor;
+            children.ForEach((child) => {
+                child.AcceptVisitor(visitor);
+            });
+            return true;
         }
 
         public void AddComponent(IComponent component)
@@ -30,7 +35,16 @@ namespace Sofa3Devops.ComponentVisitors.Composites
 
         public bool Excecute()
         {
-            throw new NotImplementedException();
+            try
+            {
+                Console.WriteLine(this.title);
+                children.ForEach(c => c.Excecute());
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public List<IComponent> GetChildren()

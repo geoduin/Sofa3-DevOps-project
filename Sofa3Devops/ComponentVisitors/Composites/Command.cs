@@ -12,6 +12,7 @@ namespace Sofa3Devops.ComponentVisitors.Composites
         private readonly string title;
         private readonly string command;
         private bool SuccessFlag { get; set; } = false;
+        private Visitor Visitor { get; set; }
 
         public Command(string title, string command) {
             this.title = title;
@@ -20,12 +21,28 @@ namespace Sofa3Devops.ComponentVisitors.Composites
 
         public bool AcceptVisitor(Visitor visitor)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Visitor = visitor;
+                // Perhaps some logic
+
+
+                return SuccessFlag;
+            }
+            catch
+            {
+                return SuccessFlag;
+            }
         }
 
         public bool Excecute()
         {
-            throw new NotImplementedException();
+            Console.Write(title);
+            Console.Write(command);
+            // Perhaps some logic needs to be executed.
+
+
+            return SuccessFlag;
         }
     }
 }
