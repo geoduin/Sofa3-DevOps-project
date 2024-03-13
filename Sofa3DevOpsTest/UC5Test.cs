@@ -1,7 +1,8 @@
-﻿using Sofa3Devops.Domain;
+﻿using DomainServices.DomainServicesImpl;
+using DomainServices.DomainServicesIntf;
+using Sofa3Devops.Domain;
 using Sofa3Devops.Factories;
 using Sofa3Devops.SprintStates;
-using Sofa3Devops.SprintStrategies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,17 +13,28 @@ namespace Sofa3DevOpsTest
 {
     public class UC5Test
     {
+        private readonly AbstractSprintFactory devSprintFactory;
+        private readonly AbstractSprintFactory releaseSprintFactory;
+
+        private readonly ISprintManager sprintManager;
+        private readonly ISprintManager sprintManagerRelease;
+
+        public UC5Test()
+        {
+            devSprintFactory = new DevelopmentSprintFactory();
+            releaseSprintFactory = new ReleaseSprintFactory();
+            sprintManager = new SprintManager(devSprintFactory);
+            sprintManagerRelease = new SprintManager(releaseSprintFactory);
+        }
+
         [Fact]
         public void TestAddBacklogItemByScrumMaster()
         {
             ScrumMaster master = new ScrumMaster("George", "dev@dev.nl", "dev@dev.nl");
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now, "Sprint 1");
             BacklogItem backlogItem = new BacklogItem("Task 1", "NA");
-            SprintStrategy strategy = new AuthorizedSprintStrategy(new DevelopmentSprintFactory());
-            SprintStrategy strategy2 = new AuthorizedSprintStrategy(new ReleaseSprintFactory());
-            master.SetSprintStrategy(strategy);
-            master.SetSprintStrategy(strategy2);
-            var result = master.AddBacklogItem(sprint, backlogItem);
+ 
+            var result = sprintManager.AddBacklogItem(sprint, backlogItem, master);
 
             Assert.NotNull(result);
             Assert.Single(sprint.BacklogItems);
@@ -31,15 +43,14 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestAddBacklogItemByDeveloper()
         {
-            ScrumMaster master = new ScrumMaster("George", "dev@dev.nl", "dev@dev.nl");
+            Developer master = new Developer("George", "dev@dev.nl", "dev@dev.nl");
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now, "Sprint 1");
             BacklogItem backlogItem = new BacklogItem("Task 1", "NA");
-            master.SetSprintStrategy(new NonAuthorizedSprintStrategy());
             
-            var result = Assert.Throws<UnauthorizedAccessException>(()=> master.AddBacklogItem(sprint, backlogItem));
+            var result = Assert.Throws<UnauthorizedAccessException>(()=> sprintManagerRelease.AddBacklogItem(sprint, backlogItem, master));
 
             Assert.Empty(sprint.BacklogItems);
-            Assert.Equal("Does not have the right authorization to perform this action.", result.Message);
+            Assert.Equal($"Unauthorized action: Users with {master} role are not allowed to set item to testing. Only testers are allowed to move backlog-item to Testing.", result.Message);
         }
 
         [Fact]

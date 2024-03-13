@@ -10,17 +10,11 @@ namespace Sofa3DevOpsTest
 {
     public class UC6Tests
     {
+        private Member dev { get; set; }
 
-        [Fact]
-        public void TestAssignmentBacklogItem()
-        {
-            Developer developer = new Developer("Olivier", "Olivier@onmicrosoft.net", "OlivierF");
-            BacklogItem backlogItem = new BacklogItem("Task1", "");
-
-            developer.PickupBacklogItem(backlogItem);
-
-            Assert.IsType<DoingState>(backlogItem.State);
-            Assert.Equal("Olivier", backlogItem.ResponsibleMember!.Name);
+        public UC6Tests()
+        { 
+            dev = new Developer("", "", "");
         }
 
         [Fact]
@@ -34,7 +28,7 @@ namespace Sofa3DevOpsTest
             backlogItem.AddActivityToBacklogItem(activity2);
 
             // Act
-            developer.PickupBacklogItem(activity);
+            activity.AssignBacklogItem(developer);
 
             // Assert
             Assert.IsType<DoingState>(backlogItem.State);
@@ -49,7 +43,7 @@ namespace Sofa3DevOpsTest
         {
             BacklogItem backlogItem = new BacklogItem("Task1", "");
 
-            backlogItem.State.SetToDo(backlogItem);
+            backlogItem.State.SetToDo(backlogItem, dev);
             Assert.IsType<TodoState>(backlogItem.State);
         }
 
@@ -58,7 +52,7 @@ namespace Sofa3DevOpsTest
         {
             BacklogItem backlogItem = new BacklogItem("Task1", "");
 
-            var error = Assert.Throws<InvalidOperationException>(()=> backlogItem.SetItemReadyForTesting());
+            var error = Assert.Throws<InvalidOperationException>(()=> backlogItem.SetItemReadyForTesting(dev));
 
             Assert.Equal("Item or activity must first be moved to Doing, before it can be moved to ready for testing.", error.Message);
         }

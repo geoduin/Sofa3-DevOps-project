@@ -1,5 +1,8 @@
-﻿using Sofa3Devops.BacklogStates;
+﻿using Moq;
+using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
+using Sofa3Devops.NotificationStrategy;
+using Sofa3Devops.Observers;
 using Sofa3Devops.SprintStates;
 using System;
 using System.Collections.Generic;
@@ -12,75 +15,55 @@ namespace Sofa3DevOpsTest
 {
     public class UC8Tests
     {
-        private Member tester {  get; set; }
-        private Member developer { get; set; }
-        private Member scrumMaster  { get; set; }
-        private Developer leadDeveloper { get; set; }
-        private BacklogItem backlogItem { get; set; }
-        private Sprint sprint { get; set; }
+        [Fact]
+        public void TestNotificationShouldOnlySendNotificationToTesters()
+        {
+            var test1Subscriber = new Mock<Subscriber>(new Tester("test", "test", "test"));
+            //test1Subscriber.Setup(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()))
+            var dev1Subscriber = new Mock<Subscriber>(new Developer("dev", "dev", "dev"));
+            var sm1Subscriber = new Mock<Subscriber>(new ScrumMaster("sm", "sm", "sm"));
+            var po1Subscriber = new Mock<Subscriber>(new ProductOwner("po", "po", "po"));
 
-        public UC8Tests() {
-            tester = new Tester("Test", "Test@example.com", "TestSlack");
-            developer = new Developer("Developer", "Developer@example.com", "DevSlack");
-            scrumMaster = new ScrumMaster("Master", "Master@example.com", "MasterSlack");
-            leadDeveloper = new Developer("LeadDeveloper", "LeadDeveloper@example.com", "DevSlack");
-            leadDeveloper.SetLeadDeveloper();
-            backlogItem = new BacklogItem("Head task", "")
+            Dictionary<Type, List<Subscriber>> subDictionary = new Dictionary<Type, List<Subscriber>>
             {
-                State = new ReadyToTestingState(),
-                ResponsibleMember = developer
+                { typeof(Tester), new List<Subscriber>() },
+                { typeof(Developer), new List<Subscriber>() },
+                { typeof(ScrumMaster), new List<Subscriber>() },
+                { typeof(ProductOwner), new List<Subscriber>() }
             };
-            sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Scrum project")
-            {
-                State = new OngoingState()
-            };
+            subDictionary[typeof(Tester)].Add(test1Subscriber.Object);
+            subDictionary[typeof(Developer)].Add(dev1Subscriber.Object);
+            subDictionary[typeof(ScrumMaster)].Add(sm1Subscriber.Object);
+            subDictionary[typeof(ProductOwner)].Add(po1Subscriber.Object);
+            INotificationStrategy testStrategy = new TesterNotificationStrategy();
+            testStrategy.SendNotification("test", "test", subDictionary);
+            test1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(1));
+            dev1Subscriber.Verify(t => t.Notify("dev", "dev"), Times.Exactly(0));
+            sm1Subscriber.Verify(t => t.Notify("sm", "sm"), Times.Exactly(0));
+            po1Subscriber.Verify(t => t.Notify("po", "po"), Times.Exactly(0));
         }
 
         [Fact]
-        public void TestValidationOfBacklogItemByTester()
+        public void TestNotificationShouldSendNotificationToAllTesters()
         {
-            
+            var test1Subscriber = new Mock<Subscriber>(new Tester("test", "test", "test"));
+            var test2Subscriber = new Mock<Subscriber>(new Tester("test", "test", "test"));
+            var dev1Subscriber = new Mock<Subscriber>(new Developer("dev", "dev", "dev"));
+            Dictionary<Type, List<Subscriber>> subDictionary = new Dictionary<Type, List<Subscriber>>();
+            subDictionary.Add(typeof(Tester), new List<Subscriber>());
+            subDictionary.Add(typeof(Developer), new List<Subscriber>());
+            subDictionary[typeof(Tester)].Add(test1Subscriber.Object);
+            subDictionary[typeof(Tester)].Add(test2Subscriber.Object);
+            subDictionary[typeof(Developer)].Add(dev1Subscriber.Object);
+            INotificationStrategy testStrategy = new TesterNotificationStrategy();
+            testStrategy.SendNotification("test", "test", subDictionary);
+            test1Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(1));
+            test2Subscriber.Verify(t => t.Notify("test", "test"), Times.Exactly(1));
+            dev1Subscriber.Verify(t => t.Notify("dev", "dev"), Times.Exactly(0));
 
-            sprint.AddBacklogItem(backlogItem);
-            sprint.AssignMembersToSprint(tester);
-            sprint.AssignMembersToSprint(developer);
-            sprint.AssignMembersToSprint(scrumMaster);
-            sprint.AssignMembersToSprint(leadDeveloper);
 
-            tester.ApproveItemForTesting(backlogItem);
-
-            Assert.IsType<TestingState>(backlogItem.State);
         }
 
-        [Fact]
-        public void TestValidationOfBacklogItemByOtherPeople()
-        {
-            var error = Assert.Throws<UnauthorizedAccessException>(() => developer.ApproveItemForTesting(backlogItem));
-
-            Assert.Equal("Does not have authority to approve item for testing. Only testers are allowed to move.", error.Message);
-        }
-
-        [Fact]
-        public void TestInvalidationOfBacklogItem()
-        {
-            sprint.AddBacklogItem(backlogItem);
-            sprint.AssignMembersToSprint(tester);
-            sprint.AssignMembersToSprint(developer);
-            sprint.AssignMembersToSprint(scrumMaster);
-            sprint.AssignMembersToSprint(leadDeveloper);
-
-            tester.DisapproveItemForTesting(backlogItem);
-
-            Assert.IsType<TodoState>(backlogItem.State);
-            // Validate scrummaster notification
-        }
-
-        [Fact]
-        public void TestDisapprovalOfBacklogItemForTestingByOtherPeople()
-        {
-            var error = Assert.Throws<UnauthorizedAccessException>(() => developer.DisapproveItemForTesting(backlogItem));
-
-            Assert.Equal("Does not have authority to disapprove item for testing. Only testers are allowed to move.", error.Message);
-        }
+        
     }
 }

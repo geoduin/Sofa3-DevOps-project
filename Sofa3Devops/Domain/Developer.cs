@@ -1,5 +1,4 @@
-﻿using Sofa3Devops.SprintStrategies;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,31 +22,9 @@ namespace Sofa3Devops.Domain
             Seniority = true;
         }
 
-        public override void ApproveAndFinishItem(BacklogItem item)
+        public override string ToString()
         {
-            if(Seniority)
-            {
-                item.SetItemToFinished();
-            }
-            else
-            {
-                base.ApproveAndFinishItem (item);
-            }
-            
-        }
-
-        public override void DisapproveTestedItem(BacklogItem item)
-        {
-            
-            if (Seniority)
-            {
-                item.SetItemReadyForTesting();
-            }
-            else
-            {
-                base.DisapproveTestedItem(item);
-            }
-            
+            return Seniority ? "Lead developer": "Developer";
         }
     }
 }
