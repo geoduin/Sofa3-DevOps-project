@@ -23,8 +23,16 @@ namespace Sofa3DevOpsTest
         private ProductOwner productOwner { get; set; }
 
         public UC14Tests() {
+            List<Visitor> visitors = new List<Visitor>()
+            {
+                new BuildVisitor(),
+                new TestVisitor(),
+                new AnalyseVisitor(),
+                new DeploymentVisitor(),
+                new OptionalVisitor()
+            };
             BaseComposite = new CompositeComponent("Release pipeline 1");
-            CICDPipeline = new Pipeline(BaseComposite);
+            CICDPipeline = new Pipeline(BaseComposite, visitors);
             Sprint = new ReleaseSprint(DateTime.Now, DateTime.Now.AddDays(3), "Release pipeline", CICDPipeline);
             tester = new Tester("Test", "Test@example.com", "TestSlack");
             developer = new Developer("Developer", "Developer@example.com", "DevSlack");

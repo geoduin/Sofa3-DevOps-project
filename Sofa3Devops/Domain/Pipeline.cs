@@ -8,13 +8,15 @@ namespace Sofa3Devops.Domain
     public class Pipeline
     {
         public CompositeComponent BaseComposite {  get; set; }
+        public List<Visitor> PipelineStages { get; set; }
         public bool SuccesFlag { get; set; }
         public bool InSession {  get; set; }
 
-        public Pipeline(CompositeComponent stages) {
+        public Pipeline(CompositeComponent stages, List<Visitor> externalVisitors) {
             this.BaseComposite = stages;
             SuccesFlag = true;
             InSession = false;
+            PipelineStages = externalVisitors;
         }
 
         public void StartPipeline()
@@ -23,13 +25,8 @@ namespace Sofa3Devops.Domain
             {
                 // Build 
                 InSession = true;
-
-                BaseComposite.AcceptVisitor(new BuildVisitor());
-                BaseComposite.AcceptVisitor(new TestVisitor());
-                BaseComposite.AcceptVisitor(new AnalyseVisitor());
-                BaseComposite.AcceptVisitor(new DeploymentVisitor());
-                BaseComposite.AcceptVisitor(new OptionalVisitor());
-                // End o
+                PipelineStages.ForEach(visitor => BaseComposite.AcceptVisitor(visitor));
+                // End
                 InSession = false;
                 SuccesFlag = true;
             } catch
@@ -40,11 +37,6 @@ namespace Sofa3Devops.Domain
 
         public bool HasPipelineSucceeded() {
             return SuccesFlag;
-        }
-
-        public void ExtendPipeline(CompositeComponent component)
-        {
-            BaseComposite.AddComponent(component);
         }
     }
 }
