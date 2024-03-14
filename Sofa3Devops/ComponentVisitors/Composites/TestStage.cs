@@ -15,7 +15,8 @@ namespace Sofa3Devops.ComponentVisitors.Composites
 
         public override bool AcceptVisitor(Visitor visitor)
         {
-            return visitor.VisitTesting(this);
+            visitor.VisitTesting(this);
+            return true;
         }
     }
 }

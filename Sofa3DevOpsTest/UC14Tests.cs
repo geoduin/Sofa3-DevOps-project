@@ -279,5 +279,88 @@ namespace Sofa3DevOpsTest
             // Assert
             Assert.True(result);
         }
+
+        [Fact]
+        public void TestSuccesfullPipelineWithoutAnalysis()
+        {
+            // Arrange
+            BuildStage buildStage = new BuildStage("Build project");
+            Command command = new Command("Import packages", "npm Install");
+            Command buildProject = new Command("Import packages", "npm build");
+
+            TestStage testStage = new TestStage("Test project");
+            Command testCommand = new Command("Perform unit test", "npm unit-test");
+            Command integrationTest = new Command("Perform integration test", "npm integration-test");
+
+            DeploymentStage deployStage = new DeploymentStage("Deploy code");
+            Command deployCommand = new Command("Perform deployment to Railway", "upload deploy-railway");
+
+            // Commands for build
+            buildStage.AddComponent(command);
+            buildStage.AddComponent(buildProject);
+            // Tests
+            testStage.AddComponent(testCommand);
+            testStage.AddComponent(integrationTest);
+
+            // Deployment
+            deployStage.AddComponent(deployCommand);
+
+            // Add build stage to pipeline
+            BaseComposite.AddComponent(buildStage);
+            BaseComposite.AddComponent(testStage);
+            BaseComposite.AddComponent(deployStage);
+
+            // Act
+            var result = Sprint.StartReleasePipeline(productOwner);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void TestSuccesfullPipelineWithOptionalCommands()
+        {
+            // Arrange
+            BuildStage buildStage = new BuildStage("Build project");
+            Command command = new Command("Import packages", "npm Install");
+            Command buildProject = new Command("Import packages", "npm build");
+
+            TestStage testStage = new TestStage("Test project");
+            Command testCommand = new Command("Perform unit test", "npm unit-test");
+            Command integrationTest = new Command("Perform integration test", "npm integration-test");
+
+            DeploymentStage deployStage = new DeploymentStage("Deploy code");
+            Command deployCommand = new Command("Perform deployment to Railway", "upload deploy-railway");
+            
+            OptionalStage optionalStage = new OptionalStage("Other commands");
+            Command otherCommand = new Command("Check other service", "Echo 'Done'");
+            Command otherCommand2 = new Command("Check other service", "Echo 'Done2'");
+
+            // Commands for build
+            buildStage.AddComponent(command);
+            buildStage.AddComponent(buildProject);
+            // Tests
+            testStage.AddComponent(testCommand);
+            testStage.AddComponent(integrationTest);
+
+            // Deployment
+            deployStage.AddComponent(deployCommand);
+
+            // Optional stage 
+            optionalStage.AddComponent(otherCommand);
+            optionalStage.AddComponent(otherCommand2);
+
+            // Add build stage to pipeline
+            BaseComposite.AddComponent(buildStage);
+            BaseComposite.AddComponent(testStage);
+            BaseComposite.AddComponent(deployStage);
+            BaseComposite.AddComponent(optionalStage);
+
+            // Act
+            var result = Sprint.StartReleasePipeline(productOwner);
+
+            // Assert
+            Assert.True(result);
+        }
     }
 }

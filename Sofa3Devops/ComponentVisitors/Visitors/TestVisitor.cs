@@ -9,14 +9,12 @@ namespace Sofa3Devops.ComponentVisitors.Visitors
 {
     public class TestVisitor : Visitor
     {
-        public bool VisitAnalysis(AnalyzeStage visitor)
+        public void VisitAnalysis(AnalyzeStage visitor)
         {
-            return true;
         }
 
-        public bool VisitBuildStage(BuildStage visitor)
+        public void VisitBuildStage(BuildStage visitor)
         {
-            return true;
         }
 
         public void VisitCommand(Command command)
@@ -24,19 +22,21 @@ namespace Sofa3Devops.ComponentVisitors.Visitors
             Console.WriteLine(command.command);
         }
 
-        public bool VisitDeployment(DeploymentStage stage)
+        public void VisitDeployment(DeploymentStage stage)
         {
-            return true;
         }
 
-        public bool VisitTesting(TestStage visitor)
+        public void VisitOptional(OptionalStage stage)
+        {
+        }
+
+        public void VisitTesting(TestStage visitor)
         {
             Console.WriteLine("Start testing");
             foreach (var item in visitor.GetChildren())
             {
                 item.AcceptVisitor(this);
             }
-            return true;
         }
     }
 }

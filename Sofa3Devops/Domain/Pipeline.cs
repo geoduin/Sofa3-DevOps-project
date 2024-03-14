@@ -1,6 +1,7 @@
 ﻿using Sofa3Devops.ComponentVisitors.Composites;
 using Sofa3Devops.AuthorisationStrategy;
 using Sofa3Devops.ComponentVisitors.Visitors;
+using Sofa3Devops.ComponentVisitors;
 
 namespace Sofa3Devops.Domain
 {
@@ -8,20 +9,27 @@ namespace Sofa3Devops.Domain
     {
         public CompositeComponent BaseComposite {  get; set; }
         public bool SuccesFlag { get; set; }
+        public bool InSession {  get; set; }
 
         public Pipeline(CompositeComponent stages) {
             this.BaseComposite = stages;
             SuccesFlag = true;
+            InSession = false;
         }
 
         public bool Action()
         {
             // Build 
-            var resultBuild = BaseComposite.AcceptVisitor(new BuildVisitor());
-            var resultTest = BaseComposite.AcceptVisitor(new TestVisitor());
-            var resultAnalysis = BaseComposite.AcceptVisitor(new AnalyseVisitor());
-            var resultDeployment = BaseComposite.AcceptVisitor(new DeploymentVisitor());
-            return resultBuild;
+            InSession = true;
+
+            BaseComposite.AcceptVisitor(new BuildVisitor());
+            BaseComposite.AcceptVisitor(new TestVisitor());
+            BaseComposite.AcceptVisitor(new AnalyseVisitor());
+            BaseComposite.AcceptVisitor(new DeploymentVisitor());
+            BaseComposite.AcceptVisitor(new OptionalVisitor());
+            // End o
+            InSession = false;
+            return true;
         }
 
         public void StartPipeline()
@@ -37,6 +45,11 @@ namespace Sofa3Devops.Domain
 
         public bool HasPipelineSucceeded() {
             return SuccesFlag;
+        }
+
+        public void ExtendPipeline(CompositeComponent component)
+        {
+            BaseComposite.AddComponent(component);
         }
     }
 }

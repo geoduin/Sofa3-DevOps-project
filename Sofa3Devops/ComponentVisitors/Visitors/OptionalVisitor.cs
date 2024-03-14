@@ -7,15 +7,10 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.ComponentVisitors.Visitors
 {
-    public class AnalyseVisitor: Visitor
+    public class OptionalVisitor : Visitor
     {
         public void VisitAnalysis(AnalyzeStage visitor)
         {
-            Console.WriteLine("Visit code analysis stage.");
-            foreach(var el in visitor.GetChildren())
-            {
-                el.AcceptVisitor(this);
-            }
         }
 
         public void VisitBuildStage(BuildStage visitor)
@@ -33,6 +28,7 @@ namespace Sofa3Devops.ComponentVisitors.Visitors
 
         public void VisitOptional(OptionalStage stage)
         {
+            stage.GetChildren().ForEach(x => x.AcceptVisitor(this));
         }
 
         public void VisitTesting(TestStage visitor)

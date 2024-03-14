@@ -11,7 +11,6 @@ namespace Sofa3Devops.ComponentVisitors.Composites
     {
         private readonly List<IComponent> children;
         private readonly string title;
-        private Visitor Visitor {  get; set; }
 
         public CompositeComponent(string title)
         {
@@ -21,7 +20,6 @@ namespace Sofa3Devops.ComponentVisitors.Composites
 
         public virtual bool AcceptVisitor(Visitor visitor)
         {
-            Visitor = visitor;
             try
             {
                 foreach (var child in children)
