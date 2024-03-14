@@ -1,4 +1,5 @@
 ﻿using Sofa3Devops.AuthorisationStrategy;
+using Sofa3Devops.SprintStates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,19 @@ namespace Sofa3Devops.Domain
         public override void NotifyAll(string title, string message)
         {
             this.NotificationStrategy.SendNotification(title, message, this.Subscribers);
+        }
+
+        public override void ChangeSprint(DateTime newStart, DateTime newEnd, string newName)
+        {
+            if (State.GetType() != typeof(ConceptState))
+            {
+                throw new InvalidOperationException("Backlog items cannot be changed on ongoing sprint");
+            } 
+
+            // Apply change.
+            StartDate = newStart;
+            EndDate = newEnd;
+            Name = newName;
         }
 
         public bool StartReleasePipeline(Member member) {
