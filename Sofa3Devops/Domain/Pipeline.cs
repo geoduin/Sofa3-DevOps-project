@@ -19,7 +19,8 @@ namespace Sofa3Devops.Domain
             // Build 
             var resultBuild = BaseComposite.AcceptVisitor(new BuildVisitor());
             var resultTest = BaseComposite.AcceptVisitor(new TestVisitor());
-
+            var resultAnalysis = BaseComposite.AcceptVisitor(new AnalyseVisitor());
+            var resultDeployment = BaseComposite.AcceptVisitor(new DeploymentVisitor());
             return resultBuild;
         }
 

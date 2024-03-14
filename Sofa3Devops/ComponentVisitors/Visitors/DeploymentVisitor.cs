@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.ComponentVisitors.Visitors
 {
-    public class TestVisitor : Visitor
+    public class DeploymentVisitor : Visitor
     {
         public bool VisitAnalysis(AnalyzeStage visitor)
         {
@@ -26,16 +26,15 @@ namespace Sofa3Devops.ComponentVisitors.Visitors
 
         public bool VisitDeployment(DeploymentStage stage)
         {
+            foreach (var item in stage.GetChildren())
+            {
+                item.AcceptVisitor(this);
+            }
             return true;
         }
 
         public bool VisitTesting(TestStage visitor)
         {
-            Console.WriteLine("Start testing");
-            foreach (var item in visitor.GetChildren())
-            {
-                item.AcceptVisitor(this);
-            }
             return true;
         }
     }

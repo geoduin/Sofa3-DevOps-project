@@ -110,40 +110,174 @@ namespace Sofa3DevOpsTest
             Assert.True(result);
         }
 
-        [Fact(Skip = "")]
+        [Fact]
         public void TestPipelineWithFailedTest()
         {
-            // Arrange 
-            // Act
-            // Assert
+            // Arrange
+            BuildStage buildStage = new BuildStage("Build project");
+            Command command = new Command("Import packages", "npm Install");
+            Command buildProject = new Command("Import packages", "npm build");
 
+            TestStage testStage = new TestStage("Test project");
+            Command testCommand = new Command("Perform unit test", "npm unit-test");
+            Command integrationTest = new Command("Perform integration test", "npm integration-test");
+            // Simulate failed command
+            // A mock should throw error
+            var mock = new Mock<IComponent>();
+            mock.Setup((e) => e.AcceptVisitor(It.IsAny<Visitor>())).Throws(new Exception("Failed command"));
+            IComponent failedCommand = mock.Object;
+
+            // Commands for build
+            buildStage.AddComponent(command);
+            buildStage.AddComponent(buildProject);
+            // Tests
+            testStage.AddComponent(testCommand);
+            testStage.AddComponent(integrationTest);
+            testStage.AddComponent(failedCommand);
+
+            // Add build stage to pipeline
+            BaseComposite.AddComponent(buildStage);
+            BaseComposite.AddComponent(testStage);
+
+            // Act
+            var result = Sprint.StartReleasePipeline(productOwner);
+
+            // Assert
+            Assert.False(result);
         }
 
-        [Fact(Skip = "")]
+        [Fact]
         public void TestPipelineWithFailedCodeAnalysis()
         {
-            // Arrange 
-            // Act
-            // Assert
+            // Arrange
+            BuildStage buildStage = new BuildStage("Build project");
+            Command command = new Command("Import packages", "npm Install");
+            Command buildProject = new Command("Import packages", "npm build");
 
+            TestStage testStage = new TestStage("Test project");
+            Command testCommand = new Command("Perform unit test", "npm unit-test");
+            Command integrationTest = new Command("Perform integration test", "npm integration-test");
+
+            AnalyzeStage analysisStage = new AnalyzeStage("Perform code analysis");
+            Command analysisCommand = new Command("Perform unit test", "npm sonarcloud-analysis");
+            // Simulate failed command
+            // A mock should throw error
+            var mock = new Mock<IComponent>();
+            mock.Setup((e) => e.AcceptVisitor(It.IsAny<Visitor>())).Throws(new Exception("Failed command"));
+            IComponent failedCommand = mock.Object;
+
+            // Commands for build
+            buildStage.AddComponent(command);
+            buildStage.AddComponent(buildProject);
+            // Tests
+            testStage.AddComponent(testCommand);
+            testStage.AddComponent(integrationTest);
+
+            analysisStage.AddComponent(analysisCommand);
+            analysisStage.AddComponent(failedCommand);
+
+            // Add build stage to pipeline
+            BaseComposite.AddComponent(buildStage);
+            BaseComposite.AddComponent(testStage);
+            BaseComposite.AddComponent(analysisStage);
+
+            // Act
+            var result = Sprint.StartReleasePipeline(productOwner);
+
+            // Assert
+            Assert.False(result);
         }
 
-        [Fact(Skip = "")]
+        [Fact]
         public void TestPipelineWithFailedDeployment()
         {
-            // Arrange 
-            // Act
-            // Assert
+            // Arrange
+            BuildStage buildStage = new ("Build project");
+            Command command = new ("Import packages", "npm Install");
+            Command buildProject = new ("Import packages", "npm build");
 
+            TestStage testStage = new ("Test project");
+            Command testCommand = new ("Perform unit test", "npm unit-test");
+            Command integrationTest = new ("Perform integration test", "npm integration-test");
+
+            AnalyzeStage analysisStage = new ("Perform code analysis");
+            Command analysisCommand = new ("Perform Sonar scan", "npm sonarcloud-analysis");
+
+            DeploymentStage deployStage = new ("Deploy code");
+            Command deployCommand = new ("Perform deployment to Railway", "upload deploy-railway");
+            // Simulate failed command
+            // A mock should throw error
+            var mock = new Mock<IComponent>();
+            mock.Setup((e) => e.AcceptVisitor(It.IsAny<Visitor>())).Throws(new Exception("Failed command"));
+            IComponent failedCommand = mock.Object;
+
+            // Commands for build
+            buildStage.AddComponent(command);
+            buildStage.AddComponent(buildProject);
+            // Tests
+            testStage.AddComponent(testCommand);
+            testStage.AddComponent(integrationTest);
+
+            analysisStage.AddComponent(analysisCommand);
+
+            deployStage.AddComponent(deployCommand);
+            deployStage.AddComponent(failedCommand);
+
+            // Add build stage to pipeline
+            BaseComposite.AddComponent(buildStage);
+            BaseComposite.AddComponent(testStage);
+            BaseComposite.AddComponent(analysisStage);
+            BaseComposite.AddComponent(deployStage);
+
+            // Act
+            var result = Sprint.StartReleasePipeline(productOwner);
+
+            // Assert
+            Assert.False(result);
         }
 
-        [Fact(Skip ="")]
+        [Fact]
         public void TestSuccesfullPipeline()
         {
-            // Arrange 
-            // Act
-            // Assert
+            // Arrange
+            BuildStage buildStage = new BuildStage("Build project");
+            Command command = new Command("Import packages", "npm Install");
+            Command buildProject = new Command("Import packages", "npm build");
 
+            TestStage testStage = new TestStage("Test project");
+            Command testCommand = new Command("Perform unit test", "npm unit-test");
+            Command integrationTest = new Command("Perform integration test", "npm integration-test");
+
+            AnalyzeStage analysisStage = new AnalyzeStage("Perform code analysis");
+            Command analysisCommand = new Command("Perform Sonar scan", "npm sonarcloud-analysis");
+
+            DeploymentStage deployStage = new DeploymentStage("Deploy code");
+            Command deployCommand = new Command("Perform deployment to Railway", "upload deploy-railway");
+
+            // Commands for build
+            buildStage.AddComponent(command);
+            buildStage.AddComponent(buildProject);
+            // Tests
+            testStage.AddComponent(testCommand);
+            testStage.AddComponent(integrationTest);
+
+            // Analysis
+            analysisStage.AddComponent(analysisCommand);
+
+            // Deployment
+            deployStage.AddComponent(deployCommand);
+
+            // Add build stage to pipeline
+            BaseComposite.AddComponent(buildStage);
+            BaseComposite.AddComponent(testStage);
+            BaseComposite.AddComponent(analysisStage);
+            BaseComposite.AddComponent(deployStage);
+
+            // Act
+            var result = Sprint.StartReleasePipeline(productOwner);
+
+            // Assert
+            Assert.True(result);
         }
     }
 }

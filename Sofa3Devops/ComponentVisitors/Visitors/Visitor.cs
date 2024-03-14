@@ -13,5 +13,6 @@ namespace Sofa3Devops.ComponentVisitors.Visitors
         bool VisitAnalysis(AnalyzeStage visitor);
         bool VisitTesting(TestStage visitor);
         void VisitCommand(Command command);
+        bool VisitDeployment(DeploymentStage stage);
     }
 }

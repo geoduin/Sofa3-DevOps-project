@@ -7,10 +7,16 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.ComponentVisitors.Visitors
 {
-    public class AnalyseVisitor
+    public class AnalyseVisitor: Visitor
     {
         public bool VisitAnalysis(AnalyzeStage visitor)
         {
+            Console.WriteLine("Visit code analysis stage.");
+            foreach(var el in visitor.GetChildren())
+            {
+                el.AcceptVisitor(this);
+            }
+
             return true;
         }
 
@@ -21,6 +27,12 @@ namespace Sofa3Devops.ComponentVisitors.Visitors
 
         public void VisitCommand(Command command)
         {
+            Console.WriteLine(command.command);
+        }
+
+        public bool VisitDeployment(DeploymentStage stage)
+        {
+            return true;
         }
 
         public bool VisitTesting(TestStage visitor)

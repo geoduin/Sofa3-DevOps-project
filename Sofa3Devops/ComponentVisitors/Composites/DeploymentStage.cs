@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 
 namespace Sofa3Devops.ComponentVisitors.Composites
 {
-    public class TestStage : CompositeComponent
+    public class DeploymentStage : CompositeComponent
     {
-        public TestStage(string title) : base(title)
+        public DeploymentStage(string title) : base(title)
         {
         }
 
         public override bool AcceptVisitor(Visitor visitor)
         {
-            return visitor.VisitTesting(this);
+            return visitor.VisitDeployment(this);
         }
+
     }
 }

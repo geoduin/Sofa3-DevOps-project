@@ -16,19 +16,22 @@ namespace Sofa3Devops.ComponentVisitors.Visitors
 
         public bool VisitBuildStage(BuildStage visitor)
         {
-            Console.WriteLine("========");
-            Console.WriteLine("Visit Build stage");
-            var commands = visitor.GetChildren();
-
-            foreach (var command in commands)
+            Console.WriteLine("Start build");
+            foreach (var item in visitor.GetChildren())
             {
-                Console.WriteLine(command.ToString());
+                item.AcceptVisitor(this);
             }
             return true;
         }
 
         public void VisitCommand(Command command)
         {
+            Console.WriteLine(command.command);
+        }
+
+        public bool VisitDeployment(DeploymentStage stage)
+        {
+            return true;
         }
 
         public bool VisitTesting(TestStage visitor)
