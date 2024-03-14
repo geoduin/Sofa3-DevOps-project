@@ -17,26 +17,21 @@ namespace Sofa3Devops.Domain
             InSession = false;
         }
 
-        public bool Action()
-        {
-            // Build 
-            InSession = true;
-
-            BaseComposite.AcceptVisitor(new BuildVisitor());
-            BaseComposite.AcceptVisitor(new TestVisitor());
-            BaseComposite.AcceptVisitor(new AnalyseVisitor());
-            BaseComposite.AcceptVisitor(new DeploymentVisitor());
-            BaseComposite.AcceptVisitor(new OptionalVisitor());
-            // End o
-            InSession = false;
-            return true;
-        }
-
         public void StartPipeline()
         {
             try
             {
-                SuccesFlag = Action();
+                // Build 
+                InSession = true;
+
+                BaseComposite.AcceptVisitor(new BuildVisitor());
+                BaseComposite.AcceptVisitor(new TestVisitor());
+                BaseComposite.AcceptVisitor(new AnalyseVisitor());
+                BaseComposite.AcceptVisitor(new DeploymentVisitor());
+                BaseComposite.AcceptVisitor(new OptionalVisitor());
+                // End o
+                InSession = false;
+                SuccesFlag = true;
             } catch
             {
                 SuccesFlag = false;
