@@ -14,17 +14,17 @@ namespace Sofa3Devops.Domain
 {
     public abstract class Sprint : INotificationObservable
     {
-        public DateTime StartDate { get; private set; }
-        public DateTime EndDate { get; private set; }
-        public string Name { get; private set; }
+        public DateTime StartDate { get; protected set; }
+        public DateTime EndDate { get; protected set; }
+        public string Name { get; protected set; }
         public ISprintState State { get; set; }
         public SprintReport? SprintReport { get; set; }
         public Pipeline? PublishingPipeline { get; set; }
         public Member AssignScrumMaster {  get; set; }
         public List<BacklogItem> BacklogItems { get; set; }
         public List<Member> Members { get; set; }
-        public Dictionary<Type, List<Subscriber>> Subscribers { get; private set; }
-        public INotificationStrategy NotificationStrategy { get; private set; }
+        public Dictionary<Type, List<Subscriber>> Subscribers { get; protected set; }
+        public INotificationStrategy NotificationStrategy { get; protected set; }
 
 
 
@@ -41,8 +41,6 @@ namespace Sofa3Devops.Domain
             SubscriberServices.InitializeSubscriberDictionary(Subscribers);
         }
 
-       
-
         public void SetSprintState(ISprintState sprintState)
         {
             State = sprintState;
@@ -54,18 +52,7 @@ namespace Sofa3Devops.Domain
             BacklogItems.Add(item);
         }
 
-        public void ChangeSprint(DateTime newStart, DateTime newEnd, string newName)
-        {
-            if (State.GetType() != typeof(ConceptState))
-            {
-                throw new InvalidOperationException("Backlog items cannot be changed on ongoing sprint");
-            }
-
-            // Apply change.
-            StartDate = newStart;
-            EndDate = newEnd;
-            Name = newName;
-        }
+        public abstract void ChangeSprint(DateTime newStart, DateTime newEnd, string newName);
 
         public void AssignMembersToSprint(Member member)
         {
@@ -101,6 +88,15 @@ namespace Sofa3Devops.Domain
             State.SetToCanceled(this);
         }
 
+        public void FinishSprint(Member member)
+        {
+            State.SetToFinished(this);
+            EndSprint(member);
+        }
+
+        // Will be called upon in the states
+        public abstract void EndSprint(Member member);
+
         public void AddSubscriber(Subscriber subscriber)
         {
             try
@@ -132,7 +128,5 @@ namespace Sofa3Devops.Domain
         {
             this.NotificationStrategy = strategy;
         }
-
-        
     }
 }

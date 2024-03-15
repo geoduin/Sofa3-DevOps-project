@@ -22,7 +22,7 @@ namespace Sofa3Devops.SprintStates
 
         public void SetToFinished(Sprint sprint)
         {
-            throw new InvalidOperationException();
+            sprint.SetSprintState(new FinishedState());
         }
 
         public void SetToOngoing(Sprint sprint)

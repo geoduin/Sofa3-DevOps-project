@@ -15,7 +15,7 @@ namespace Sofa3Devops.SprintStates
 
         public void SetToFinished(Sprint sprint)
         {
-            sprint.State = new FinishedState();
+            sprint.SetSprintState(new FinishedState());
         }
 
         public void SetToOngoing(Sprint sprint)

@@ -60,7 +60,7 @@ namespace Sofa3DevOpsTest
             var sprint = Assert.Throws<UnauthorizedAccessException>(()=> sprintManager.CreateSprint(DateTime.Now, DateTime.Now, "First sprint of the day", developer));
 
             // Assert
-            Assert.Equal($"Unauthorized action: Users with {developer} role are not allowed to set item to testing. Only testers are allowed to move backlog-item to Testing.", sprint.Message);
+            Assert.Equal($"Unauthorized action: Users with {developer} role are not allowed to perform. Only scrum masters and Product owners.", sprint.Message);
         }
 
         [Fact]
@@ -105,7 +105,7 @@ namespace Sofa3DevOpsTest
             
             var result = Assert.Throws<UnauthorizedAccessException>(()=> sprintManagerRelease.StartSprint(sprint, tester));
 
-            Assert.Equal($"Unauthorized action: Users with {tester} role are not allowed to set item to testing. Only testers are allowed to move backlog-item to Testing.", result.Message);
+            Assert.Equal($"Unauthorized action: Users with {tester} role are not allowed to perform. Only scrum masters and Product owners.", result.Message);
         }
 
         [Fact]

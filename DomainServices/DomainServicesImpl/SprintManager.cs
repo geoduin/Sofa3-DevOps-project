@@ -49,5 +49,13 @@ namespace DomainServices.DomainServicesImpl
             sprint.AddBacklogItem(backlogItem);
             return sprint;
         }
+
+        public void FinishSprint(Sprint sprint, Member member)
+        {
+            authValidator = new ScrumMasterPOValidation();
+            authValidator.HasPermission(member);
+
+            sprint.FinishSprint(member);
+        }
     }
 }

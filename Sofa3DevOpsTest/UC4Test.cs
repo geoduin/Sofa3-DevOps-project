@@ -42,7 +42,7 @@ namespace Sofa3DevOpsTest
 
             var error = Assert.Throws<UnauthorizedAccessException>(()=> sprintManager.CancelSprint(sprint, dev));
 
-            Assert.Equal($"Unauthorized action: Users with {dev} role are not allowed to set item to testing. Only testers are allowed to move backlog-item to Testing.", error.Message);
+            Assert.Equal($"Unauthorized action: Users with {dev} role are not allowed to perform. Only scrum masters and Product owners.", error.Message);
         }
     }
 }

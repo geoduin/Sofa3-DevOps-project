@@ -1,4 +1,5 @@
-﻿using Sofa3Devops.Domain;
+﻿using Sofa3Devops.ComponentVisitors.Composites;
+using Sofa3Devops.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
