@@ -10,12 +10,18 @@ namespace Sofa3Devops.Domain
     {
         private readonly string Title;
         private readonly List<string> Notes;
-        private readonly DateTime UploadDate;
 
         public SprintSummary(string title, List<string> notes) { 
             Title = title;
             Notes = notes;
-            UploadDate = DateTime.Now;
+        }
+
+        public override string ToString()
+        {
+            string result = $"{Title}: ";
+
+            Notes.ForEach(x => result += $"{x}, ");
+            return result;
         }
     }
 }

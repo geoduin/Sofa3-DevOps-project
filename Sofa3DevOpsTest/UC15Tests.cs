@@ -45,7 +45,9 @@ namespace Sofa3DevOpsTest
             // Act
             developmentSprint.FinishSprint(scrumMaster);
 
+            var contentPrintedOut = developmentSprint.Summary.ToString();
             Assert.IsType<FinishedState>(developmentSprint.State);
+            Assert.Equal("Sprint review of january: Sprint went well, Implementation could be better., ", contentPrintedOut);
         }
     }
 }
