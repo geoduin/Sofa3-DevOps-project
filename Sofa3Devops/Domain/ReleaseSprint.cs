@@ -1,4 +1,5 @@
 ﻿using Sofa3Devops.AuthorisationStrategy;
+using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.SprintStates;
 using System;
 using System.Collections.Generic;
@@ -44,9 +45,27 @@ namespace Sofa3Devops.Domain
             // Validate if pipeline can be started.
             authValidation = new ScrumMasterPOValidation();
             authValidation.HasPermission(member);
-
+            
+            // Start pipeline.
             Pipeline.StartPipeline();
-            return Pipeline.HasPipelineSucceeded();
+            
+            if (Pipeline.HasPipelineSucceeded())
+            {
+                // Notify PO and Scrum-master
+                SetNotificationStrategy(new PONotificationStrategy());
+                NotifyAll("Pipeline has now started", "Please wait till the pipeline has completed.");
+                SetNotificationStrategy(new ScrumMasterNotificationStrategy());
+                NotifyAll("Pipeline has now started", "Please wait till the pipeline has completed.");
+                return true;
+            }
+            else
+            {
+                // Send notification. Notify scrummaster
+                SetNotificationStrategy(new ScrumMasterNotificationStrategy());
+                NotifyAll("CI/CD Pipeline has failed", "Wait till the scrum-master to decide");
+                return false;
+            }
+            
         }
 
         public override void EndSprint(Member member)

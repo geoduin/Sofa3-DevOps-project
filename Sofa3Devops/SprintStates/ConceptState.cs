@@ -22,16 +22,21 @@ namespace Sofa3Devops.SprintStates
 
         public void SetToOngoing(Sprint sprint)
         {
-            var (devs, testers) = returnSeperatedLists(sprint.Members);
-
-            if (sprint.AssignScrumMaster != null && testers.Any() && ContainsLeadDeveloper(devs))
+            if (ContainsMandatoryMembers(sprint))
             {
                 sprint.SetSprintState(new OngoingState());
             }
             else
             {
-                throw new InvalidOperationException("At least one tester, scrummaster and developer must be added, before starting a sprint");
+                throw new InvalidOperationException("At least one tester, scrummaster, PO and developer must be added, before starting a sprint");
             }
+        }
+
+        private bool ContainsMandatoryMembers(Sprint sprint)
+        {
+            var (devs, testers) = returnSeperatedLists(sprint.Members);
+            var productOwner = SeperateAndValidate(sprint.Members, typeof(ProductOwner));
+            return sprint.AssignScrumMaster != null && testers.Any() && ContainsLeadDeveloper(devs) && productOwner.Any();
         }
 
         private (List<Member> devs, List<Member> testers) returnSeperatedLists(List<Member> members)
