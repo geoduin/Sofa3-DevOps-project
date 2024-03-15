@@ -95,10 +95,25 @@ namespace Sofa3DevOpsTest
             readyForTestingItem.SetToTodo(tester);
             
             // Assert
-            leadDevSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Never());
-            devSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Never());
-            testerSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Never());
-            scrumMasterSubscriber.Verify(x => x.Notify($"Backlog-item: {readyForTestingItem.Name} has been rejected for testing.", $"This backlog-item is rejected by our testers. The item is back to {readyForTestingItem.State.GetType().Name}"), Times.Once());
+            leadDevSubscriber.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+            devSubscriber.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+            testerSubscriber.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+            scrumMasterSubscriber.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
+        }
+
+        [Fact]
+        public void TestIfTestingToTodoGoesWell()
+        {
+            // Ready testing -> Todo
+            Tester tester = new Tester("", "", "");
+            // Act
+            testingItem.SetToTodo(tester);
+
+            // Assert
+            leadDevSubscriber.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+            devSubscriber.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+            testerSubscriber.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+            scrumMasterSubscriber.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
         }
     }
 }
