@@ -3,19 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sofa3Devops.SprintStates;
 
 namespace Sofa3Devops.Domain
 {
-    internal class DiscussionComment : DiscussionForumComponent
+    public class DiscussionComment : DiscussionForumComponent
     {
-        public DiscussionForumComponent Parent { get; }
+        public DiscussionForumComponent Parent { get; set; }
         private List<DiscussionForumComponent> Replies;
 
-        public DiscussionComment(string title, string content, BacklogItem relevantItem, Member poster, DiscussionForumComponent parent) : base(title, content, relevantItem, poster)
+        public DiscussionComment(string title, string content, BacklogItem relevantItem, Member poster) : base(title, content, relevantItem, poster)
         {
-            this.Parent = parent;
+            this.Replies = new List<DiscussionForumComponent>();
         }
 
+        private bool SprintStateIsFinished()
+        {
+            return this.RelevantItem.Sprint.State.GetType().Equals(typeof(FinishedState));
+        }
 
         public override DiscussionForumComponent GetChild(int index)
         {
@@ -39,14 +44,20 @@ namespace Sofa3Devops.Domain
 
         public override void AddComponent(DiscussionForumComponent component)
         {
-            if (component.GetType().Equals(typeof(DiscussionComment)))
+            if (component.GetType().Equals(typeof(DiscussionComment)) && !SprintStateIsFinished())
             {
                 this.Replies.Add(component);
+                component.SetParent(this);
             }
             else
             {
-                throw new InvalidOperationException("Can't add thread to a thread");
+                throw new InvalidOperationException("Can't add thread to a comment or add comments when sprint is finished");
             }
+        }
+
+        public override void SetParent(DiscussionComment component)
+        {
+            this.Parent = component;
         }
     }
 }

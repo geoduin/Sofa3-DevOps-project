@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sofa3Devops.BacklogStates;
+using FinishedState = Sofa3Devops.SprintStates.FinishedState;
 
 namespace Sofa3Devops.Domain
 {
@@ -15,21 +16,31 @@ namespace Sofa3Devops.Domain
 
         public DiscussionThread(string title, string content, BacklogItem relevantItem, Member poster) : base(title, content, relevantItem, poster)
         {
-            Comments = new List<DiscussionForumComponent>();
-        }
-
-        
-
-        public override void AddComponent(DiscussionForumComponent component)
-        {
-            //State checking is already performed in the constructor so no need to check here
-            if (component.GetType().Equals(typeof(DiscussionComment)))
+            if (!SprintStateIsFinished())
             {
-                this.Comments.Add(component);
+                Comments = new List<DiscussionForumComponent>();
             }
             else
             {
-                throw new InvalidOperationException("Can't add thread to a thread");
+                throw new InvalidOperationException("can't create thread for a backlog item in a finished sprint");
+            }
+        }
+
+        private bool SprintStateIsFinished()
+        {
+            return this.RelevantItem.Sprint.State.GetType().Equals(typeof(FinishedState));
+        }
+
+        public override void AddComponent(DiscussionForumComponent component)
+        {
+            if (component.GetType().Equals(typeof(DiscussionComment)) && !SprintStateIsFinished())
+            {
+                this.Comments.Add(component);
+                this.RelevantItem.Threads.Add(this);
+            }
+            else
+            {
+                throw new InvalidOperationException("Can't add thread to a thread or comment to a finished sprint");
             }
         }
 
@@ -52,6 +63,11 @@ namespace Sofa3Devops.Domain
         public override void RemoveComponent(DiscussionForumComponent component)
         {
             this.Comments.Remove(component);
+        }
+
+        public override void SetParent(DiscussionComment component)
+        {
+            throw new InvalidOperationException();
         }
     }
 }
