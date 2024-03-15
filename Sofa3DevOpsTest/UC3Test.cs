@@ -111,6 +111,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void StartSprintWithAuthorityScrumMaster()
         {
+            ProductOwner productOwner = new ProductOwner("Dave", "Dave", "");
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
             Member scrumMaster = new ScrumMaster("D", "D@Outlook.com", "DSlack");
             Developer developer = new Developer("Developer", "D@Outlook.com", "DSlack");
@@ -120,6 +121,7 @@ namespace Sofa3DevOpsTest
             sprint.AssignMembersToSprint(scrumMaster);
             sprint.AssignMembersToSprint(developer);
             sprint.AssignMembersToSprint(tester);
+            sprint.AssignMembersToSprint(productOwner);
 
             sprintManager.StartSprint(sprint, scrumMaster);
 
@@ -137,7 +139,7 @@ namespace Sofa3DevOpsTest
 
             var error = Assert.Throws<InvalidOperationException>(() => sprint.StartSprint());
 
-            Assert.Equal("At least one tester, scrummaster and developer must be added, before starting a sprint", error.Message);
+            Assert.Equal("At least one tester, scrummaster, PO and developer must be added, before starting a sprint", error.Message);
         }
 
         [Fact]
@@ -154,7 +156,7 @@ namespace Sofa3DevOpsTest
 
             var error = Assert.Throws<InvalidOperationException>(() => sprint.StartSprint());
 
-            Assert.Equal("At least one tester, scrummaster and developer must be added, before starting a sprint", error.Message);
+            Assert.Equal("At least one tester, scrummaster, PO and developer must be added, before starting a sprint", error.Message);
         }
 
         [Fact]
@@ -174,14 +176,37 @@ namespace Sofa3DevOpsTest
 
             var error = Assert.Throws<InvalidOperationException>(() => sprint.StartSprint());
 
-            Assert.Equal("At least one tester, scrummaster and developer must be added, before starting a sprint", error.Message);
+            Assert.Equal("At least one tester, scrummaster, PO and developer must be added, before starting a sprint", error.Message);
+        }
+
+        [Fact]
+        public void TestStartSprintWithoutPO()
+        {
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
+            Member scrumMaster = new ScrumMaster("Leader", "leader@leader.nl", "leader");
+            Developer developer = new Developer("Developer", "dev@dev.nl", "dev@dev.nl");
+            Developer developer2 = new Developer("Developer2", "dev2@dev.nl", "dev2@dev.nl");
+
+            Tester tester = new Tester("Developer", "dev3@dev.nl", "dev3@dev.nl");
+            Tester tester2 = new Tester("Developer", "dev4@dev.nl", "dev4@dev.nl");
+
+            developer.SetLeadDeveloper();
+
+            sprint.AssignMembersToSprint(scrumMaster);
+            sprint.AssignMembersToSprint(developer);
+            sprint.AssignMembersToSprint(tester); sprint.AssignMembersToSprint(developer2);
+            sprint.AssignMembersToSprint(tester2);
+
+            var error = Assert.Throws<InvalidOperationException>(() => sprint.StartSprint());
+
+            Assert.Equal("At least one tester, scrummaster, PO and developer must be added, before starting a sprint", error.Message);
         }
 
         [Fact]
         public void TestStartSprintSuccesful()
         {
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Sprint");
-            
+            ProductOwner productOwner = new ProductOwner("Dave", "Dave", "");
             Member scrumMaster = new ScrumMaster("Leader", "leader@leader.nl", "leader");
             Developer developer = new Developer("Developer", "dev@dev.nl", "dev@dev.nl");
             Developer developer2 = new Developer("Developer2", "dev2@dev.nl", "dev2@dev.nl");
@@ -194,11 +219,14 @@ namespace Sofa3DevOpsTest
             sprint.AssignMembersToSprint(scrumMaster);
             sprint.AssignMembersToSprint(developer);
             sprint.AssignMembersToSprint(tester);
+            sprint.AssignMembersToSprint(productOwner);
             
             sprint.AssignMembersToSprint(developer2);
             sprint.AssignMembersToSprint(tester2);
 
             sprint.StartSprint();
+
+            Assert.IsType<OngoingState>(sprint.State);
         }
     }
 }

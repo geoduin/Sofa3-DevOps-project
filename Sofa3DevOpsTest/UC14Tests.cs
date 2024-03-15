@@ -5,6 +5,7 @@ using Sofa3Devops.ComponentVisitors.Composites;
 using Sofa3Devops.ComponentVisitors.Visitors;
 using Sofa3Devops.Domain;
 using Sofa3Devops.Factories;
+using Sofa3Devops.Observers;
 using Sofa3Devops.SprintStates;
 
 
@@ -34,6 +35,7 @@ namespace Sofa3DevOpsTest
             BaseComposite = new CompositeComponent("Release pipeline 1");
             CICDPipeline = new Pipeline(BaseComposite, visitors);
             Sprint = new ReleaseSprint(DateTime.Now, DateTime.Now.AddDays(3), "Release pipeline", CICDPipeline);
+            
             tester = new Tester("Test", "Test@example.com", "TestSlack");
             developer = new Developer("Developer", "Developer@example.com", "DevSlack");
             scrumMaster = new ScrumMaster("Master", "Master@example.com", "MasterSlack");
@@ -369,6 +371,67 @@ namespace Sofa3DevOpsTest
 
             // Assert
             Assert.True(result);
+        }
+
+        [Fact]
+        public void TestSuccesfullPipelineNotification()
+        {
+            // Arrange
+            BuildStage buildStage = new BuildStage("Build project");
+            Command buildProject = new Command("Import packages", "npm build");
+
+            var scrumSubscriber = new Mock<RegularSubscriber>(new ScrumMaster("", "", ""));
+            var POSub = new Mock<RegularSubscriber>(new ProductOwner("", "", ""));
+            
+            Sprint.AddSubscriber(scrumSubscriber.Object);
+            Sprint.AddSubscriber(POSub.Object);
+
+            // Commands for build
+            buildStage.AddComponent(buildProject);
+
+            // Add build stage to pipeline
+            BaseComposite.AddComponent(buildStage);
+
+            // Act
+            var result = Sprint.StartReleasePipeline(productOwner);
+
+            // Assert
+            Assert.True(result);
+            scrumSubscriber.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
+            POSub.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
+        }
+
+        [Fact]
+        public void TestFailedPipelineNotification()
+        {
+            // Arrange
+            BuildStage buildStage = new BuildStage("Build project");
+            Command buildProject = new Command("Import packages", "npm build");
+            // A mock should throw error
+            var mock = new Mock<IComponent>();
+            mock.Setup((e) => e.AcceptVisitor(It.IsAny<Visitor>())).Throws(new Exception());
+            IComponent failedCommand = mock.Object;
+
+            var scrumSubscriber = new Mock<RegularSubscriber>(new ScrumMaster("", "", ""));
+            var POSub = new Mock<RegularSubscriber>(new ProductOwner("", "", ""));
+
+            Sprint.AddSubscriber(scrumSubscriber.Object);
+            Sprint.AddSubscriber(POSub.Object);
+
+            // Commands for build
+            buildStage.AddComponent(buildProject);
+            buildStage.AddComponent(failedCommand);
+
+            // Add build stage to pipeline
+            BaseComposite.AddComponent(buildStage);
+
+            // Act
+            var result = Sprint.StartReleasePipeline(productOwner);
+
+            // Assert
+            Assert.False(result);
+            scrumSubscriber.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
+            POSub.Verify(x => x.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
         }
     }
 }
