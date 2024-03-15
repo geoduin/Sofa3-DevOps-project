@@ -9,27 +9,22 @@ namespace Sofa3Devops.Domain
     internal class DiscussionComment : DiscussionForumComponent
     {
         public DiscussionForumComponent Parent { get; }
+        private List<DiscussionForumComponent> Replies;
+
         public DiscussionComment(string title, string content, BacklogItem relevantItem, Member poster, DiscussionForumComponent parent) : base(title, content, relevantItem, poster)
         {
             this.Parent = parent;
         }
 
-        public override void AddComponent(DiscussionForumComponent component)
-        {
-            //TODO: Discuss wether we should be able to add comments to comments
-            throw new NotImplementedException();
-        }
 
         public override DiscussionForumComponent GetChild(int index)
         {
-            //TODO: Discuss wether we should be able to add comments to comments
-            throw new NotImplementedException();
+            return this.Replies[index];
         }
 
         public override List<DiscussionForumComponent> GetChildren()
         {
-            //TODO: Discuss wether we should be able to add comments to comments
-            throw new NotImplementedException();
+            return this.Replies;
         }
 
         public override DiscussionForumComponent GetParent()
@@ -39,7 +34,19 @@ namespace Sofa3Devops.Domain
 
         public override void RemoveComponent(DiscussionForumComponent component)
         {
-            throw new NotImplementedException();
+            this.Replies.Remove(component);
+        }
+
+        public override void AddComponent(DiscussionForumComponent component)
+        {
+            if (component.GetType().Equals(typeof(DiscussionComment)))
+            {
+                this.Replies.Add(component);
+            }
+            else
+            {
+                throw new InvalidOperationException("Can't add thread to a thread");
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sofa3Devops.BacklogStates;
 
 namespace Sofa3Devops.Domain
 {
@@ -17,8 +18,11 @@ namespace Sofa3Devops.Domain
             Comments = new List<DiscussionForumComponent>();
         }
 
+        
+
         public override void AddComponent(DiscussionForumComponent component)
         {
+            //State checking is already performed in the constructor so no need to check here
             if (component.GetType().Equals(typeof(DiscussionComment)))
             {
                 this.Comments.Add(component);
@@ -28,6 +32,7 @@ namespace Sofa3Devops.Domain
                 throw new InvalidOperationException("Can't add thread to a thread");
             }
         }
+
 
         public override DiscussionForumComponent GetChild(int index)
         {
@@ -41,7 +46,7 @@ namespace Sofa3Devops.Domain
 
         public override DiscussionForumComponent GetParent()
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("Thread does not have a parent node");
         }
 
         public override void RemoveComponent(DiscussionForumComponent component)
