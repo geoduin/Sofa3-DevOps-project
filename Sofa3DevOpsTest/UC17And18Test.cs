@@ -101,5 +101,45 @@ namespace Sofa3DevOpsTest
 
             Assert.Throws<InvalidOperationException>(() => reply.AddComponent(reply2));
         }
+
+        [Fact]
+        public void CreatingThreadWillAddThreadToBacklogItem()
+        {
+            BacklogItem item = new BacklogItem("test", "test");
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
+            sprint.State = new OngoingState();
+            item.Sprint = sprint;
+            var thread = new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
+            Assert.Same(thread, item.Threads[0]);
+        }
+
+        [Fact]
+        public void CreatingThreadWillAddThreadToPostingMember()
+        {
+            BacklogItem item = new BacklogItem("test", "test");
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
+            sprint.State = new OngoingState();
+            item.Sprint = sprint;
+            var poster = new Tester("test", "test", "test");
+            var thread = new DiscussionThread("test", "test", item, poster);
+            Assert.Same(thread, poster.PostedDiscussionForumComponents[0]);
+        }
+
+        [Fact]
+        public void CommentingOnThreadWillAddCommentToPostingMember()
+        {
+            BacklogItem item = new BacklogItem("test", "test");
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
+            sprint.State = new OngoingState();
+            item.Sprint = sprint;
+            DiscussionForumComponent thread =
+                new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
+            var replyMember = new Tester("test", "test", "test");
+            DiscussionForumComponent reply =
+                new DiscussionComment("test", "test", item, replyMember);
+            thread.AddComponent(reply);
+
+            Assert.Equal(reply, replyMember.PostedDiscussionForumComponents[0]);
+        }
     }
 }

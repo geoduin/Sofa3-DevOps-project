@@ -19,6 +19,9 @@ namespace Sofa3Devops.Domain
             if (!SprintStateIsFinished())
             {
                 Comments = new List<DiscussionForumComponent>();
+                this.RelevantItem.Threads.Add(this);
+                this.Poster.PostedDiscussionForumComponents.Add(this);
+
             }
             else
             {
@@ -36,7 +39,7 @@ namespace Sofa3Devops.Domain
             if (component.GetType().Equals(typeof(DiscussionComment)) && !SprintStateIsFinished())
             {
                 this.Comments.Add(component);
-                this.RelevantItem.Threads.Add(this);
+                component.Poster.PostedDiscussionForumComponents.Add(component);
             }
             else
             {

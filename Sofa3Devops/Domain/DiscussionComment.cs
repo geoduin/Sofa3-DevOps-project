@@ -48,6 +48,7 @@ namespace Sofa3Devops.Domain
             {
                 this.Replies.Add(component);
                 component.SetParent(this);
+                component.Poster.PostedDiscussionForumComponents.Add(component);
             }
             else
             {
