@@ -5,7 +5,7 @@ namespace Sofa3Devops.Domain
     public abstract class Member
     {
         public string Name { get; set; }
-        public SprintStrategy? SprintStrategy { get; set; }
+        //public SprintStrategy? SprintStrategy { get; set; }
         public List<DiscussionForumComponent> PostedDiscussionForumComponents { get; set; }
         public string EmailAddress { get; set; }
         public string SlackUserName { get; set; }
