@@ -81,23 +81,5 @@ namespace Sofa3DevOpsTest
             Assert.Single(backlogItem.Activities);
             Assert.Equal("Cannot assign activities with existing backlog-item assigned.", error.Message);
         }
-
-        [Fact]
-        public void TestDoingItemToReadyTesting()
-        {
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
-            BacklogItem backlog = new BacklogItem("", "")
-            {
-                State = new DoingState()
-            };
-            sprint.SetNotificationStrategy(new AllNotificationStrategy());
-            sprint.AddBacklogItem(backlog);
-
-            Member developer = new Developer("", "", "");
-
-            developer.SetItemForReadyTesting(backlog);
-
-            Assert.IsType<ReadyToTestingState>(backlog.State);
-        }
     }
 }

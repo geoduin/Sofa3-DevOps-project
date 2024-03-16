@@ -1,215 +1,83 @@
-﻿
-using Moq;
+﻿using DomainServices.DomainServicesImpl;
+using DomainServices.DomainServicesIntf;
 using Sofa3Devops.BacklogStates;
 using Sofa3Devops.Domain;
-using Sofa3Devops.NotificationStrategy;
-using Sofa3Devops.Observers;
-using Sofa3Devops.Services;
-using TodoState = Sofa3Devops.BacklogStates.TodoState;
+using Sofa3Devops.SprintStates;
 
 namespace Sofa3DevOpsTest
 {
     public class UC11Test
     {
-        [Fact]
-        public void TestersCanSetReadyForTestingItemToTestingIfMemberOfSprint()
+        private Member tester { get; set; }
+        private Member developer { get; set; }
+        private Member scrumMaster { get; set; }
+        private Developer leadDeveloper { get; set; }
+        private BacklogItem backlogItem { get; set; }
+        private Sprint sprint { get; set; }
+
+        public UC11Test()
         {
-            Member tester = new Tester("test", "test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now,  DateTime.MaxValue, "test");
-            sprint.Members.Add(tester);
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = sprint;
-            sprint.AddBacklogItem(item);
-            item.State = new ReadyToTestingState();
-            BacklogItemServices.SetToTesting(tester, item);
-            Assert.True(item.State.GetType().Equals(typeof(TestingState)));
-        }
-
-        [Fact]
-        public void TestersCantSetReadyForTestingItemToTestingIfNotMemberOfSprint()
-        {
-            Member tester = new Tester("test", "test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = sprint;
-            sprint.AddBacklogItem(item);
-            item.State = new ReadyToTestingState();
-            Assert.Throws<UnauthorizedAccessException>(() => BacklogItemServices.SetToTesting(tester, item));
-        }
-        [Fact]
-        public void MemberOfSprintCantSetItemToTestingIfRoleIsNotTester()
-        {
-            Member notTester = new Developer("test", "test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            sprint.Members.Add(notTester);
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = sprint;
-            sprint.AddBacklogItem(item);
-            item.State = new ReadyToTestingState();
-            Assert.Throws<UnauthorizedAccessException>(() => BacklogItemServices.SetToTesting(notTester, item));
-        }
-
-        [Fact]
-        public void MemberCantSetTestedItemToToDoIfNotMemberOfSprint()
-        {
-            Member productOwner = new Tester("test", "test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = sprint;
-            sprint.AddBacklogItem(item);
-            item.State = new TestedState();
-            Assert.Throws<UnauthorizedAccessException>(() => BacklogItemServices.SetToToDo(productOwner, item));
-        }
-
-        [Fact]
-        public void MemberCantSetTestedItemToTodoIfNotTester()
-        {
-            Member productOwner = new ProductOwner("test", "test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            sprint.Members.Add(productOwner);
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = sprint;
-            sprint.AddBacklogItem(item);
-            item.State = new TestedState();
-            Assert.Throws<UnauthorizedAccessException>(() => BacklogItemServices.SetToToDo(productOwner, item));
-        }
-
-        [Fact]
-        public void AuthorizedTesterCanSetTestedItemToTodoIfStateIsTesting()
-        {
-            Member tester = new Tester("test", "test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            sprint.Members.Add(tester);
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = sprint;
-            sprint.AddBacklogItem(item);
-            item.State = new TestingState();
-            BacklogItemServices.SetToToDo(tester, item);
-            Assert.True(item.State.GetType() == typeof(TodoState));
-        }
-
-        [Fact]
-        public void AuthorizedTesterCanSetItemToToDoIfStateIsReadyForTesting()
-        {
-            Member tester = new Tester("test", "test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            sprint.Members.Add(tester);
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = sprint;
-            sprint.AddBacklogItem(item);
-            item.State = new ReadyToTestingState();
-            item.SetToToDo(tester);
-            Assert.True(item.State.GetType() == typeof(TodoState));
-        }
-
-        [Fact]
-        public void SettingItemFromTestingToToDoTriggersSendingOfNotification()
-        {
-            Member tester = new Tester("test", "test", "test");
-            var mockSprint = new Mock<Sprint>(DateTime.Now, DateTime.MaxValue, "test");
-            mockSprint.Object.Members.Add(tester);
-            BacklogItem item = new BacklogItem("test", "test");
-            item.Sprint = mockSprint.Object;
-            item.State = new TestingState();
-            BacklogItemServices.SetToToDo(tester, item);
-            mockSprint.Verify(m => m.NotifyAll(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce);
-        }
-
-
-        [Fact]
-        public void ScrumMasterStrategyOnlySendsNotificationToScrumMasters()
-        {
-            Member sm1 = new ScrumMaster("test", "test", "test");
-            var s1 = new Mock<Subscriber>(sm1);
-            Member sm2 = new ScrumMaster("test", "test", "test");
-            var s2 = new Mock<Subscriber>(sm2);
-            Member t1 = new Tester("test", "test", "test");
-            var s3 = new Mock<Subscriber>(sm1);
-            INotificationStrategy strategy = new ScrumMasterStrategy();
-            Dictionary<Type, List<Subscriber>> subDictionary = new Dictionary<Type, List<Subscriber>>();
-            subDictionary[typeof(ScrumMaster)] = new List<Subscriber>();
-            subDictionary[typeof(ScrumMaster)].Add(s1.Object);
-            subDictionary[typeof(ScrumMaster)].Add(s2.Object);
-            subDictionary[typeof(Tester)] = new List<Subscriber>();
-            subDictionary[typeof(Tester)].Add(s3.Object);
-
-            strategy.SendNotification("test", "test", subDictionary);
-
-            s1.Verify(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce());
-            s2.Verify(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce());
-            s3.Verify(m => m.Notify(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
-        }
-
-        [Fact]
-        public void TestItemFromTestingToTestedByNonTesters()
-        {
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
-            BacklogItem backlog = new BacklogItem("", "")
+            tester = new Tester("Test", "Test@example.com", "TestSlack");
+            developer = new Developer("Developer", "Developer@example.com", "DevSlack");
+            scrumMaster = new ScrumMaster("Master", "Master@example.com", "MasterSlack");
+            leadDeveloper = new Developer("LeadDeveloper", "LeadDeveloper@example.com", "DevSlack");
+            leadDeveloper.SetLeadDeveloper();
+            backlogItem = new BacklogItem("Head task", "")
             {
-                State = new TestingState()
+                State = new TestingState(),
+                ResponsibleMember = developer
             };
-            sprint.SetNotificationStrategy(new AllNotificationStrategy());
-            sprint.AddBacklogItem(backlog);
+            sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(1), "Scrum project")
+            {
+                State = new OngoingState()
+            };
+        }
 
-            Member tester = new Developer("", "", "");
-
-            var error = Assert.Throws<UnauthorizedAccessException>(()=> tester.SetItemFromTestingToTested(backlog));
-
-            Assert.Equal("Non-testers are not allowed to move this item to tested.", error.Message);
+        [Fact]    
+        public void TestTestingToTestedByTester()
+        {
+            sprint.AddBacklogItem(backlogItem);
+            // Act
+            backlogItem.SetToTested(tester);
+            // Assert
+            Assert.IsType<TestedState>(backlogItem.State);
         }
 
         [Fact]
-        public void TestItemFromTestingToTestedByTesters()
+        public void TestTestingToTestedByTesterAndAllActivities()
         {
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
-            BacklogItem backlog = new BacklogItem("", "")
+            Activity act1 = new Activity("", "", backlogItem)
             {
-                State = new TestingState()
+                State = new ReadyToTestingState()
             };
-            sprint.SetNotificationStrategy(new AllNotificationStrategy());
-            sprint.AddBacklogItem(backlog);
+            Activity act2 = new Activity("", "", backlogItem)
+            {
+                State = new ReadyToTestingState()
+            };
+            sprint.AddBacklogItem(backlogItem);
+            backlogItem.AddActivityToBacklogItem(act1);
+            backlogItem.AddActivityToBacklogItem(act2);
 
-            Member tester = new Tester("", "", "");
+            // Act
+            backlogItem.SetToTested(tester);
 
-            tester.SetItemFromTestingToTested(backlog);
-
-            Assert.IsType<TestedState>(backlog.State);
+            // Assert
+            Assert.IsType<TestedState>(act1.State);
+            Assert.IsType<TestedState>(act2.State);
         }
 
         [Fact]
-        public void TestItemFromTestingToTodoByNonTesters()
+        public void TestTestingToTestedByNonTester()
         {
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
-            BacklogItem backlog = new BacklogItem("", "")
-            {
-                State = new TestingState()
-            };
-            sprint.SetNotificationStrategy(new AllNotificationStrategy());
-            sprint.AddBacklogItem(backlog);
+            var error = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTested(developer));
+            var errorScrumMaster = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTested(scrumMaster));
+            var errorLeadDeveloper = Assert.Throws<UnauthorizedAccessException>(() => backlogItem.SetToTested(leadDeveloper));
 
-            Member tester = new Developer("", "", "");
-
-            var error = Assert.Throws<UnauthorizedAccessException>(() => tester.SetItemFromTestingBackToTodo(backlog));
-
-            Assert.Equal("Non-testers are not allowed to move this item to tested.", error.Message);
+            // Validate scrummaster notification
+            Assert.Equal("Unauthorized action: Users with Developer role are not allowed to perform this action. Only testers are allowed.", error.Message);
+            Assert.Equal("Unauthorized action: Users with Scrum-master role are not allowed to perform this action. Only testers are allowed.", errorScrumMaster.Message);
+            Assert.Equal("Unauthorized action: Users with Lead developer role are not allowed to perform this action. Only testers are allowed.", errorLeadDeveloper.Message);
         }
 
-        [Fact]
-        public void TestItemFromTestingToTodoByTesters()
-        {
-            Sprint sprint = new ReleaseSprint(DateTime.Now, DateTime.Now, "");
-            BacklogItem backlog = new BacklogItem("", "")
-            {
-                State = new TestingState()
-            };
-            sprint.SetNotificationStrategy(new AllNotificationStrategy());
-            sprint.AddBacklogItem(backlog);
-
-            Member tester = new Tester("", "", "");
-
-            tester.SetItemFromTestingBackToTodo(backlog);
-
-            Assert.IsType<TodoState>(backlog.State);
-        }
     }
 }

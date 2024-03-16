@@ -16,12 +16,12 @@ namespace Sofa3Devops.Domain
         {
             base.AssignBacklogItem(member);
             // Set state of parent backlog item to doing
-            SetParentStateToDoing();
+            SetParentStateToDoing(member);
         }
 
-        public void SetParentStateToDoing()
+        public void SetParentStateToDoing(Member m)
         {
-            AssignedBacklogItem.SetToDoing();
+            AssignedBacklogItem.SetToDoing(m);
         }
 
         public override bool HasAllTaskBeenCompleted()

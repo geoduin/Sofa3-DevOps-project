@@ -5,22 +5,22 @@ namespace Sofa3Devops.BacklogStates
 {
     public class DoingState : IBacklogState
     {
-        public void SetDoing(BacklogItem item)
+        public void SetDoing(BacklogItem item, Member member)
         {
             item.SetBacklogState(this);
             Console.WriteLine("Nothing happens");
         }
 
-        public void SetToDo(BacklogItem item)
+        public void SetToDo(BacklogItem item, Member member)
         {
             item.SetBacklogState(new TodoState());
         }
 
-        public void SetToFinished(BacklogItem item)
+        public void SetToFinished(BacklogItem item, Member member)
         {
         }
 
-        public void SetToReadyTesting(BacklogItem item)
+        public void SetToReadyTesting(BacklogItem item, Member member)
         {
             var strat = item.Sprint!.NotificationStrategy;
             item.State = new ReadyToTestingState();
@@ -31,12 +31,12 @@ namespace Sofa3Devops.BacklogStates
             item.Sprint.SetNotificationStrategy(strat);
         }
 
-        public void SetToTested(BacklogItem item)
+        public void SetToTested(BacklogItem item, Member member)
         {
             throw new InvalidOperationException();
         }
 
-        public void SetToTesting(BacklogItem item)
+        public void SetToTesting(BacklogItem item, Member member)
         {
             throw new InvalidOperationException();
         }

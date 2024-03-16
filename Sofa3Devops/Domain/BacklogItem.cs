@@ -35,7 +35,7 @@ namespace Sofa3Devops.Domain
             if (ResponsibleMember == null)
             {
                 ResponsibleMember = member;
-                SetToDoing();
+                SetToDoing(member);
                 // Assign member as subscriber.
                 // AddSubscriber(new Subscriber(member));
             }
@@ -54,6 +54,7 @@ namespace Sofa3Devops.Domain
             // Check if activity is the same as it is assigned
             if (Equals(activity.AssignedBacklogItem))
             {
+                activity.Sprint = Sprint;
                 Activities.Add(activity);
             }
             else
@@ -105,25 +106,12 @@ namespace Sofa3Devops.Domain
         {
             this.NotificationStrategy = strategy;
         }
-
-        public void SetToTesting(Member tester)
-        {
-            if (tester.GetType().Equals(typeof(Tester)) && this.Sprint!.Members.Contains(tester))
-            {
-                this.State.SetToTesting(this);
-            }
-            else
-            {
-                throw new UnauthorizedAccessException(
-                    "Only testers that are members of the sprint can set backlog items to testing");
-            }
-        }
         
         public void SetToToDo(Member member)
         {
             if (member.GetType().Equals(typeof(Tester)) && this.Sprint!.Members.Contains(member))
             {
-                this.State.SetToDo(this);
+                this.State.SetToDo(this, member);
                 return;
             }
             throw new UnauthorizedAccessException(
@@ -135,34 +123,34 @@ namespace Sofa3Devops.Domain
             State = backlogState;
         }
 
-        public void SetToTodo()
+        public void SetToTodo(Member member)
         {
-            State.SetToDo(this);
+            State.SetToDo(this, member);
         }
 
-        public void SetItemReadyForTesting()
+        public void SetItemReadyForTesting(Member member)
         {
-            State.SetToReadyTesting(this);
+            State.SetToReadyTesting(this, member);
         }
 
-        public void SetToDoing()
+        public void SetToDoing(Member member)
         {
-            State.SetDoing(this);
+            State.SetDoing(this, member);
         }
 
-        public void SetToTesting()
+        public void SetToTesting(Member member)
         {
-            State.SetToTesting(this);
+            State.SetToTesting(this, member);
         }
 
-        public void SetToTested()
+        public void SetToTested(Member member)
         {
-            State.SetToTested(this);
+            State.SetToTested(this, member);
         }
 
-        public void SetItemToFinished()
+        public void SetItemToFinished(Member member)
         {
-            State.SetToFinished(this);
+            State.SetToFinished(this, member);
         }
     }
 }
