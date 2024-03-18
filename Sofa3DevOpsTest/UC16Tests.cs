@@ -2,6 +2,7 @@
 using Sofa3Devops.Domain;
 using Sofa3Devops.SprintReportExporter;
 using Sofa3Devops.SprintStates;
+using Sofa3Devops.SprintTemplatePattern;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,13 @@ namespace Sofa3DevOpsTest
     public class UC16Tests
     {
         private Sprint Sprint {  get; set; }
+        private SprintReportTemplate PdfTemplate { get; set; }
+        private SprintReportTemplate WordTemplate { get; set; }
 
         public UC16Tests() {
             Sprint = new DevelopmentSprint(DateTime.Now, DateTime.Now.AddDays(2), "Export sprint test");
+            PdfTemplate = new PdfSprintReportTemplate(1, "Sprint report.", "===Scrum/Tooling===");
+            WordTemplate = new WordSprintReportTemplate(1, "Sprint report word version", "===Scrum/Tooling===");
         }
 
         [Fact]
@@ -29,7 +34,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestExporterToPDF()
         {
-            Sprint.Exporter = new PDFExporter();
+            Sprint.Exporter = new PDFExporter(PdfTemplate);
             var (format, result) = Sprint.ExportSprintReport();
 
             Assert.Equal("PDF", format);
@@ -39,7 +44,7 @@ namespace Sofa3DevOpsTest
         [Fact]
         public void TestExporterToWord()
         {
-            Sprint.Exporter = new WordExporter();
+            Sprint.Exporter = new WordExporter(WordTemplate);
             var (format, result) = Sprint.ExportSprintReport();
 
             Assert.Equal("Microsoft word", format);
@@ -183,5 +188,6 @@ namespace Sofa3DevOpsTest
             Assert.Equal(6, Sprint.BacklogItems.Count);
             Assert.Equal(6, result.Count);
         }
+    
     }
 }
