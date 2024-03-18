@@ -14,10 +14,10 @@ namespace Sofa3Devops.Domain
         public Member? ResponsibleMember { get; set; }
         public Dictionary<Type, List<Subscriber>> Subscribers { get; private set; }
         public List<Activity> Activities { get; set; }
-        public List<CommentThread> Threads { get; set; }
         public Sprint? Sprint { get; set; }
         public INotificationStrategy? NotificationStrategy { get; private set; }
-        
+        public List<AbstractDiscussionComponent> Threads { get; set; }
+
 
         public BacklogItem(string name, string description)
         {
@@ -26,9 +26,8 @@ namespace Sofa3Devops.Domain
             State = new TodoState();
             ResponsibleMember = null;
             Subscribers = new Dictionary<Type, List<Subscriber>>();
-            SubscriberServices.InitializeSubscriberDictionary(Subscribers);
             Activities = new List<Activity>();
-            Threads = new List<CommentThread>();
+            Threads = new List<AbstractDiscussionComponent>();
         }
 
         public virtual void AssignBacklogItem(Member member)

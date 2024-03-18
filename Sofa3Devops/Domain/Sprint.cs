@@ -38,7 +38,6 @@ namespace Sofa3Devops.Domain
             BacklogItems = new List<BacklogItem>();
             Members = new List<Member>();
             Subscribers = new Dictionary<Type, List<Subscriber>>();
-            SubscriberServices.InitializeSubscriberDictionary(Subscribers);
         }
 
         public void SetSprintState(ISprintState sprintState)
