@@ -9,6 +9,8 @@ namespace Sofa3Devops.Domain
 {
     public class DevelopmentSprint : Sprint
     {
+        public SprintSummary? Summary { get; set; }
+
         public DevelopmentSprint(DateTime startDate, DateTime endDate, string name) : base(startDate, endDate, name)
         {
         }
@@ -31,9 +33,19 @@ namespace Sofa3Devops.Domain
             Name = newName;
         }
 
+        private bool IsSummaryUploaded()
+        {
+            return Summary != null;
+        }
+
         public override void EndSprint(Member member)
         {
-            throw new NotImplementedException();
+            // Is summary aanwezig
+            if (!IsSummaryUploaded())
+            {
+                throw new InvalidOperationException("Summary is required in order to end the review sprint.");
+            }
+            
         }
     }
 }

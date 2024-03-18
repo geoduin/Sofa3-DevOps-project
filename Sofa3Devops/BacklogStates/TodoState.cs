@@ -21,7 +21,6 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToFinished(BacklogItem item, Member m)
         {
-            throw new NotImplementedException();
         }
 
         public void SetToReadyTesting(BacklogItem item, Member member)
@@ -36,7 +35,6 @@ namespace Sofa3Devops.BacklogStates
 
         public void SetToTesting(BacklogItem item, Member m)
         {
-            throw new NotImplementedException();
         }
     }
 }

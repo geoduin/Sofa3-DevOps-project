@@ -36,8 +36,6 @@ namespace Sofa3Devops.Domain
             {
                 ResponsibleMember = member;
                 SetToDoing(member);
-                // Assign member as subscriber.
-                // AddSubscriber(new Subscriber(member));
             }
             else
             {
@@ -93,17 +91,6 @@ namespace Sofa3Devops.Domain
             this.NotificationStrategy = strategy;
         }
         
-        public void SetToToDo(Member member)
-        {
-            if (member.GetType().Equals(typeof(Tester)) && this.Sprint!.Members.Contains(member))
-            {
-                this.State.SetToDo(this, member);
-                return;
-            }
-            throw new UnauthorizedAccessException(
-                "Only Testers that are members of the sprint can set backlog items to to-do");
-        }
-
         public void SetBacklogState(IBacklogState backlogState)
         {
             State = backlogState;

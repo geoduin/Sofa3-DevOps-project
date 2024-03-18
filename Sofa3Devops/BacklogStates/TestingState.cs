@@ -38,7 +38,6 @@ namespace Sofa3Devops.BacklogStates
             validator = new TesterValidation();
             validator.HasPermission(member);
 
-            var strat = item.NotificationStrategy;
             item.Activities.ForEach(activities => activities.SetBacklogState(new TestedState()));
             item.Sprint!.SetNotificationStrategy(new LeadDeveloperNotificationStrategy());
             item.SetBacklogState(new TestedState());
