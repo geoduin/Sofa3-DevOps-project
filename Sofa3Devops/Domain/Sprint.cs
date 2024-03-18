@@ -8,6 +8,7 @@ using Sofa3Devops.Adapters.Clients;
 using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.Observers;
 using Sofa3Devops.Services;
+using Sofa3Devops.SprintReportExporter;
 using Sofa3Devops.SprintStates;
 
 namespace Sofa3Devops.Domain
@@ -25,8 +26,7 @@ namespace Sofa3Devops.Domain
         public List<Member> Members { get; set; }
         public Dictionary<Type, List<Subscriber>> Subscribers { get; protected set; }
         public INotificationStrategy NotificationStrategy { get; protected set; }
-
-
+        public ISprintExportStrategy? Exporter { get; set; }
 
         public Sprint(DateTime startDate, DateTime endDate, string name)
         {
@@ -126,6 +126,16 @@ namespace Sofa3Devops.Domain
         public void SetNotificationStrategy(INotificationStrategy strategy)
         {
             this.NotificationStrategy = strategy;
+        }
+
+        // Export report
+        public (string format, bool succeeded) ExportSprintReport()
+        {
+            if(Exporter == null)
+            {
+                throw new InvalidOperationException("An export formatter needs to be first determined, before sprint report can be exported.");
+            }
+            return (Exporter.ExportReport(this), true);
         }
     }
 }
