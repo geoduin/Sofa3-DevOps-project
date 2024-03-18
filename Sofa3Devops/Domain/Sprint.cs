@@ -86,6 +86,9 @@ namespace Sofa3Devops.Domain
         {
             State.SetToCanceled(this);
         }
+        
+        // Will be called upon in the states
+        public abstract void EndSprint(Member member);
 
         public void FinishSprint(Member member)
         {
@@ -93,9 +96,8 @@ namespace Sofa3Devops.Domain
             EndSprint(member);
         }
 
-        // Will be called upon in the states
-        public abstract void EndSprint(Member member);
-
+        
+        // Observable methods
         public void AddSubscriber(Subscriber subscriber)
         {
             try
@@ -121,7 +123,10 @@ namespace Sofa3Devops.Domain
             list.Remove(subscriber);
         }
 
-        public abstract void NotifyAll(string title, string message);
+        public void NotifyAll(string title, string message)
+        {
+            NotificationStrategy.SendNotification(title, message, Subscribers);
+        }
 
         public void SetNotificationStrategy(INotificationStrategy strategy)
         {

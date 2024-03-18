@@ -23,11 +23,6 @@ namespace Sofa3Devops.Domain
             Pipeline = pipeline;
         }
 
-        public override void NotifyAll(string title, string message)
-        {
-            this.NotificationStrategy.SendNotification(title, message, this.Subscribers);
-        }
-
         public override void ChangeSprint(DateTime newStart, DateTime newEnd, string newName)
         {
             if (State.GetType() != typeof(ConceptState))
