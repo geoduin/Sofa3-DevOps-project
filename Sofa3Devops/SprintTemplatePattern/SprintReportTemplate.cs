@@ -31,7 +31,7 @@ namespace Sofa3Devops.SprintTemplatePattern
 
         protected virtual void ApplyFooter()
         {
-            Content += $"{Base64Logo} - Version {Version} - {DateOfCreation.ToString()}\n";
+            Content += $"{Base64Logo} - Version {Version} - {DateOfCreation.Year}\n";
         }
 
         public abstract void ApplyContent(SprintReport sprintReport);

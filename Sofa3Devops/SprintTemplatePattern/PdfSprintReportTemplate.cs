@@ -31,11 +31,15 @@ namespace Sofa3Devops.SprintTemplatePattern
             // Prints down effort points per developer.
             foreach (var (member, points) in effortPoints)
             {
-                string value = $"Name: {member.Name}, Effort points: {points}";
+                string value = $"Name: {member.Name}, Effort points: {points}\n";
                 Console.WriteLine(value);
+                Content += value;
             }
-            // Burndown chart
-            burndownChart.ForEach(x => Console.WriteLine($"{x}"));
+            // Burndown chart printing
+            for (int i = 0; i < burndownChart.Count; i++)
+            {
+                Content += $"{i}. {burndownChart[i]}\n";
+            }
             Console.WriteLine("Sprint report has been exported to PDF");
         }
     }

@@ -188,6 +188,136 @@ namespace Sofa3DevOpsTest
             Assert.Equal(6, Sprint.BacklogItems.Count);
             Assert.Equal(6, result.Count);
         }
-    
+
+        [Fact]
+        public void TestWordFormatReturner()
+        {
+            Member rick = new Developer("Rick Sanchez", "R", "");
+            Member alex = new Developer("Alexis Sanchez", "R", "");
+            Member hugo = new Developer("Huga Sanchez", "R", "");
+
+            var exporter = new WordExporter(WordTemplate);
+            BacklogItem first = new BacklogItem("", "")
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 4,
+                ResponsibleMember = rick,
+            };
+            Activity activity = new Activity("", "", first)
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 2,
+                ResponsibleMember = alex,
+            };
+            first.AddActivityToBacklogItem(activity);
+
+            BacklogItem second = new BacklogItem("", "")
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 4,
+                ResponsibleMember = rick,
+            };
+            BacklogItem third = new BacklogItem("", "")
+            {
+                State = new TestedState(),
+                EffortPoints = 4,
+                ResponsibleMember = rick,
+            };
+            BacklogItem fourth = new BacklogItem("", "")
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 2,
+                ResponsibleMember = alex,
+            };
+            BacklogItem fifth = new BacklogItem("", "")
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 1,
+                ResponsibleMember = alex,
+            };
+            BacklogItem sixth = new BacklogItem("", "")
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 6,
+                ResponsibleMember = hugo,
+            };
+            Sprint.AddBacklogItem(first);
+            Sprint.AddBacklogItem(second);
+            Sprint.AddBacklogItem(third);
+            Sprint.AddBacklogItem(fourth);
+            Sprint.AddBacklogItem(fifth);
+            Sprint.AddBacklogItem(sixth);
+
+            SprintReport sprintReport = new SprintReport(Sprint);
+
+            var result = WordTemplate.BuildReport(sprintReport);
+            // Assert
+            Assert.Equal($"===Scrum/Tooling===\n<p> Name: Rick Sanchez, Effort points: 12</p><p> Name: Alexis Sanchez, Effort points: 5</p><p> Name: Huga Sanchez, Effort points: 6</p><p>0. 23 </p><p>1. 19 </p><p>2. 19 </p><p>3. 17 </p><p>4. 16 </p><p>5. 10 </p>===Scrum/Tooling=== - Version 1 - {DateTime.Now.Year}\n", result);
+        }
+
+        [Fact]
+        public void TestPDFFormatReturner()
+        {
+            Member rick = new Developer("Rick Sanchez", "R", "");
+            Member alex = new Developer("Alexis Sanchez", "R", "");
+            Member hugo = new Developer("Huga Sanchez", "R", "");
+
+            BacklogItem first = new BacklogItem("", "")
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 4,
+                ResponsibleMember = rick,
+            };
+            Activity activity = new Activity("", "", first)
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 2,
+                ResponsibleMember = alex,
+            };
+            first.AddActivityToBacklogItem(activity);
+
+            BacklogItem second = new BacklogItem("", "")
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 4,
+                ResponsibleMember = rick,
+            };
+            BacklogItem third = new BacklogItem("", "")
+            {
+                State = new TestedState(),
+                EffortPoints = 4,
+                ResponsibleMember = rick,
+            };
+            BacklogItem fourth = new BacklogItem("", "")
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 2,
+                ResponsibleMember = alex,
+            };
+            BacklogItem fifth = new BacklogItem("", "")
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 1,
+                ResponsibleMember = alex,
+            };
+            BacklogItem sixth = new BacklogItem("", "")
+            {
+                State = new Sofa3Devops.BacklogStates.FinishedState(),
+                EffortPoints = 6,
+                ResponsibleMember = hugo,
+            };
+            Sprint.AddBacklogItem(first);
+            Sprint.AddBacklogItem(second);
+            Sprint.AddBacklogItem(third);
+            Sprint.AddBacklogItem(fourth);
+            Sprint.AddBacklogItem(fifth);
+            Sprint.AddBacklogItem(sixth);
+
+            SprintReport sprintReport = new SprintReport(Sprint);
+
+            var result = PdfTemplate.BuildReport(sprintReport);
+            // Assert
+            Assert.Equal($"===Scrum/Tooling===\nName: Rick Sanchez, Effort points: 12\nName: Alexis Sanchez, Effort points: 5\nName: Huga Sanchez, Effort points: 6\n0. 23\n1. 19\n2. 19\n3. 17\n4. 16\n5. 10\n===Scrum/Tooling=== - Version 1 - 2024\n", result);
+        }
     }
 }
