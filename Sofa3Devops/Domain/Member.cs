@@ -6,7 +6,7 @@ namespace Sofa3Devops.Domain
     {
         public string Name { get; set; }
         //public SprintStrategy? SprintStrategy { get; set; }
-        public List<DiscussionForumComponent> PostedDiscussionForumComponents { get; set; }
+        public List<AbstractDiscussionComponent> PostedDiscussionForumComponents { get; set; }
         public string EmailAddress { get; set; }
         public string SlackUserName { get; set; }
         //A member always has to be notifiable, hence the default value
@@ -15,7 +15,7 @@ namespace Sofa3Devops.Domain
 
         public Member(string name, string emailAddress, string slackUserName) {
             Name = name;
-            PostedDiscussionForumComponents = new List<DiscussionForumComponent>();
+            PostedDiscussionForumComponents = new List<AbstractDiscussionComponent>();
             EmailAddress = emailAddress;
             SlackUserName = slackUserName;
         }

@@ -16,7 +16,7 @@ namespace Sofa3Devops.Domain
         public List<Activity> Activities { get; set; }
         public Sprint? Sprint { get; set; }
         public INotificationStrategy? NotificationStrategy { get; private set; }
-        public List<DiscussionForumComponent> Threads { get; set; }
+        public List<AbstractDiscussionComponent> Threads { get; set; }
 
 
         public BacklogItem(string name, string description)
@@ -27,7 +27,7 @@ namespace Sofa3Devops.Domain
             ResponsibleMember = null;
             Subscribers = new Dictionary<Type, List<Subscriber>>();
             Activities = new List<Activity>();
-            Threads = new List<DiscussionForumComponent>();
+            Threads = new List<AbstractDiscussionComponent>();
         }
 
         public virtual void AssignBacklogItem(Member member)

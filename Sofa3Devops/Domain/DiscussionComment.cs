@@ -7,14 +7,12 @@ using Sofa3Devops.SprintStates;
 
 namespace Sofa3Devops.Domain
 {
-    public class DiscussionComment : DiscussionForumComponent
+    public class DiscussionComment : AbstractDiscussionComponent
     {
-        public DiscussionForumComponent Parent { get; set; }
-        private List<DiscussionForumComponent> Replies;
+        public AbstractDiscussionComponent Parent { get; set; }
 
         public DiscussionComment(string title, string content, BacklogItem relevantItem, Member poster) : base(title, content, relevantItem, poster)
         {
-            this.Replies = new List<DiscussionForumComponent>();
         }
 
         private bool SprintStateIsFinished()
@@ -22,31 +20,22 @@ namespace Sofa3Devops.Domain
             return this.RelevantItem.Sprint.State.GetType().Equals(typeof(FinishedState));
         }
 
-        public override DiscussionForumComponent GetChild(int index)
-        {
-            return this.Replies[index];
-        }
 
-        public override List<DiscussionForumComponent> GetChildren()
-        {
-            return this.Replies;
-        }
-
-        public override DiscussionForumComponent GetParent()
+        public override AbstractDiscussionComponent GetParent()
         {
             return Parent;
         }
 
-        public override void RemoveComponent(DiscussionForumComponent component)
+        public override void RemoveComponent(AbstractDiscussionComponent component)
         {
-            this.Replies.Remove(component);
+            this.Children.Remove(component);
         }
 
-        public override void AddComponent(DiscussionForumComponent component)
+        public override void AddComponent(AbstractDiscussionComponent component)
         {
             if (component.GetType().Equals(typeof(DiscussionComment)) && !SprintStateIsFinished())
             {
-                this.Replies.Add(component);
+                this.Children.Add(component);
                 component.SetParent(this);
                 component.Poster.PostedDiscussionForumComponents.Add(component);
             }

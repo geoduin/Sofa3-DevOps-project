@@ -27,13 +27,13 @@ namespace Sofa3DevOpsTest
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
             sprint.State = new OngoingState();
             item.Sprint = sprint;
-            DiscussionForumComponent thread =
+            AbstractDiscussionComponent thread =
                 new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
-            DiscussionForumComponent reply =
+            AbstractDiscussionComponent reply =
                 new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
             thread.AddComponent(reply);
 
-            Assert.Equal(thread.GetChild(0), reply);
+            Assert.Equal(thread.Children[0], reply);
         }
 
         [Fact]
@@ -43,15 +43,15 @@ namespace Sofa3DevOpsTest
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
             sprint.State = new OngoingState();
             item.Sprint = sprint;
-            DiscussionForumComponent thread =
+            AbstractDiscussionComponent thread =
                 new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
-            DiscussionForumComponent reply =
+            AbstractDiscussionComponent reply =
                 new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
-            DiscussionForumComponent reply2 =
+            AbstractDiscussionComponent reply2 =
                 new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
             reply.AddComponent(reply2);
 
-            Assert.Equal(reply.GetChild(0), reply2);
+            Assert.Equal(reply.Children[0], reply2);
         }
 
         [Fact]
@@ -72,10 +72,10 @@ namespace Sofa3DevOpsTest
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
             sprint.State = new OngoingState();
             item.Sprint = sprint;
-            DiscussionForumComponent thread =
+            AbstractDiscussionComponent thread =
                 new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
             sprint.State = new FinishedState();
-            DiscussionForumComponent reply =
+            AbstractDiscussionComponent reply =
                 new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
 
 
@@ -89,14 +89,14 @@ namespace Sofa3DevOpsTest
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
             sprint.State = new OngoingState();
             item.Sprint = sprint;
-            DiscussionForumComponent thread =
+            AbstractDiscussionComponent thread =
                 new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
-            DiscussionForumComponent reply =
+            AbstractDiscussionComponent reply =
                 new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
             thread.AddComponent(reply);
             sprint.State = new FinishedState();
 
-            DiscussionForumComponent reply2 =
+            AbstractDiscussionComponent reply2 =
                 new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
 
             Assert.Throws<InvalidOperationException>(() => reply.AddComponent(reply2));
@@ -132,10 +132,10 @@ namespace Sofa3DevOpsTest
             Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
             sprint.State = new OngoingState();
             item.Sprint = sprint;
-            DiscussionForumComponent thread =
+            AbstractDiscussionComponent thread =
                 new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
             var replyMember = new Tester("test", "test", "test");
-            DiscussionForumComponent reply =
+            AbstractDiscussionComponent reply =
                 new DiscussionComment("test", "test", item, replyMember);
             thread.AddComponent(reply);
 

@@ -8,17 +8,15 @@ using FinishedState = Sofa3Devops.SprintStates.FinishedState;
 
 namespace Sofa3Devops.Domain
 {
-    public class DiscussionThread : DiscussionForumComponent
+    public class DiscussionThread : AbstractDiscussionComponent
     {
 
        
-        private List<DiscussionForumComponent> Comments;
 
         public DiscussionThread(string title, string content, BacklogItem relevantItem, Member poster) : base(title, content, relevantItem, poster)
         {
             if (!SprintStateIsFinished())
             {
-                Comments = new List<DiscussionForumComponent>();
                 this.RelevantItem.Threads.Add(this);
                 this.Poster.PostedDiscussionForumComponents.Add(this);
 
@@ -34,11 +32,11 @@ namespace Sofa3Devops.Domain
             return this.RelevantItem.Sprint.State.GetType().Equals(typeof(FinishedState));
         }
 
-        public override void AddComponent(DiscussionForumComponent component)
+        public override void AddComponent(AbstractDiscussionComponent component)
         {
             if (component.GetType().Equals(typeof(DiscussionComment)) && !SprintStateIsFinished())
             {
-                this.Comments.Add(component);
+                this.Children.Add(component);
                 component.Poster.PostedDiscussionForumComponents.Add(component);
             }
             else
@@ -47,25 +45,14 @@ namespace Sofa3Devops.Domain
             }
         }
 
-
-        public override DiscussionForumComponent GetChild(int index)
-        {
-            return Comments[index];
-        }
-
-        public override List<DiscussionForumComponent> GetChildren()
-        {
-            return Comments;
-        }
-
-        public override DiscussionForumComponent GetParent()
+        public override AbstractDiscussionComponent GetParent()
         {
             throw new InvalidOperationException("Thread does not have a parent node");
         }
 
-        public override void RemoveComponent(DiscussionForumComponent component)
+        public override void RemoveComponent(AbstractDiscussionComponent component)
         {
-            this.Comments.Remove(component);
+            this.Children.Remove(component);
         }
 
         public override void SetParent(DiscussionComment component)
