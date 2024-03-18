@@ -18,7 +18,7 @@ namespace Sofa3Devops.Domain
         public BacklogItem RelevantItem { get; }
         public Member Poster { get; }
         public List<AbstractDiscussionComponent> Children { get; }
-        private Dictionary<Type, List<Subscriber>> Subscribers;
+        public Dictionary<Type, List<Subscriber>> Subscribers { get; }
         //This way we initially have the all notification strategy which is needed for the current acceptance criteria but
         //can still change the strategy if this becomes necessary in the future.
         public INotificationStrategy NotificationStrategy { get; set; } = new AllNotificationStrategy();
