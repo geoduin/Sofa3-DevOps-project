@@ -17,7 +17,7 @@ namespace Sofa3Devops.Domain
         public Sprint? Sprint { get; set; }
         public INotificationStrategy? NotificationStrategy { get; private set; }
         public List<AbstractDiscussionComponent> Threads { get; set; }
-
+        public int EffortPoints { get; set; } = 0;
 
         public BacklogItem(string name, string description)
         {

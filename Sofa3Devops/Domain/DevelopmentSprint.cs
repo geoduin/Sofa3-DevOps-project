@@ -15,11 +15,6 @@ namespace Sofa3Devops.Domain
         {
         }
 
-        public override void NotifyAll(string title, string message)
-        {
-            NotificationStrategy.SendNotification(title, message, Subscribers);
-        }
-
         public override void ChangeSprint(DateTime newStart, DateTime newEnd, string newName)
         {
             if (State.GetType() != typeof(ConceptState))
