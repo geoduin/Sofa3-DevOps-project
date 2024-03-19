@@ -36,7 +36,11 @@ namespace Sofa3Devops.Services
             }
             catch
             {
-                throw new InvalidOperationException("Could not find subscriber");
+                List<Subscriber> list = new List<Subscriber>()
+                {
+
+                };
+                dictionary.Add(subscriber.NotifiedUser.GetType(), list);
             }
         }
     }
