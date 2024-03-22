@@ -1,4 +1,5 @@
 ﻿using Sofa3Devops.ComponentVisitors.Composites;
+using Sofa3Devops.ComponentVisitors.Visitors;
 using Sofa3Devops.Domain;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,19 @@ namespace Sofa3Devops.Factories
     {
         public Sprint CreateSprint(DateTime start, DateTime end, string name)
         {
-            return new ReleaseSprint(start, end, name);
+            return new ReleaseSprint(start, end, name, CreatePipeline());
+        }
+
+        private static Pipeline CreatePipeline()
+        {
+            // Zal later zelf bepaald worden wat voor commando's er uitgevoerd worden.
+            return new Pipeline(CreatePipelineStages(), new List<Visitor>()); 
+        }
+
+        private static CompositeComponent CreatePipelineStages()
+        {
+            // Empty composite is returned, its customisation will done at a later stage
+            return new CompositeComponent("CI/CD Pipeline");
         }
     }
 }
