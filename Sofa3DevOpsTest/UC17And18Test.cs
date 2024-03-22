@@ -36,23 +36,6 @@ namespace Sofa3DevOpsTest
             Assert.Equal(thread.Children[0], reply);
         }
 
-        [Fact]
-        public void CanCommentToCommentIfSprintIsNotFinished()
-        {
-            BacklogItem item = new BacklogItem("test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            sprint.State = new OngoingState();
-            item.Sprint = sprint;
-            AbstractDiscussionComponent thread =
-                new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
-            AbstractDiscussionComponent reply =
-                new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
-            AbstractDiscussionComponent reply2 =
-                new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
-            reply.AddComponent(reply2);
-
-            Assert.Equal(reply.Children[0], reply2);
-        }
 
         [Fact]
         public void CanNotCreateThreadIfSprintIsFinished()
@@ -80,26 +63,6 @@ namespace Sofa3DevOpsTest
 
 
             Assert.Throws<InvalidOperationException>(() => thread.AddComponent(reply));
-        }
-
-        [Fact]
-        public void CanNotCommentToCommentIfSprintIsFinished()
-        {
-            BacklogItem item = new BacklogItem("test", "test");
-            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
-            sprint.State = new OngoingState();
-            item.Sprint = sprint;
-            AbstractDiscussionComponent thread =
-                new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
-            AbstractDiscussionComponent reply =
-                new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
-            thread.AddComponent(reply);
-            sprint.State = new FinishedState();
-
-            AbstractDiscussionComponent reply2 =
-                new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
-
-            Assert.Throws<InvalidOperationException>(() => reply.AddComponent(reply2));
         }
 
         [Fact]
@@ -140,6 +103,58 @@ namespace Sofa3DevOpsTest
             thread.AddComponent(reply);
 
             Assert.Equal(reply, replyMember.PostedDiscussionForumComponents[0]);
+        }
+
+        [Fact]
+        public void AddingAThreadToAThreadThrowsException()
+        {
+            BacklogItem item = new BacklogItem("test", "test");
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
+            sprint.State = new OngoingState();
+            item.Sprint = sprint;
+            AbstractDiscussionComponent thread1 =
+                new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
+            AbstractDiscussionComponent thread2 =
+                new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
+            Assert.Throws<InvalidOperationException>(() => thread1.AddComponent(thread2));
+        }
+
+        [Fact]
+        public void CanCommentToCommentIfSprintIsNotFinished()
+        {
+            BacklogItem item = new BacklogItem("test", "test");
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
+            sprint.State = new OngoingState();
+            item.Sprint = sprint;
+            AbstractDiscussionComponent thread =
+                new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
+            AbstractDiscussionComponent reply =
+                new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
+            AbstractDiscussionComponent reply2 =
+                new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
+            reply.AddComponent(reply2);
+
+            Assert.Equal(reply.Children[0], reply2);
+        }
+
+        [Fact]
+        public void CanNotCommentToCommentIfSprintIsFinished()
+        {
+            BacklogItem item = new BacklogItem("test", "test");
+            Sprint sprint = new DevelopmentSprint(DateTime.Now, DateTime.MaxValue, "test");
+            sprint.State = new OngoingState();
+            item.Sprint = sprint;
+            AbstractDiscussionComponent thread =
+                new DiscussionThread("test", "test", item, new Tester("test", "test", "test"));
+            AbstractDiscussionComponent reply =
+                new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
+            thread.AddComponent(reply);
+            sprint.State = new FinishedState();
+
+            AbstractDiscussionComponent reply2 =
+                new DiscussionComment("test", "test", item, new Tester("test", "test", "test"));
+
+            Assert.Throws<InvalidOperationException>(() => reply.AddComponent(reply2));
         }
     }
 }

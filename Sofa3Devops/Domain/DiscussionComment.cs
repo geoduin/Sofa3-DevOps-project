@@ -9,6 +9,7 @@ namespace Sofa3Devops.Domain
 {
     public class DiscussionComment : AbstractDiscussionComponent
     {
+
         public AbstractDiscussionComponent Parent { get; set; }
 
         public DiscussionComment(string title, string content, BacklogItem relevantItem, Member poster) : base(title, content, relevantItem, poster)
