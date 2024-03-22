@@ -6,6 +6,7 @@ using Sofa3Devops.ComponentVisitors.Composites;
 using Sofa3Devops.Domain;
 using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.Observers;
+using Sofa3Devops.SprintReportExporter;
 using Sofa3Devops.SprintStates;
 
 namespace Sofa3Devops

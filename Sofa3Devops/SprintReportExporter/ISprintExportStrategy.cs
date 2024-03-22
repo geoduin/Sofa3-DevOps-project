@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sofa3Devops.Factories
+namespace Sofa3Devops.SprintReportExporter
 {
-    public class DomainFactory
+    public interface ISprintExportStrategy
     {
-      
+        public string ExportReport(Sprint sprint);
     }
 }

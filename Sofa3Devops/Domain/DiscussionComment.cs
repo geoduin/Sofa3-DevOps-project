@@ -39,6 +39,7 @@ namespace Sofa3Devops.Domain
                 this.Children.Add(component);
                 component.SetParent(this);
                 component.Poster.PostedDiscussionForumComponents.Add(component);
+                this.NotifyAll($"New reply for comment {this.Title}", $"User {component.Poster.Name} Has replied to {this.Title} comment!");
             }
             else
             {

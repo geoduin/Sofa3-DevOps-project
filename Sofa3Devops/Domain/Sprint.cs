@@ -8,6 +8,7 @@ using Sofa3Devops.Adapters.Clients;
 using Sofa3Devops.NotificationStrategy;
 using Sofa3Devops.Observers;
 using Sofa3Devops.Services;
+using Sofa3Devops.SprintReportExporter;
 using Sofa3Devops.SprintStates;
 
 namespace Sofa3Devops.Domain
@@ -25,8 +26,7 @@ namespace Sofa3Devops.Domain
         public List<Member> Members { get; set; }
         public Dictionary<Type, List<Subscriber>> Subscribers { get; protected set; }
         public INotificationStrategy NotificationStrategy { get; protected set; }
-
-
+        public ISprintExportStrategy? Exporter { get; set; }
 
         public Sprint(DateTime startDate, DateTime endDate, string name)
         {
@@ -86,6 +86,9 @@ namespace Sofa3Devops.Domain
         {
             State.SetToCanceled(this);
         }
+        
+        // Will be called upon in the states
+        public abstract void EndSprint(Member member);
 
         public void FinishSprint(Member member)
         {
@@ -93,9 +96,8 @@ namespace Sofa3Devops.Domain
             EndSprint(member);
         }
 
-        // Will be called upon in the states
-        public abstract void EndSprint(Member member);
-
+        
+        // Observable methods
         public void AddSubscriber(Subscriber subscriber)
         {
             try
@@ -121,11 +123,24 @@ namespace Sofa3Devops.Domain
             list.Remove(subscriber);
         }
 
-        public abstract void NotifyAll(string title, string message);
+        public void NotifyAll(string title, string message)
+        {
+            NotificationStrategy.SendNotification(title, message, Subscribers);
+        }
 
         public void SetNotificationStrategy(INotificationStrategy strategy)
         {
             this.NotificationStrategy = strategy;
+        }
+
+        // Export report
+        public (string format, bool succeeded) ExportSprintReport()
+        {
+            if(Exporter == null)
+            {
+                throw new InvalidOperationException("An export formatter needs to be first determined, before sprint report can be exported.");
+            }
+            return (Exporter.ExportReport(this), true);
         }
     }
 }

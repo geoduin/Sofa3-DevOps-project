@@ -38,6 +38,7 @@ namespace Sofa3Devops.Domain
             {
                 this.Children.Add(component);
                 component.Poster.PostedDiscussionForumComponents.Add(component);
+                this.NotifyAll($"New Comment on thread {this.Title}", $"User {component.Poster.Name} Has left a comment on the {this.Title} thread!");
             }
             else
             {

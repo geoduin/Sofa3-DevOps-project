@@ -17,7 +17,7 @@ namespace Sofa3Devops.Domain
         public Sprint? Sprint { get; set; }
         public INotificationStrategy? NotificationStrategy { get; private set; }
         public List<AbstractDiscussionComponent> Threads { get; set; }
-
+        public int EffortPoints { get; set; } = 0;
 
         public BacklogItem(string name, string description)
         {
@@ -73,19 +73,7 @@ namespace Sofa3Devops.Domain
 
         public void AddSubscriber(Subscriber subscriber)
         {
-            try
-            {
-                var typeList = Subscribers[subscriber.NotifiedUser.GetType()];
-                typeList.Add(subscriber);
-            }
-            catch
-            {
-                List<Subscriber> list = new List<Subscriber>()
-                {
-                    subscriber
-                };
-                Subscribers.Add(subscriber.NotifiedUser.GetType(), list);
-            }
+            ObservableServices.AddSubscriberToDictionary(subscriber, Subscribers);
         }
 
         public void NotifyAll(string title, string message)
@@ -95,8 +83,7 @@ namespace Sofa3Devops.Domain
 
         public void RemoveSubscriber(Subscriber subscriber)
         {
-            var list = this.Subscribers[subscriber.NotifiedUser.GetType()];
-            list.Remove(subscriber);
+           ObservableServices.RemoveSubscriberFromDictionary(subscriber, Subscribers);
         }
 
         public void SetNotificationStrategy(INotificationStrategy strategy)
